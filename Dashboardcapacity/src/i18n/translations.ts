@@ -286,6 +286,14 @@ export const translations = {
       saveSettings: 'Einstellungen speichern',
       discardChanges: 'Änderungen verwerfen',
       settingsSaved: 'Allokationseinstellungen gespeichert',
+      save: 'Speichern',
+      edit: 'Bearbeiten',
+      delete: 'Löschen',
+      add: 'Hinzufügen',
+      cancel: 'Abbrechen',
+      editDC: 'Verteilzentrum bearbeiten',
+      editAllocator: 'Allokator bearbeiten',
+      addAllocatorTitle: 'Allokator hinzufügen',
     },
     // Simulation
     simulation: {
@@ -838,6 +846,14 @@ export const translations = {
       saveSettings: 'Save Settings',
       discardChanges: 'Discard Changes',
       settingsSaved: 'Allocation settings saved',
+      save: 'Save',
+      edit: 'Edit',
+      delete: 'Delete',
+      add: 'Add',
+      cancel: 'Cancel',
+      editDC: 'Edit Distribution Center',
+      editAllocator: 'Edit Allocator',
+      addAllocatorTitle: 'Add Allocator',
     },
     // Simulation
     simulation: {
