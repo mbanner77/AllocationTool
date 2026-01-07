@@ -639,7 +639,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     { 
       key: 'actualCapacity', 
-      label: 'IST-Kapazität',
+      label: t.capacityScreen.ist + '-' + t.capacityScreen.totalCapacity.split(' ')[0],
       align: 'right',
       render: (value) => `${value} m²`
     },
@@ -663,7 +663,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     {
       key: 'targetCapacity',
-      label: 'SOLL-Kapazität',
+      label: t.capacityScreen.soll + '-' + t.capacityScreen.totalCapacity.split(' ')[0],
       align: 'right',
       render: (value, row) => {
         const isEditable = row.hierarchyLevel === 'Produktgruppe';
@@ -725,7 +725,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               fontWeight: 'var(--font-weight-medium)'
             }}
           >
-            Empfohlen
+            {t.common.recommended || 'Recommended'}
           </button>
         </div>
       )
@@ -1259,7 +1259,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 {kpis.totalCapacity} m²
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-                Maximal nutzbare Fläche
+                {t.capacityScreen.usableArea}
               </div>
             </div>
             
@@ -1344,7 +1344,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   marginBottom: 'var(--space-3)'
                 }}
               >
-                SOLL- vs. IST-Kapazität
+                {t.capacityScreen.sollVsIst}
               </h3>
               <div style={{ width: '100%', height: '190px', minHeight: '190px' }}>
                 <ResponsiveContainer width="100%" height="100%" minHeight={190}>
@@ -1375,7 +1375,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   marginBottom: 'var(--space-3)'
                 }}
               >
-                Kapazitätsauslastung
+                {t.capacityScreen.capacityUtilization}
               </h3>
               <div className="grid grid-cols-4 gap-2">
                 {heatmapData.map((item, idx) => (
@@ -1739,10 +1739,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   
                   <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                     <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                      Zielreichweite
+                      {t.common.targetRange || 'Target Range'}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      8 Wochen
+                      8 {t.common.weeks || 'Weeks'}
                     </span>
                   </div>
                   
@@ -1757,7 +1757,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   
                   <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                     <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                      Flächenbedarf je Artikel
+                      {t.common.spacePerArticle || 'Space per Article'}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                       0.35 m²
@@ -1766,7 +1766,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   
                   <div className="flex justify-between items-center py-3 mt-4" style={{ backgroundColor: 'var(--surface-subtle-tint)', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)' }}>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
-                      Abgeleitete SOLL-Kapazität
+                      {t.capacityScreen.derivedTargetCapacity}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--brand-primary)' }}>
                       {prognoseDetails.forecastSuggestion} m²
