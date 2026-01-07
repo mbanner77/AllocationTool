@@ -119,6 +119,7 @@ const MOCK_ALLOCATORS: Allocator[] = [
 ];
 
 export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<Tab>('locations');
   const [selectedScenario, setSelectedScenario] = useState<Scenario>('initial');
   const [showDCDrawer, setShowDCDrawer] = useState(false);
@@ -203,7 +204,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     setSavedGlobalSettings(globalSettings);
     setSavedStores(stores);
     setHasChanges(false);
-    alert('Allokationseinstellungen gespeichert');
+    alert(t.settings.settingsSaved);
   };
   
   const handleDiscard = () => {
@@ -757,10 +758,10 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             fontWeight: 'var(--font-weight-semibold)',
             marginBottom: 'var(--space-2)'
           }}>
-            Allokationseinstellungen
+            {t.settings.title}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            Verwalten Sie Lokationen, Verantwortlichkeiten und Allokationslogiken
+            {t.settings.locations}, {t.settings.responsibilities}, {t.settings.allocation}
           </p>
         </div>
         

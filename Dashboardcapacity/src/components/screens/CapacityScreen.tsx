@@ -157,6 +157,7 @@ const getStatus = (deviation: number): Status => {
 };
 
 export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
+  const { t } = useLanguage();
   // State for target capacity changes
   const [targetCapacityOverrides, setTargetCapacityOverrides] = useState<Record<string, number>>({});
   const [hasChanges, setHasChanges] = useState(false);
