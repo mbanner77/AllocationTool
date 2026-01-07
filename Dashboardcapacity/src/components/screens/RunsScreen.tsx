@@ -958,13 +958,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Allokationszeitraum von
+                {t.runs.allocationPeriodFrom}
               </div>
               <div>{new Date(selectedArticle.allocationFrom).toLocaleDateString('de-DE')}</div>
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Allokationszeitraum bis
+                {t.runs.allocationPeriodTo}
               </div>
               <div>{new Date(selectedArticle.allocationTo).toLocaleDateString('de-DE')}</div>
             </div>
@@ -982,7 +982,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
         >
           <div className="flex items-center justify-between mb-6">
             <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
-              Aggregierte Bestands- & Allokationskennzahlen
+              {t.runs.aggregatedMetrics}
             </h3>
             <div className="flex gap-3">
               {/* Segmentation Toggle */}
@@ -997,7 +997,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                     fontWeight: 'var(--font-weight-medium)'
                   }}
                 >
-                  Aggregiert
+                  {t.runs.aggregated}
                 </button>
                 <button
                   onClick={() => setChartSegmentation('segmented')}
@@ -1009,7 +1009,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                     fontWeight: 'var(--font-weight-medium)'
                   }}
                 >
-                  Nach Größen segmentiert
+                  {t.runs.segmented}
                 </button>
               </div>
 
@@ -1026,7 +1026,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                       fontWeight: 'var(--font-weight-medium)'
                     }}
                   >
-                    Absolut
+                    {t.runs.absolute}
                   </button>
                   <button
                     onClick={() => setChartMode('relative')}
@@ -1038,7 +1038,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                       fontWeight: 'var(--font-weight-medium)'
                     }}
                   >
-                    Relativ
+                    {t.runs.relative}
                   </button>
                 </div>
               )}
@@ -1109,7 +1109,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
         >
           <div className="p-4 border-b" style={{ borderColor: 'var(--border-default)' }}>
             <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)' }}>
-              Allokation je Filiale
+              {t.runs.storeAllocation}
             </h3>
           </div>
           <DataGrid
@@ -1140,7 +1140,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                       fontWeight: 'var(--font-weight-semibold)'
                     }}
                   >
-                    Größenverteilung – {sizeModalData.title}
+                    {t.runs.sizeDistribution} – {sizeModalData.title}
                   </h3>
                   <button
                     onClick={() => setShowSizeModal(false)}
@@ -1158,19 +1158,19 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                     <thead>
                       <tr style={{ borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--surface-alt)' }}>
                         <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                          Größe
+                          {t.runs.size}
                         </th>
                         <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                          Allokationsmenge
+                          {t.runs.allocatedQuantity}
                         </th>
                         <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                          Bedarf
+                          {t.runs.demand}
                         </th>
                         <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                          Bestand
+                          {t.runs.currentStock}
                         </th>
                         <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                          Sollbestand
+                          {t.runs.targetStock}
                         </th>
                       </tr>
                     </thead>
@@ -1215,7 +1215,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                     color: 'var(--button-secondary-text)'
                   }}
                 >
-                  Schließen
+                  {t.runs.close}
                 </button>
               </div>
             </div>
@@ -1229,7 +1229,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
   const articleColumns: Column<RunArticle>[] = [
     { 
       key: 'articleNumber', 
-      label: 'Artikelnummer',
+      label: t.runs.articleNumber,
       sortable: true,
       width: '140px',
       render: (value) => (
@@ -1248,7 +1248,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     { 
       key: 'description', 
-      label: 'Artikelbeschreibung',
+      label: t.runs.articleDescription,
       render: (value) => (
         <div
           style={{
@@ -1264,7 +1264,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     { 
       key: 'color', 
-      label: 'Farbe',
+      label: t.runs.color,
       width: '120px',
       render: (value, row) => (
         <div className="flex items-center gap-2">
@@ -1279,15 +1279,15 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
         </div>
       )
     },
-    { key: 'season', label: 'Saison' },
+    { key: 'season', label: t.runs.season },
     { 
       key: 'allocationFrom', 
-      label: 'Allokationszeitraum von',
+      label: t.runs.allocationPeriodFrom,
       render: (value) => new Date(value as string).toLocaleDateString('de-DE')
     },
     { 
       key: 'allocationTo', 
-      label: 'Allokationszeitraum bis',
+      label: t.runs.allocationPeriodTo,
       render: (value) => new Date(value as string).toLocaleDateString('de-DE')
     },
     { 
@@ -1298,7 +1298,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     { 
       key: 'totalQuantity', 
-      label: 'Gesamtmenge allokiert',
+      label: t.runs.totalQuantityAllocated,
       align: 'right',
       sortable: true,
       render: (value) => (
@@ -1309,7 +1309,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     {
       key: 'capacityImpact',
-      label: 'Kapazitätswirkung',
+      label: t.runs.capacityImpact,
       align: 'center',
       width: '160px',
       render: (value) => {
@@ -1323,7 +1323,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     {
       key: 'hasExceptions',
-      label: 'Exception-Status',
+      label: t.runs.exceptionStatus,
       align: 'center',
       render: (value) => value ? (
         <span
@@ -1335,7 +1335,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             fontWeight: 'var(--font-weight-medium)'
           }}
         >
-          Ausnahme
+          {t.runs.exception}
         </span>
       ) : (
         <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>-</span>
@@ -1343,7 +1343,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     {
       key: 'id',
-      label: 'Aktion',
+      label: t.runs.action,
       align: 'center',
       width: '140px',
       render: (value, row) => (
@@ -1360,7 +1360,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             fontSize: 'var(--font-size-xs)'
           }}
         >
-          Details anzeigen
+          {t.runs.showDetails}
         </button>
       )
     }
@@ -1374,7 +1374,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
           onClick={() => onNavigate('runs')}
           className="hover:underline"
         >
-          Allokationsläufe
+          {t.runs.runs}
         </button>
         <span>›</span>
         <span>{runId}</span>
@@ -1389,10 +1389,10 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             marginBottom: 'var(--space-2)'
           }}
         >
-          Allokationslauf
+          {t.runs.runDetail}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Übersicht aller Artikel und Ergebnisse dieses Allokationslaufs
+          {t.runs.runDetailDescription}
         </p>
       </div>
 
@@ -1408,7 +1408,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
           <div className="grid grid-cols-6 gap-6">
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Lauf-ID
+                {t.runs.runId}
               </div>
               <code
                 style={{
@@ -1424,7 +1424,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Typ
+                {t.runs.type}
               </div>
               <span
                 className="px-3 py-1 rounded-full inline-block"
@@ -1440,7 +1440,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Status
+                {t.runs.status}
               </div>
               <span
                 className="px-3 py-1 rounded-full inline-block"
@@ -1468,7 +1468,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Anzahl Artikel
+                {t.runs.articleCount}
               </div>
               <div style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)' }}>
                 {selectedRun.articleCount}
