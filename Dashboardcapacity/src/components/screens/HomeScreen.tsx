@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Settings, Package, Briefcase, PlayCircle, AlertTriangle, BarChart3, Sliders, LayoutGrid, GitBranch, Layers } from 'lucide-react';
 import { useApp } from '../../store/AppContext';
+import { dataService } from '../../services/dataService';
 
 interface HomeScreenProps {
   onNavigate: (screen: string) => void;
@@ -87,11 +89,27 @@ const FEATURE_CARDS = [
 
 export function HomeScreen({ onNavigate }: HomeScreenProps) {
   const { state } = useApp();
-  
-  // Calculate real KPIs from state
-  const openTasks = state.tasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
-  const activeRuns = state.runs.filter(r => r.status === 'running' || r.status === 'planned').length;
-  const openExceptions = state.exceptions.filter(e => e.status === 'open' || e.status === 'in_progress').length;
+  const [kpis, setKpis] = useState({ openTasks: 0, activeRuns: 0, openExceptions: 0 });
+
+  // Load KPIs from dataService
+  useEffect(() => {
+    const loadKPIs = async () => {
+      try {
+        const data = await dataService.getKPIs();
+        setKpis(data);
+      } catch (error) {
+        console.error('Failed to load KPIs:', error);
+        // Fallback to state-based calculation
+        const openTasks = state.tasks?.filter((t: { status: string }) => t.status === 'pending' || t.status === 'in_progress').length || 0;
+        const activeRuns = state.runs?.filter((r: { status: string }) => r.status === 'running' || r.status === 'planned').length || 0;
+        const openExceptions = state.exceptions?.filter((e: { status: string }) => e.status === 'open' || e.status === 'in_progress').length || 0;
+        setKpis({ openTasks, activeRuns, openExceptions });
+      }
+    };
+    loadKPIs();
+  }, [state]);
+
+  const { openTasks, activeRuns, openExceptions } = kpis;
   
   return (
     <div>
