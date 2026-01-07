@@ -273,14 +273,14 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
   const tableColumns: Column<AnalyticsData>[] = [
     { 
       key: 'article', 
-      label: 'Artikel',
+      label: t.analytics.article || 'Artikel',
       sortable: true,
       render: (value) => (
         <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{value}</span>
       )
     },
-    { key: 'category', label: 'Kategorie', sortable: true },
-    { key: 'season', label: 'Saison', sortable: true },
+    { key: 'category', label: t.analytics.category || 'Kategorie', sortable: true },
+    { key: 'season', label: t.analytics.season || 'Saison', sortable: true },
     { 
       key: 'targetCapacity', 
       label: 'SOLL-Kapazität (m²)',
