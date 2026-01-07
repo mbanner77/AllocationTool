@@ -750,7 +750,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     },
     {
       key: 'articleNumber',
-      label: 'Artikelnummer',
+      label: t.parameters.articleNumber,
       sortable: true,
       width: '140px',
       render: (value) => (
@@ -822,7 +822,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     },
     {
       key: 'description',
-      label: 'Artikelbeschreibung',
+      label: t.parameters.articleDescription,
       render: (value) => (
         <div
           style={{
@@ -838,7 +838,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
         </div>
       )
     },
-    { key: 'articleGroup', label: 'Artikelgruppe', sortable: true },
+    { key: 'articleGroup', label: t.parameters.articleGroup, sortable: true },
     { key: 'season', label: 'Saison' },
     { 
       key: 'deliveryFrom', 
