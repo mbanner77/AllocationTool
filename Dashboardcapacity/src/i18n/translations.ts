@@ -801,6 +801,12 @@ export const translations = {
       acceptSimulation: 'Simulation übernehmen',
       dateChangeNote: 'Terminänderungen wirken sich direkt auf Kapazität und Simulation aus.',
     },
+    // Modals
+    modals: {
+      selectDistributionCenter: 'Verteilzentrum auswählen',
+      selectStore: 'Filiale auswählen',
+      selectAllocator: 'Allokator auswählen',
+    },
     // Common Actions
     actions: {
       save: 'Speichern',
@@ -1656,6 +1662,12 @@ export const translations = {
       discardSimulation: 'Discard Simulation',
       acceptSimulation: 'Accept Simulation',
       dateChangeNote: 'Date changes directly affect capacity and simulation.',
+    },
+    // Modals
+    modals: {
+      selectDistributionCenter: 'Select Distribution Center',
+      selectStore: 'Select Store',
+      selectAllocator: 'Select Allocator',
     },
     // Common Actions
     actions: {
