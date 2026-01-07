@@ -733,11 +733,12 @@ export function ParametersScreen() {
               marginBottom: 'var(--space-2)'
             }}
           >
-          {t.parameters.title}
-        </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', maxWidth: '800px' }}>
-          {t.parameters.subtitle}
-        </p>
+            {t.parameters.title}
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', maxWidth: '800px' }}>
+            {t.parameters.subtitle}
+          </p>
+        </div>
       </div>
       
       {/* Filter Bar */}
