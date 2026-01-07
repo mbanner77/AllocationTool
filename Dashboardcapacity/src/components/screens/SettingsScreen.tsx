@@ -803,9 +803,9 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
       <div className="mb-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
         <div className="flex gap-1">
           {[
-            { id: 'locations' as Tab, label: 'Lokationen' },
-            { id: 'responsibilities' as Tab, label: 'Verantwortlichkeiten' },
-            { id: 'allocation' as Tab, label: 'Allokationseinstellungen' }
+            { id: 'locations' as Tab, label: t.settings.locationsTab },
+            { id: 'responsibilities' as Tab, label: t.settings.responsibilitiesTab },
+            { id: 'allocation' as Tab, label: t.settings.allocationSettingsTab }
           ].map(tab => (
             <button
               key={tab.id}
@@ -851,7 +851,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 fontSize: 'var(--font-size-lg)',
                 fontWeight: 'var(--font-weight-semibold)'
               }}>
-                Verteilzentren
+                {t.settings.distributionCenters}
               </h2>
               <button
                 onClick={handleAddNewDC}
@@ -864,7 +864,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 }}
               >
                 <Plus size={18} />
-                Neues Verteilzentrum
+                {t.settings.newDC}
               </button>
             </div>
             <DataGrid
@@ -881,7 +881,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 fontSize: 'var(--font-size-lg)',
                 fontWeight: 'var(--font-weight-semibold)'
               }}>
-                Filialen
+                {t.settings.stores}
               </h2>
               <button
                 onClick={handleAddNewStore}
@@ -894,7 +894,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 }}
               >
                 <Plus size={18} />
-                Neue Filiale
+                {t.settings.newStore}
               </button>
             </div>
             <DataGrid
@@ -913,7 +913,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               fontSize: 'var(--font-size-lg)',
               fontWeight: 'var(--font-weight-semibold)'
             }}>
-              Verantwortlichkeiten
+              {t.settings.responsibilitiesTab}
             </h2>
             <button
               onClick={handleAddNewAllocator}
@@ -1238,7 +1238,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                   fontWeight: 'var(--font-weight-semibold)',
                   marginBottom: 'var(--space-5)'
                 }}>
-                  Globale Allokationseinstellungen
+                  {t.settings.globalAllocationSettings}
                 </h3>
                 
                 <div className="space-y-5">

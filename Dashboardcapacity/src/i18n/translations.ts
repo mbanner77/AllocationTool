@@ -294,6 +294,17 @@ export const translations = {
       editDC: 'Verteilzentrum bearbeiten',
       editAllocator: 'Allokator bearbeiten',
       addAllocatorTitle: 'Allokator hinzufügen',
+      // Tabs
+      locationsTab: 'Lokationen',
+      responsibilitiesTab: 'Verantwortlichkeiten',
+      allocationSettingsTab: 'Allokationseinstellungen',
+      // Labels
+      newDC: 'Neues Verteilzentrum',
+      newStore: 'Neue Filiale',
+      clusterAssignment: 'Clusterzuordnung',
+      referenceId: 'Referenzkennzeichen',
+      actions: 'Aktionen',
+      globalAllocationSettings: 'Globale Allokationseinstellungen',
     },
     // Simulation
     simulation: {
@@ -880,6 +891,17 @@ export const translations = {
       editDC: 'Edit Distribution Center',
       editAllocator: 'Edit Allocator',
       addAllocatorTitle: 'Add Allocator',
+      // Tabs
+      locationsTab: 'Locations',
+      responsibilitiesTab: 'Responsibilities',
+      allocationSettingsTab: 'Allocation Settings',
+      // Labels
+      newDC: 'New Distribution Center',
+      newStore: 'New Store',
+      clusterAssignment: 'Cluster Assignment',
+      referenceId: 'Reference ID',
+      actions: 'Actions',
+      globalAllocationSettings: 'Global Allocation Settings',
     },
     // Simulation
     simulation: {
