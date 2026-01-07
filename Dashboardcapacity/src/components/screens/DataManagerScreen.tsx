@@ -3,7 +3,8 @@ import {
   Database, RefreshCw, Settings, Upload, Download, 
   CheckCircle, XCircle, Clock, AlertTriangle, Key,
   Globe, Webhook, Save, RotateCcw, FileJson, History,
-  Plus, Trash2, Edit2, Eye, Table, HardDrive, RotateCw
+  Plus, Trash2, Edit2, Eye, Table, HardDrive, RotateCw,
+  Activity, Zap, Shield, Copy, FileUp, AlertCircle, Info
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { dataService } from '../../services/dataService';
@@ -83,6 +84,21 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
     loading: boolean;
   }>({ connected: false, loading: true });
   const [dbActionLoading, setDbActionLoading] = useState<string | null>(null);
+  const [dbHealth, setDbHealth] = useState<{
+    latency_ms?: number;
+    database_size?: string;
+    active_connections?: number;
+    table_sizes?: Array<{ table_name: string; size: string }>;
+    table_stats?: Array<{ table_name: string; live_rows: number; dead_rows: number }>;
+  } | null>(null);
+  const [showTableDetail, setShowTableDetail] = useState<string | null>(null);
+  const [tableDetail, setTableDetail] = useState<{
+    columns?: Array<{ column_name: string; data_type: string; is_nullable: string }>;
+    row_count?: number;
+    size?: string;
+    recent_records?: any[];
+  } | null>(null);
+  const [backupData, setBackupData] = useState<string | null>(null);
 
   // Load entity data based on selected entity
   const loadEntityData = async (entityName: string) => {
@@ -254,6 +270,152 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
       alert('Fehler: ' + error.message);
     } finally {
       setDbActionLoading(null);
+    }
+  };
+
+  // Load detailed database health metrics
+  const loadDbHealth = async () => {
+    setDbActionLoading('health');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/health`);
+      const result = await response.json();
+      if (result.success) {
+        setDbHealth(result.data);
+      }
+    } catch (error: any) {
+      console.error('Health check failed:', error);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
+  // Create and download database backup
+  const handleBackup = async () => {
+    setDbActionLoading('backup');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/backup`);
+      const result = await response.json();
+      if (result.success) {
+        const blob = new Blob([JSON.stringify(result.data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert('Backup erfolgreich heruntergeladen!');
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
+  // Restore database from backup file
+  const handleRestore = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    if (!confirm('Datenbank aus Backup wiederherstellen? Bestehende Daten werden überschrieben.')) {
+      event.target.value = '';
+      return;
+    }
+    
+    setDbActionLoading('restore');
+    try {
+      const content = await file.text();
+      const backup = JSON.parse(content);
+      
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/restore`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tables: backup.tables })
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Backup erfolgreich wiederhergestellt!');
+        loadDbStatus();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler beim Wiederherstellen: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+      event.target.value = '';
+    }
+  };
+
+  // Optimize database (vacuum/analyze)
+  const handleOptimize = async () => {
+    if (!confirm('Datenbank optimieren? Dies kann einige Sekunden dauern.')) return;
+    setDbActionLoading('optimize');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/vacuum`, { method: 'POST' });
+      const result = await response.json();
+      if (result.success) {
+        alert('Datenbank-Optimierung abgeschlossen!');
+        loadDbHealth();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
+  // Complete database reset
+  const handleDbReset = async () => {
+    const confirmation = prompt('ACHTUNG: Alle Daten werden gelöscht!\n\nGeben Sie "RESET" ein um fortzufahren:');
+    if (confirmation !== 'RESET') {
+      alert('Reset abgebrochen.');
+      return;
+    }
+    
+    setDbActionLoading('reset');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/reset`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: 'RESET_ALL_DATA' })
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Datenbank zurückgesetzt. Bitte führen Sie die Migration erneut aus.');
+        loadDbStatus();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
+  // Load table details
+  const loadTableDetail = async (table: string) => {
+    setShowTableDetail(table);
+    setTableDetail(null);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/table/${table}/info`);
+      const result = await response.json();
+      if (result.success) {
+        setTableDetail(result.data);
+      }
+    } catch (error: any) {
+      console.error('Failed to load table details:', error);
     }
   };
 
@@ -1007,97 +1169,207 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                       <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
                         <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
                           <Settings size={18} style={{ color: 'var(--status-warning)' }} />
-                          Datenbank-Aktionen
+                          Schema & Daten
                         </h4>
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <button
                             onClick={handleMigrateDb}
                             disabled={!dbStatus.connected || dbActionLoading === 'migrate'}
-                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
                             style={{ 
                               background: dbStatus.connected ? 'var(--brand-primary)' : 'var(--surface-subtle)', 
                               color: dbStatus.connected ? 'white' : 'var(--text-muted)',
                               cursor: dbStatus.connected ? 'pointer' : 'not-allowed'
                             }}
                           >
-                            {dbActionLoading === 'migrate' ? <RefreshCw size={16} className="animate-spin" /> : <Table size={16} />}
-                            1. Tabellen erstellen (Migration)
+                            {dbActionLoading === 'migrate' ? <RefreshCw size={14} className="animate-spin" /> : <Table size={14} />}
+                            Tabellen erstellen (Migration)
                           </button>
                           <button
                             onClick={handleReseedDb}
                             disabled={!dbStatus.connected || dbActionLoading === 'seed'}
-                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
                             style={{ 
                               background: dbStatus.connected ? 'var(--status-info)' : 'var(--surface-subtle)', 
                               color: dbStatus.connected ? 'white' : 'var(--text-muted)',
                               cursor: dbStatus.connected ? 'pointer' : 'not-allowed'
                             }}
                           >
-                            {dbActionLoading === 'seed' ? <RefreshCw size={16} className="animate-spin" /> : <Database size={16} />}
-                            2. Testdaten laden (Seed)
+                            {dbActionLoading === 'seed' ? <RefreshCw size={14} className="animate-spin" /> : <Database size={14} />}
+                            Testdaten laden (Seed)
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Health & Performance */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <Activity size={18} style={{ color: 'var(--status-success)' }} />
+                          Gesundheit & Performance
+                        </h4>
+                        <div className="space-y-2">
+                          <button
+                            onClick={loadDbHealth}
+                            disabled={!dbStatus.connected || dbActionLoading === 'health'}
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
+                            style={{ background: 'var(--surface-subtle)', border: '1px solid var(--border-default)' }}
+                          >
+                            {dbActionLoading === 'health' ? <RefreshCw size={14} className="animate-spin" /> : <Activity size={14} />}
+                            Health-Check ausführen
+                          </button>
+                          {dbHealth && (
+                            <div className="mt-2 p-2 rounded text-xs" style={{ background: 'var(--surface-raised)', border: '1px solid var(--border-default)' }}>
+                              <div className="flex justify-between mb-1">
+                                <span style={{ color: 'var(--text-muted)' }}>Latenz:</span>
+                                <span style={{ color: (dbHealth.latency_ms || 0) < 100 ? 'var(--status-success)' : 'var(--status-warning)' }}>
+                                  {dbHealth.latency_ms}ms
+                                </span>
+                              </div>
+                              <div className="flex justify-between mb-1">
+                                <span style={{ color: 'var(--text-muted)' }}>DB-Größe:</span>
+                                <span>{dbHealth.database_size}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span style={{ color: 'var(--text-muted)' }}>Verbindungen:</span>
+                                <span>{dbHealth.active_connections}</span>
+                              </div>
+                            </div>
+                          )}
+                          <button
+                            onClick={handleOptimize}
+                            disabled={!dbStatus.connected || dbActionLoading === 'optimize'}
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
+                            style={{ background: 'var(--surface-subtle)', border: '1px solid var(--border-default)' }}
+                          >
+                            {dbActionLoading === 'optimize' ? <RefreshCw size={14} className="animate-spin" /> : <Zap size={14} />}
+                            Datenbank optimieren
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Backup & Restore */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <Shield size={18} style={{ color: 'var(--status-info)' }} />
+                          Backup & Wiederherstellung
+                        </h4>
+                        <div className="space-y-2">
+                          <button
+                            onClick={handleBackup}
+                            disabled={!dbStatus.connected || dbActionLoading === 'backup'}
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
+                            style={{ background: 'var(--status-info)', color: 'white' }}
+                          >
+                            {dbActionLoading === 'backup' ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+                            Backup herunterladen
+                          </button>
+                          <label 
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm cursor-pointer"
+                            style={{ 
+                              background: dbStatus.connected ? 'var(--surface-subtle)' : 'var(--surface-page)', 
+                              border: '1px solid var(--border-default)',
+                              color: dbStatus.connected ? 'inherit' : 'var(--text-muted)',
+                              cursor: dbStatus.connected ? 'pointer' : 'not-allowed'
+                            }}
+                          >
+                            {dbActionLoading === 'restore' ? <RefreshCw size={14} className="animate-spin" /> : <FileUp size={14} />}
+                            Backup wiederherstellen
+                            <input 
+                              type="file" 
+                              accept=".json"
+                              onChange={handleRestore}
+                              disabled={!dbStatus.connected || dbActionLoading === 'restore'}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Danger Zone */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--status-danger)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--status-danger)' }}>
+                          <AlertCircle size={18} />
+                          Gefahrenzone
+                        </h4>
+                        <div className="space-y-2">
+                          <button
+                            onClick={handleDbReset}
+                            disabled={!dbStatus.connected || dbActionLoading === 'reset'}
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
+                            style={{ background: 'var(--status-danger)', color: 'white' }}
+                          >
+                            {dbActionLoading === 'reset' ? <RefreshCw size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                            Datenbank komplett zurücksetzen
                           </button>
                           <button
                             onClick={handleResetToDefaults}
-                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            className="w-full px-3 py-2 rounded-lg flex items-center gap-2 justify-center text-sm"
                             style={{ background: 'var(--status-warning)', color: 'white' }}
                           >
-                            <RotateCcw size={16} />
+                            <RotateCcw size={14} />
                             Lokale Daten zurücksetzen
                           </button>
                         </div>
                       </div>
 
-                      {/* Local Storage Info */}
-                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
-                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                          <HardDrive size={18} style={{ color: 'var(--text-muted)' }} />
-                          Lokaler Speicher (Browser)
-                        </h4>
-                        <div style={{ fontSize: 'var(--font-size-sm)' }}>
-                          <div className="space-y-1">
-                            {Object.entries({
-                              'Stores': 'allocation_stores',
-                              'Runs': 'allocation_runs',
-                              'Exceptions': 'allocation_exceptions',
-                              'Tasks': 'allocation_tasks',
-                              'Scenarios': 'allocation_scenarios',
-                              'Parameters': 'allocation_parameters'
-                            }).map(([label, key]) => (
-                              <div key={key} className="flex justify-between">
-                                <span style={{ color: 'var(--text-muted)' }}>{label}:</span>
-                                <span style={{ color: localStorage.getItem(key) ? 'var(--status-success)' : 'var(--text-muted)' }}>
-                                  {localStorage.getItem(key) ? 'Vorhanden' : 'Leer'}
-                                </span>
-                              </div>
-                            ))}
+                      {/* Table Details Modal */}
+                      {showTableDetail && (
+                        <div style={{ gridColumn: 'span 2', padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="flex items-center gap-2" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                              <Info size={18} style={{ color: 'var(--brand-primary)' }} />
+                              Tabellendetails: {showTableDetail}
+                            </h4>
+                            <button onClick={() => setShowTableDetail(null)} className="p-1 rounded hover:bg-gray-100">
+                              <XCircle size={18} />
+                            </button>
                           </div>
+                          {tableDetail ? (
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <h5 className="text-sm font-medium mb-2">Spalten</h5>
+                                <div className="space-y-1 text-xs">
+                                  {tableDetail.columns?.map((col) => (
+                                    <div key={col.column_name} className="flex justify-between p-1 rounded" style={{ background: 'var(--surface-raised)' }}>
+                                      <span className="font-mono">{col.column_name}</span>
+                                      <span style={{ color: 'var(--text-muted)' }}>{col.data_type}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div>
+                                <h5 className="text-sm font-medium mb-2">Statistiken</h5>
+                                <div className="text-sm">
+                                  <div className="flex justify-between mb-1">
+                                    <span style={{ color: 'var(--text-muted)' }}>Zeilen:</span>
+                                    <span>{tableDetail.row_count}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span style={{ color: 'var(--text-muted)' }}>Größe:</span>
+                                    <span>{tableDetail.size}</span>
+                                  </div>
+                                </div>
+                                {tableDetail.recent_records && tableDetail.recent_records.length > 0 && (
+                                  <div className="mt-3">
+                                    <h5 className="text-sm font-medium mb-2">Letzte Einträge</h5>
+                                    <div className="text-xs space-y-1 max-h-32 overflow-y-auto">
+                                      {tableDetail.recent_records.map((rec: any, i: number) => (
+                                        <div key={i} className="p-1 rounded truncate" style={{ background: 'var(--surface-raised)' }}>
+                                          {rec.name || rec.title || rec.id}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
+                              <RefreshCw size={14} className="animate-spin" /> Lade Details...
+                            </div>
+                          )}
                         </div>
-                      </div>
-
-                      {/* Clear All */}
-                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--status-danger)' }}>
-                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--status-danger)' }}>
-                          <Trash2 size={18} />
-                          Alle lokalen Daten löschen
-                        </h4>
-                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
-                          Löscht alle im Browser gespeicherten Daten. Die Daten werden bei der nächsten Ladung neu vom Server geladen.
-                        </p>
-                        <button
-                          onClick={() => {
-                            if (confirm('Wirklich alle lokalen Daten löschen?')) {
-                              localStorage.clear();
-                              alert('Alle lokalen Daten wurden gelöscht. Seite wird neu geladen.');
-                              window.location.reload();
-                            }
-                          }}
-                          className="px-4 py-2 rounded-lg flex items-center gap-2"
-                          style={{ background: 'var(--status-danger)', color: 'white' }}
-                        >
-                          <Trash2 size={16} />
-                          Alle Daten löschen
-                        </button>
-                      </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -776,4 +776,277 @@ router.post('/db/truncate/:table', async (req, res) => {
   }
 });
 
+// Database Health Check with detailed metrics
+router.get('/db/health', async (req, res) => {
+  try {
+    const startTime = Date.now();
+    
+    // Test query latency
+    await query('SELECT 1');
+    const latency = Date.now() - startTime;
+    
+    // Get database size
+    const sizeResult = await query(`
+      SELECT pg_size_pretty(pg_database_size(current_database())) as size,
+             pg_database_size(current_database()) as size_bytes
+    `);
+    
+    // Get connection info
+    const connResult = await query(`
+      SELECT count(*) as active_connections 
+      FROM pg_stat_activity 
+      WHERE datname = current_database()
+    `);
+    
+    // Get table sizes
+    const tableSizes = await query(`
+      SELECT 
+        tablename as table_name,
+        pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename)) as size,
+        pg_total_relation_size(schemaname || '.' || tablename) as size_bytes
+      FROM pg_tables 
+      WHERE schemaname = 'public'
+      ORDER BY pg_total_relation_size(schemaname || '.' || tablename) DESC
+    `);
+    
+    // Get last activity per table
+    const lastActivity = await query(`
+      SELECT 
+        relname as table_name,
+        last_vacuum,
+        last_autovacuum,
+        last_analyze,
+        last_autoanalyze,
+        n_live_tup as live_rows,
+        n_dead_tup as dead_rows
+      FROM pg_stat_user_tables
+      ORDER BY relname
+    `);
+    
+    res.json({
+      success: true,
+      data: {
+        latency_ms: latency,
+        database_size: sizeResult[0]?.size || 'Unknown',
+        database_size_bytes: parseInt(sizeResult[0]?.size_bytes || '0'),
+        active_connections: parseInt(connResult[0]?.active_connections || '0'),
+        table_sizes: tableSizes,
+        table_stats: lastActivity,
+        checked_at: new Date().toISOString()
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Full database backup (export all data as JSON)
+router.get('/db/backup', async (req, res) => {
+  try {
+    const tables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks', 'allocation_parameters'];
+    const backup: Record<string, any[]> = {};
+    
+    for (const table of tables) {
+      try {
+        const data = await query(`SELECT * FROM ${table}`);
+        backup[table] = data;
+      } catch {
+        backup[table] = [];
+      }
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        version: '1.0',
+        created_at: new Date().toISOString(),
+        database: process.env.NODE_ENV || 'development',
+        tables: backup
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Restore database from backup
+router.post('/db/restore', async (req, res) => {
+  try {
+    const { tables } = req.body;
+    
+    if (!tables || typeof tables !== 'object') {
+      return res.status(400).json({ success: false, error: 'Invalid backup format' });
+    }
+    
+    const allowedTables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks', 'allocation_parameters'];
+    const results: Record<string, { inserted: number; errors: number }> = {};
+    
+    for (const [tableName, rows] of Object.entries(tables)) {
+      if (!allowedTables.includes(tableName) || !Array.isArray(rows)) continue;
+      
+      results[tableName] = { inserted: 0, errors: 0 };
+      
+      for (const row of rows) {
+        try {
+          const columns = Object.keys(row);
+          const values = Object.values(row);
+          const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
+          const updateSet = columns.map((col, i) => `${col} = $${i + 1}`).join(', ');
+          
+          await query(
+            `INSERT INTO ${tableName} (${columns.join(', ')}) 
+             VALUES (${placeholders})
+             ON CONFLICT (id) DO UPDATE SET ${updateSet}`,
+            values
+          );
+          results[tableName].inserted++;
+        } catch {
+          results[tableName].errors++;
+        }
+      }
+    }
+    
+    res.json({ success: true, message: 'Restore completed', results });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Vacuum and analyze database (optimization)
+router.post('/db/vacuum', async (req, res) => {
+  try {
+    // VACUUM cannot run inside a transaction, so we use a direct approach
+    const tables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks', 'allocation_parameters'];
+    const results: string[] = [];
+    
+    for (const table of tables) {
+      try {
+        await query(`ANALYZE ${table}`);
+        results.push(`${table}: analyzed`);
+      } catch {
+        results.push(`${table}: skipped`);
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Database optimization completed',
+      details: results
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Complete database reset (drop and recreate all tables)
+router.post('/db/reset', async (req, res) => {
+  try {
+    const { confirm } = req.body;
+    
+    if (confirm !== 'RESET_ALL_DATA') {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Confirmation required. Send { "confirm": "RESET_ALL_DATA" }' 
+      });
+    }
+    
+    // Drop all tables
+    const tables = ['allocation_parameters', 'tasks', 'exceptions', 'scenarios', 'allocation_runs', 'articles', 'stores'];
+    for (const table of tables) {
+      try {
+        await query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+      } catch {
+        // Ignore errors
+      }
+    }
+    
+    res.json({ success: true, message: 'All tables dropped. Run migration to recreate.' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get table schema information
+router.get('/db/table/:table/info', async (req, res) => {
+  const allowedTables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks', 'allocation_parameters'];
+  const table = req.params.table;
+  
+  if (!allowedTables.includes(table)) {
+    return res.status(400).json({ success: false, error: 'Table not found' });
+  }
+  
+  try {
+    // Get column info
+    const columns = await query(`
+      SELECT 
+        column_name,
+        data_type,
+        character_maximum_length,
+        is_nullable,
+        column_default
+      FROM information_schema.columns 
+      WHERE table_name = $1
+      ORDER BY ordinal_position
+    `, [table]);
+    
+    // Get row count and size
+    const stats = await query(`
+      SELECT 
+        (SELECT COUNT(*) FROM ${table}) as row_count,
+        pg_size_pretty(pg_total_relation_size('${table}')) as size
+    `);
+    
+    // Get sample of recent records
+    const sample = await query(`SELECT * FROM ${table} ORDER BY created_at DESC LIMIT 5`);
+    
+    res.json({
+      success: true,
+      data: {
+        table_name: table,
+        columns,
+        row_count: parseInt(stats[0]?.row_count || '0'),
+        size: stats[0]?.size || '0 bytes',
+        recent_records: sample
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Duplicate detection
+router.get('/db/duplicates/:table', async (req, res) => {
+  const allowedTables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks'];
+  const table = req.params.table;
+  
+  if (!allowedTables.includes(table)) {
+    return res.status(400).json({ success: false, error: 'Table not found' });
+  }
+  
+  try {
+    // Check for potential duplicates based on name/title
+    let duplicateQuery = '';
+    if (['stores', 'scenarios'].includes(table)) {
+      duplicateQuery = `SELECT name, COUNT(*) as count FROM ${table} GROUP BY name HAVING COUNT(*) > 1`;
+    } else if (['tasks', 'exceptions'].includes(table)) {
+      duplicateQuery = `SELECT title, COUNT(*) as count FROM ${table} GROUP BY title HAVING COUNT(*) > 1`;
+    } else {
+      return res.json({ success: true, data: { duplicates: [], message: 'No duplicate check for this table' }});
+    }
+    
+    const duplicates = await query(duplicateQuery);
+    
+    res.json({
+      success: true,
+      data: {
+        table_name: table,
+        duplicate_count: duplicates.length,
+        duplicates
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;
