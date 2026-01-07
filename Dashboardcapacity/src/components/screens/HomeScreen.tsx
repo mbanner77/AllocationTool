@@ -119,7 +119,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
           fontWeight: 'var(--font-weight-semibold)',
           marginBottom: 'var(--space-2)'
         }}>
-          Willkommen im Blickpunkt Allocation Tool
+          Willkommen im Allocation Tool
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
           Verwalten Sie Ihre Allokationsprozesse zentral und effizient

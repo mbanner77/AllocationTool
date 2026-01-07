@@ -37,13 +37,11 @@ export function SideNav({ currentScreen, onNavigate }: SideNavProps) {
       }}
     >
       <div className="p-6">
-        <h2 style={{ 
-          fontSize: 'var(--font-size-lg)', 
-          fontWeight: 'var(--font-weight-semibold)',
-          color: 'var(--brand-primary)'
-        }}>
-          Blickpunkt
-        </h2>
+        <img 
+          src="https://realcore.info/bilder/rc-logo.png" 
+          alt="RealCore Logo" 
+          style={{ height: '40px', marginBottom: 'var(--space-2)' }}
+        />
         <p style={{ 
           fontSize: 'var(--font-size-xs)', 
           color: 'var(--text-muted)',
