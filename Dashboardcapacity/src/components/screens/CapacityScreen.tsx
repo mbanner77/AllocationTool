@@ -530,7 +530,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
   };
   
   const handleRecalculateForecast = () => {
-    setToast({ message: 'Prognose erfolgreich neu berechnet', type: 'success' });
+    setToast({ message: t.capacityScreen.forecastRecalculated, type: 'success' });
     setTimeout(() => setToast(null), 3000);
   };
   
@@ -633,7 +633,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     { 
       key: 'totalCapacity', 
-      label: 'Gesamtkapazität',
+      label: t.capacityScreen.totalCapacity,
       align: 'right',
       render: (value) => `${value} m²`
     },
@@ -645,7 +645,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     {
       key: 'actualUtilization',
-      label: 'IST-Auslastung',
+      label: t.capacityScreen.actualCapacity,
       align: 'right',
       render: (value) => (
         <span
@@ -704,13 +704,13 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     {
       key: 'targetUtilization',
-      label: 'SOLL-Auslastung',
+      label: t.capacityScreen.targetCapacity,
       align: 'right',
       render: (value) => `${(value as number).toFixed(1)}%`
     },
     {
       key: 'forecastSuggestion',
-      label: 'Prognose-Vorschlag',
+      label: t.capacityScreen.forecastSuggestion,
       align: 'right',
       render: (value, row) => (
         <div className="flex items-center gap-2 justify-end">
@@ -732,7 +732,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     {
       key: 'deviation',
-      label: 'Abweichung',
+      label: t.capacityScreen.deviation,
       align: 'right',
       render: (value) => {
         const val = value as number;
@@ -822,7 +822,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               height: 'var(--height-button-md)'
             }}
           >
-            Prognose neu berechnen
+            {t.capacityScreen.recalculateForecast}
           </button>
           
           <button
@@ -1253,7 +1253,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               }}
             >
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-                Gesamtkapazität
+                {t.capacityScreen.totalCapacity}
               </div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
                 {kpis.totalCapacity} m²
@@ -1271,7 +1271,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               }}
             >
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-                IST-Auslastung
+                {t.capacityScreen.actualCapacity}
               </div>
               <div 
                 style={{ 
@@ -1292,13 +1292,13 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               }}
             >
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-                SOLL-Auslastung
+                {t.capacityScreen.targetCapacity}
               </div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
                 {kpis.targetUtilization.toFixed(1)}%
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-                prognosebasiert
+                {t.capacityScreen.forecastBased}
               </div>
             </div>
             
@@ -1310,7 +1310,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               }}
             >
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-                Abweichung
+                {t.capacityScreen.deviation}
               </div>
               <div 
                 style={{ 
@@ -1435,7 +1435,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 marginBottom: 'var(--space-4)'
               }}
             >
-              Kapazitätsdetails
+              {t.capacityScreen.capacityDetails}
             </h3>
             
             {/* Info hint for product detail mode */}
@@ -1706,7 +1706,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   fontSize: 'var(--font-size-lg)',
                   fontWeight: 'var(--font-weight-semibold)'
                 }}>
-                  Prognose-Herleitung
+                  {t.capacityScreen.forecastDerivation}
                 </h2>
                 <button
                   onClick={() => setShowPrognoseDrawer(false)}
@@ -1730,10 +1730,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                     <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                      Absatzprognose
+                      {t.capacityScreen.salesForecast}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      {Math.round(prognoseDetails.forecastSuggestion * 1.2)} Einheiten
+                      {Math.round(prognoseDetails.forecastSuggestion * 1.2)} {t.capacityScreen.units}
                     </span>
                   </div>
                   
@@ -1751,7 +1751,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                       Ø Bestandsmenge
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      {Math.round(prognoseDetails.forecastSuggestion * 0.8)} Einheiten
+                      {Math.round(prognoseDetails.forecastSuggestion * 0.8)} {t.capacityScreen.units}
                     </span>
                   </div>
                   
@@ -1784,7 +1784,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               >
                 <Info size={20} style={{ color: 'var(--status-info)', flexShrink: 0, marginTop: '2px' }} />
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                  Die Prognose basiert auf historischen Verkaufsdaten der letzten 12 Monate, saisonalen Trends und geplanten Marketingaktionen.
+                  {t.capacityScreen.forecastNote}
                 </div>
               </div>
             </div>
