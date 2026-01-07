@@ -127,7 +127,7 @@ export const translations = {
     },
     // Exceptions
     exceptions: {
-      title: 'Ausnahmen',
+      title: 'Exception Cockpit',
       newException: 'Neue Ausnahme',
       resolved: 'Gelöst',
       pending: 'Ausstehend',
@@ -137,6 +137,19 @@ export const translations = {
       low: 'Niedrig',
       resolve: 'Lösen',
       assign: 'Zuweisen',
+      new: 'Neu',
+      inProgress: 'In Bearbeitung',
+      accepted: 'Akzeptiert',
+      info: 'Hinweis',
+      blocking: 'Blockierend',
+      overcapacity: 'Überkapazität',
+      undercapacity: 'Untererfüllung SOLL-Kapazität',
+      deliveryConflict: 'Liefertermin-Konflikt',
+      lotConflict: 'LOT / Größenlauf-Konflikt',
+      parameterConflict: 'Parameterkonflikt',
+      manualDeviation: 'Manuelle Abweichung',
+      aggregatedView: 'Aggregierte Ansicht',
+      detailView: 'Detailansicht',
     },
     // Tasks
     tasks: {
@@ -384,7 +397,7 @@ export const translations = {
     },
     // Exceptions
     exceptions: {
-      title: 'Exceptions',
+      title: 'Exception Cockpit',
       newException: 'New Exception',
       resolved: 'Resolved',
       pending: 'Pending',
@@ -394,6 +407,19 @@ export const translations = {
       low: 'Low',
       resolve: 'Resolve',
       assign: 'Assign',
+      new: 'New',
+      inProgress: 'In Progress',
+      accepted: 'Accepted',
+      info: 'Info',
+      blocking: 'Blocking',
+      overcapacity: 'Overcapacity',
+      undercapacity: 'Target Capacity Shortfall',
+      deliveryConflict: 'Delivery Date Conflict',
+      lotConflict: 'LOT / Size Run Conflict',
+      parameterConflict: 'Parameter Conflict',
+      manualDeviation: 'Manual Deviation',
+      aggregatedView: 'Aggregated View',
+      detailView: 'Detail View',
     },
     // Tasks
     tasks: {

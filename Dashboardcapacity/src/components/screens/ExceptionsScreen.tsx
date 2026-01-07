@@ -6,6 +6,7 @@ import {
   User, BarChart3, Filter, Search
 } from 'lucide-react';
 import type { Screen } from '../../App';
+import { useLanguage } from '../../i18n';
 
 interface ExceptionsScreenProps {
   onNavigate: (screen: Screen) => void;
