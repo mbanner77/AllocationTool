@@ -661,6 +661,25 @@ export const translations = {
       acceptSimulation: 'Simulation übernehmen',
       dateChangeNote: 'Terminänderungen wirken sich direkt auf Kapazität und Simulation aus.',
     },
+    // Common Actions
+    actions: {
+      save: 'Speichern',
+      saving: 'Speichern...',
+      cancel: 'Abbrechen',
+      edit: 'Bearbeiten',
+      delete: 'Löschen',
+      add: 'Hinzufügen',
+      close: 'Schließen',
+      apply: 'Übernehmen',
+      back: 'Zurück',
+      next: 'Weiter',
+      newEntry: 'Neuer Eintrag',
+      editEntry: 'Eintrag bearbeiten',
+      deleteConfirm: 'Diesen Eintrag wirklich löschen?',
+      addAllocator: 'Allokator hinzufügen',
+      editAllocator: 'Allokator bearbeiten',
+      editDC: 'Verteilzentrum bearbeiten',
+    },
     // Store Layout
     storeLayout: {
       title: 'Filiallayout & Warenträger',
@@ -1369,6 +1388,25 @@ export const translations = {
       discardSimulation: 'Discard Simulation',
       acceptSimulation: 'Accept Simulation',
       dateChangeNote: 'Date changes directly affect capacity and simulation.',
+    },
+    // Common Actions
+    actions: {
+      save: 'Save',
+      saving: 'Saving...',
+      cancel: 'Cancel',
+      edit: 'Edit',
+      delete: 'Delete',
+      add: 'Add',
+      close: 'Close',
+      apply: 'Apply',
+      back: 'Back',
+      next: 'Next',
+      newEntry: 'New Entry',
+      editEntry: 'Edit Entry',
+      deleteConfirm: 'Really delete this entry?',
+      addAllocator: 'Add Allocator',
+      editAllocator: 'Edit Allocator',
+      editDC: 'Edit Distribution Center',
     },
     // Store Layout
     storeLayout: {

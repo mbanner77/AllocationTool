@@ -926,7 +926,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               }}
             >
               <Plus size={18} />
-              Allokator hinzufügen
+              {t.actions.addAllocator}
             </button>
           </div>
           <DataGrid
@@ -1391,7 +1391,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             cursor: hasChanges ? 'pointer' : 'not-allowed'
           }}
         >
-          Speichern
+          {t.actions.save}
         </button>
       </div>
       
@@ -1421,7 +1421,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 fontSize: 'var(--font-size-lg)',
                 fontWeight: 'var(--font-weight-semibold)'
               }}>
-                Verteilzentrum bearbeiten
+                {t.actions.editDC}
               </h2>
             </div>
             
@@ -1548,7 +1548,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Abbrechen
+                {t.actions.cancel}
               </button>
               <button
                 onClick={handleSaveDC}
@@ -1559,7 +1559,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Speichern
+                {t.actions.save}
               </button>
             </div>
           </div>
@@ -1728,7 +1728,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 fontSize: 'var(--font-size-lg)',
                 fontWeight: 'var(--font-weight-semibold)'
               }}>
-                {editingAllocator ? 'Allokator bearbeiten' : 'Allokator hinzufügen'}
+                {editingAllocator ? t.actions.editAllocator : t.actions.addAllocator}
               </h2>
             </div>
             
@@ -1919,7 +1919,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Abbrechen
+                {t.actions.cancel}
               </button>
               <button
                 onClick={handleSaveAllocator}
@@ -1930,7 +1930,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Speichern
+                {t.actions.save}
               </button>
             </div>
           </div>
@@ -1941,7 +1941,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
       <LocationSelectionModal
         isOpen={showDCSelectionModal}
         onClose={() => setShowDCSelectionModal(false)}
-        title="Verteilzentrum auswählen"
+        title={t.modals.selectDistributionCenter}
         availableLocations={AVAILABLE_DISTRIBUTION_CENTERS.filter(
           dc => !distributionCenters.some(existing => existing.id === dc.id)
         )}
