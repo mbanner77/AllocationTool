@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { 
   Database, RefreshCw, Settings, Upload, Download, 
   CheckCircle, XCircle, Clock, AlertTriangle, Key,
-  Globe, Webhook, Save, RotateCcw, FileJson, History
+  Globe, Webhook, Save, RotateCcw, FileJson, History,
+  Plus, Trash2, Edit2, Eye, Table, HardDrive, RotateCw
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { dataService } from '../../services/dataService';
 
 interface DataManagerScreenProps {
   onNavigate: (screen: string) => void;
@@ -64,13 +66,89 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editConfig, setEditConfig] = useState<Partial<DataConfig>>({});
-  const [activeTab, setActiveTab] = useState<'config' | 'logs' | 'import' | 'export'>('config');
+  const [activeTab, setActiveTab] = useState<'data' | 'config' | 'logs' | 'import' | 'export' | 'db'>('data');
   const [importData, setImportData] = useState('');
   const [importResult, setImportResult] = useState<{ processed: number; failed: number; errors: string[] } | null>(null);
+  const [entityData, setEntityData] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [editJson, setEditJson] = useState('');
+
+  // Load entity data based on selected entity
+  const loadEntityData = async (entityName: string) => {
+    setLoadingData(true);
+    try {
+      let data: any[] = [];
+      switch (entityName) {
+        case 'stores':
+          data = await dataService.getStores();
+          break;
+        case 'articles':
+          // Articles don't have a dedicated endpoint yet, use empty
+          data = [];
+          break;
+        case 'allocation_runs':
+          data = await dataService.getRuns();
+          break;
+        case 'scenarios':
+          data = await dataService.getScenarios();
+          break;
+        case 'exceptions':
+          data = await dataService.getExceptions();
+          break;
+        case 'tasks':
+          data = await dataService.getTasks();
+          break;
+      }
+      setEntityData(data);
+    } catch (error) {
+      console.error('Failed to load entity data:', error);
+      setEntityData([]);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  // Reset all data to defaults
+  const handleResetToDefaults = () => {
+    if (confirm('Alle lokalen Daten auf Standardwerte zurücksetzen? Dies kann nicht rückgängig gemacht werden.')) {
+      dataService.resetToDefaults();
+      if (selectedEntity) {
+        loadEntityData(selectedEntity);
+      }
+      alert('Daten wurden zurückgesetzt.');
+    }
+  };
+
+  // Save edited item
+  const handleSaveItem = () => {
+    if (!editingItem || !editJson) return;
+    try {
+      const updated = JSON.parse(editJson);
+      setEntityData(prev => prev.map(item => item.id === editingItem.id ? updated : item));
+      setEditingItem(null);
+      setEditJson('');
+    } catch (e) {
+      alert('Ungültiges JSON-Format');
+    }
+  };
+
+  // Delete item
+  const handleDeleteItem = (id: string) => {
+    if (confirm('Diesen Eintrag wirklich löschen?')) {
+      setEntityData(prev => prev.filter(item => item.id !== id));
+    }
+  };
 
   useEffect(() => {
     loadConfigs();
   }, []);
+
+  useEffect(() => {
+    if (selectedEntity) {
+      loadEntityData(selectedEntity);
+    }
+  }, [selectedEntity]);
 
   useEffect(() => {
     if (selectedEntity) {
@@ -241,7 +319,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
               {/* Tabs */}
               <div style={{ borderBottom: '1px solid var(--border-default)', padding: 'var(--space-2) var(--space-4)' }}>
                 <div className="flex gap-2">
-                  {(['config', 'logs', 'import', 'export'] as const).map(tab => (
+                  {(['data', 'config', 'logs', 'import', 'export', 'db'] as const).map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -251,16 +329,137 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         color: activeTab === tab ? 'white' : 'var(--text-primary)'
                       }}
                     >
+                      {tab === 'data' && <><Table size={16} className="inline mr-2" />Daten</>}
                       {tab === 'config' && <><Settings size={16} className="inline mr-2" />Konfiguration</>}
                       {tab === 'logs' && <><History size={16} className="inline mr-2" />Sync-Protokoll</>}
                       {tab === 'import' && <><Download size={16} className="inline mr-2" />Import</>}
                       {tab === 'export' && <><Upload size={16} className="inline mr-2" />Export</>}
+                      {tab === 'db' && <><HardDrive size={16} className="inline mr-2" />DB-Verwaltung</>}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="p-6">
+                {/* Data Tab */}
+                {activeTab === 'data' && (
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                        <Table size={18} className="inline mr-2" />
+                        {ENTITY_LABELS[selectedEntity!]?.name || selectedEntity} - Datensätze ({entityData.length})
+                      </h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => loadEntityData(selectedEntity!)}
+                          className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                          style={{ border: '1px solid var(--border-default)' }}
+                        >
+                          <RefreshCw size={14} />
+                          Aktualisieren
+                        </button>
+                        <button
+                          onClick={() => {
+                            const newItem = { id: `new-${Date.now()}`, name: 'Neuer Eintrag' };
+                            setEditingItem(newItem);
+                            setEditJson(JSON.stringify(newItem, null, 2));
+                          }}
+                          className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                          style={{ background: 'var(--brand-primary)', color: 'white' }}
+                        >
+                          <Plus size={14} />
+                          Neu
+                        </button>
+                      </div>
+                    </div>
+
+                    {loadingData ? (
+                      <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
+                        <RefreshCw size={24} className="mx-auto mb-2 animate-spin" />
+                        <p>Lade Daten...</p>
+                      </div>
+                    ) : entityData.length === 0 ? (
+                      <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
+                        <Database size={32} className="mx-auto mb-2 opacity-50" />
+                        <p>Keine Datensätze vorhanden</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {entityData.map((item: any) => (
+                          <div
+                            key={item.id}
+                            className="p-3 rounded-lg flex items-center justify-between"
+                            style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}
+                          >
+                            <div className="flex-1">
+                              <div style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                                {item.name || item.title || item.id}
+                              </div>
+                              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                                ID: {item.id} {item.status && `| Status: ${item.status}`}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setEditingItem(item);
+                                  setEditJson(JSON.stringify(item, null, 2));
+                                }}
+                                className="p-2 rounded hover:bg-gray-100"
+                                title="Bearbeiten"
+                              >
+                                <Edit2 size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteItem(item.id)}
+                                className="p-2 rounded hover:bg-red-50"
+                                style={{ color: 'var(--status-danger)' }}
+                                title="Löschen"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Edit Modal */}
+                    {editingItem && (
+                      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+                          <h3 className="text-lg font-semibold mb-4">
+                            {editingItem.id?.startsWith('new-') ? 'Neuer Eintrag' : 'Eintrag bearbeiten'}
+                          </h3>
+                          <textarea
+                            value={editJson}
+                            onChange={(e) => setEditJson(e.target.value)}
+                            className="w-full h-64 p-3 rounded-lg font-mono text-sm mb-4"
+                            style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}
+                          />
+                          <div className="flex justify-end gap-3">
+                            <button
+                              onClick={() => { setEditingItem(null); setEditJson(''); }}
+                              className="px-4 py-2 rounded-lg"
+                              style={{ border: '1px solid var(--border-default)' }}
+                            >
+                              Abbrechen
+                            </button>
+                            <button
+                              onClick={handleSaveItem}
+                              className="px-4 py-2 rounded-lg flex items-center gap-2"
+                              style={{ background: 'var(--brand-primary)', color: 'white' }}
+                            >
+                              <Save size={16} />
+                              Speichern
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Config Tab */}
                 {activeTab === 'config' && (
                   <div className="space-y-6">
@@ -563,6 +762,111 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         </button>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* DB Management Tab */}
+                {activeTab === 'db' && (
+                  <div>
+                    <h3 className="mb-4" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                      <HardDrive size={18} className="inline mr-2" />
+                      Datenbank-Verwaltung
+                    </h3>
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                      {/* Reset Data */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <RotateCw size={18} style={{ color: 'var(--status-warning)' }} />
+                          Daten zurücksetzen
+                        </h4>
+                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
+                          Setzt alle lokalen Daten auf die Standardwerte zurück. Dies betrifft alle Entitäten.
+                        </p>
+                        <button
+                          onClick={handleResetToDefaults}
+                          className="px-4 py-2 rounded-lg flex items-center gap-2"
+                          style={{ background: 'var(--status-warning)', color: 'white' }}
+                        >
+                          <RotateCcw size={16} />
+                          Auf Standardwerte zurücksetzen
+                        </button>
+                      </div>
+
+                      {/* Connection Info */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <Globe size={18} style={{ color: 'var(--status-info)' }} />
+                          API-Verbindung
+                        </h4>
+                        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                          <div className="flex justify-between mb-2">
+                            <span style={{ color: 'var(--text-muted)' }}>API URL:</span>
+                            <span className="font-mono">{import.meta.env.VITE_API_URL || 'localhost:3002'}</span>
+                          </div>
+                          <div className="flex justify-between mb-2">
+                            <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                            <span className="flex items-center gap-1" style={{ color: 'var(--status-success)' }}>
+                              <CheckCircle size={14} /> Verbunden (Fallback)
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span style={{ color: 'var(--text-muted)' }}>Speicher:</span>
+                            <span>localStorage</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Storage Info */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <Database size={18} style={{ color: 'var(--brand-primary)' }} />
+                          Lokaler Speicher
+                        </h4>
+                        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                          <div className="space-y-1">
+                            {Object.entries({
+                              'Stores': 'allocation_stores',
+                              'Runs': 'allocation_runs',
+                              'Exceptions': 'allocation_exceptions',
+                              'Tasks': 'allocation_tasks',
+                              'Scenarios': 'allocation_scenarios',
+                              'Parameters': 'allocation_parameters'
+                            }).map(([label, key]) => (
+                              <div key={key} className="flex justify-between">
+                                <span style={{ color: 'var(--text-muted)' }}>{label}:</span>
+                                <span>{localStorage.getItem(key) ? 'Vorhanden' : 'Leer'}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Clear All */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--status-danger)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--status-danger)' }}>
+                          <Trash2 size={18} />
+                          Alle lokalen Daten löschen
+                        </h4>
+                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
+                          Löscht alle im Browser gespeicherten Daten. Die Daten werden bei der nächsten Ladung neu vom Server geladen.
+                        </p>
+                        <button
+                          onClick={() => {
+                            if (confirm('Wirklich alle lokalen Daten löschen?')) {
+                              localStorage.clear();
+                              alert('Alle lokalen Daten wurden gelöscht. Seite wird neu geladen.');
+                              window.location.reload();
+                            }
+                          }}
+                          className="px-4 py-2 rounded-lg flex items-center gap-2"
+                          style={{ background: 'var(--status-danger)', color: 'white' }}
+                        >
+                          <Trash2 size={16} />
+                          Alle Daten löschen
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
