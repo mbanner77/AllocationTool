@@ -944,7 +944,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               color: 'var(--text-muted)'
             }}
           >
-            Artikelhierarchieebene
+            {t.capacityScreen.hierarchyLevel}
             {hierarchyLevel === 'Produktgruppe' && (
               <span 
                 style={{ 
@@ -968,10 +968,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               backgroundColor: 'var(--surface-page)'
             }}
           >
-            <option value="Unternehmen">Unternehmen</option>
-            <option value="Einkaufsbereich">Einkaufsbereich</option>
-            <option value="Produktgruppe">Produktgruppe</option>
-            <option value="Produkt">Produkt</option>
+            <option value="Unternehmen">{t.capacityScreen.company}</option>
+            <option value="Einkaufsbereich">{t.capacityScreen.purchaseArea}</option>
+            <option value="Produktgruppe">{t.capacityScreen.productGroup}</option>
+            <option value="Produkt">{t.capacityScreen.product}</option>
           </select>
         </div>
         
@@ -987,7 +987,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 color: 'var(--text-muted)'
               }}
             >
-              Einkaufsbereich
+              {t.capacityScreen.purchaseArea}
             </label>
             <select
               value={selectedPurchaseArea}
@@ -1003,7 +1003,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 backgroundColor: 'var(--surface-page)'
               }}
             >
-              <option value="">Alle Bereiche</option>
+              <option value="">{t.capacityScreen.allAreas}</option>
               {availablePurchaseAreas.map(area => (
                 <option key={area} value={area}>{area}</option>
               ))}
