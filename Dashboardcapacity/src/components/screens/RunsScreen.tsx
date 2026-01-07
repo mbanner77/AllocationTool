@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useLanguage } from '../../i18n';
 import { DataGrid, Column } from '../common/DataGrid';
 import { ChevronLeft, TrendingUp, TrendingDown, Circle, Info, X, Filter } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useLanguage } from '../../i18n';
 import { ChevronRight, Plus, Search, X, Info, Edit2, History, ArrowUpRight, Check, ChevronDown, MapPin, AlertCircle, Filter } from 'lucide-react';
 import type { Screen } from '../../App';
 import { ArticleHierarchySelector, ARTICLE_HIERARCHY } from '../common/ArticleHierarchySelector';

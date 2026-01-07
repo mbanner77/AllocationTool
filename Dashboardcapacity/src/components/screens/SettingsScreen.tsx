@@ -5,6 +5,7 @@ import { LocationSelectionModal } from '../common/LocationSelectionModal';
 import { StorageLocationModal } from '../common/StorageLocationModal';
 import { AllocatorSelectionModal } from '../common/AllocatorSelectionModal';
 import { ResponsibilityAreaModal } from '../common/ResponsibilityAreaModal';
+import { useLanguage } from '../../i18n';
 
 interface SettingsScreenProps {
   onNavigate: (screen: string) => void;

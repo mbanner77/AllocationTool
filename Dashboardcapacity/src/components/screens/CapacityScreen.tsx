@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLanguage } from '../../i18n';
 import { DataGrid, Column } from '../common/DataGrid';
 import { X, Info, BarChart3, ChevronRight, ChevronDown, Search } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLanguage } from '../../i18n';
 import { Search, Plus, MoreVertical, X, Building2, Sparkles, ChevronDown, ChevronRight, GripVertical, Trash2 } from 'lucide-react';
 import { ClusterTable } from '../cluster/ClusterTable';
 

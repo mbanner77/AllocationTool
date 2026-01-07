@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLanguage } from '../../i18n';
 import { ChevronLeft, AlertCircle, Info, CheckCircle, TrendingUp, TrendingDown, Circle, Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 

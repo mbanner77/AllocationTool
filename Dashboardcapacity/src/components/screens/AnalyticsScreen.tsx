@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLanguage } from '../../i18n';
 import { DataGrid, Column } from '../common/DataGrid';
 import { Filter, Download, Save, TrendingUp, TrendingDown } from 'lucide-react';
 import {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../../i18n';
 import { ChevronLeft, ChevronDown, ChevronRight, Info, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface AllocationAnalysisScreenProps {
