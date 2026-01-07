@@ -174,7 +174,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
 
   // Delete item
   const handleDeleteItem = (id: string) => {
-    if (confirm('Diesen Eintrag wirklich löschen?')) {
+    if (confirm(t.actions.deleteConfirm)) {
       setEntityData(prev => prev.filter(item => item.id !== id));
     }
   };
@@ -699,7 +699,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                                   setEditJson(JSON.stringify(item, null, 2));
                                 }}
                                 className="p-2 rounded hover:bg-gray-100"
-                                title="Bearbeiten"
+                                title={t.actions.edit}
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -707,7 +707,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                                 onClick={() => handleDeleteItem(item.id)}
                                 className="p-2 rounded hover:bg-red-50"
                                 style={{ color: 'var(--status-danger)' }}
-                                title="Löschen"
+                                title={t.actions.delete}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -722,7 +722,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
                           <h3 className="text-lg font-semibold mb-4">
-                            {editingItem.id?.startsWith('new-') ? 'Neuer Eintrag' : 'Eintrag bearbeiten'}
+                            {editingItem.id?.startsWith('new-') ? t.actions.newEntry : t.actions.editEntry}
                           </h3>
                           <textarea
                             value={editJson}
@@ -736,7 +736,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                               className="px-4 py-2 rounded-lg"
                               style={{ border: '1px solid var(--border-default)' }}
                             >
-                              Abbrechen
+                              {t.actions.cancel}
                             </button>
                             <button
                               onClick={handleSaveItem}
@@ -744,7 +744,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                               style={{ background: 'var(--brand-primary)', color: 'white' }}
                             >
                               <Save size={16} />
-                              Speichern
+                              {t.actions.save}
                             </button>
                           </div>
                         </div>
@@ -892,7 +892,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         style={{ background: 'var(--brand-primary)', color: 'white' }}
                       >
                         <Save size={16} />
-                        {saving ? 'Speichern...' : 'Speichern'}
+                        {saving ? t.actions.saving : t.actions.save}
                       </button>
                     </div>
                   </div>
