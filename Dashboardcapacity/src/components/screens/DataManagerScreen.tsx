@@ -47,8 +47,18 @@ const CATEGORY_COLORS = {
   transaction: { bg: 'var(--status-success)', label: 'Bewegungsdaten' }
 };
 
+// Fallback mock data when API is not available
+const MOCK_CONFIGS: DataConfig[] = [
+  { id: '1', entity_name: 'stores', data_category: 'master', inbound_enabled: true, outbound_enabled: false, api_key: null, webhook_url: null, sync_interval_minutes: null, last_sync_at: null },
+  { id: '2', entity_name: 'articles', data_category: 'master', inbound_enabled: true, outbound_enabled: false, api_key: null, webhook_url: null, sync_interval_minutes: null, last_sync_at: null },
+  { id: '3', entity_name: 'allocation_runs', data_category: 'transaction', inbound_enabled: true, outbound_enabled: true, api_key: null, webhook_url: null, sync_interval_minutes: 60, last_sync_at: '2025-01-07T10:00:00Z' },
+  { id: '4', entity_name: 'scenarios', data_category: 'transaction', inbound_enabled: true, outbound_enabled: true, api_key: null, webhook_url: null, sync_interval_minutes: null, last_sync_at: null },
+  { id: '5', entity_name: 'exceptions', data_category: 'transaction', inbound_enabled: true, outbound_enabled: true, api_key: null, webhook_url: null, sync_interval_minutes: 30, last_sync_at: '2025-01-07T11:30:00Z' },
+  { id: '6', entity_name: 'tasks', data_category: 'transaction', inbound_enabled: true, outbound_enabled: true, api_key: null, webhook_url: null, sync_interval_minutes: null, last_sync_at: null },
+];
+
 export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
-  const [configs, setConfigs] = useState<DataConfig[]>([]);
+  const [configs, setConfigs] = useState<DataConfig[]>(MOCK_CONFIGS);
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const [syncLogs, setSyncLogs] = useState<SyncLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,11 +90,26 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
 
   const loadConfigs = async () => {
     setLoading(true);
-    const result = await api.dataManager.fetchConfigs();
-    if (result.success && result.data) {
-      setConfigs(result.data);
-      if (!selectedEntity && result.data.length > 0) {
-        setSelectedEntity(result.data[0].entity_name);
+    try {
+      const result = await api.dataManager.fetchConfigs();
+      if (result.success && result.data && result.data.length > 0) {
+        setConfigs(result.data);
+        if (!selectedEntity) {
+          setSelectedEntity(result.data[0].entity_name);
+        }
+      } else {
+        // Fallback to mock data
+        setConfigs(MOCK_CONFIGS);
+        if (!selectedEntity) {
+          setSelectedEntity(MOCK_CONFIGS[0].entity_name);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load configs:', error);
+      // Fallback to mock data
+      setConfigs(MOCK_CONFIGS);
+      if (!selectedEntity) {
+        setSelectedEntity(MOCK_CONFIGS[0].entity_name);
       }
     }
     setLoading(false);
