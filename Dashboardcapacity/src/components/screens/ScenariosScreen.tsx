@@ -281,7 +281,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                 color: 'var(--text-muted)'
               }}
             >
-              Szenario
+              {t.scenarios.scenario}
             </label>
             <select
               value={selectedScenario}
@@ -311,7 +311,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                 letterSpacing: '0.05em'
               }}
             >
-              Varianten ({MOCK_VARIANTS.length})
+              {t.scenarios.variants} ({MOCK_VARIANTS.length})
             </div>
 
             <div className="space-y-2">
@@ -354,7 +354,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                     {variant.status !== 'draft' && (
                       <div className="space-y-1">
                         <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-xs)' }}>
-                          <span style={{ color: 'var(--text-muted)' }}>Über-/Unterdeckung:</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{t.scenarios.overUnderCoverage}:</span>
                           <span
                             style={{
                               fontWeight: 'var(--font-weight-medium)',
@@ -456,7 +456,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                    Überdeckung
+                    {t.scenarios.overCapacity}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: '#ef4444' }}>
                     +{selectedVariant.overCapacity} m²
@@ -471,7 +471,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                    Unterdeckung
+                    {t.scenarios.underCapacity}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: '#3b82f6' }}>
                     -{selectedVariant.underCapacity} m²
@@ -486,7 +486,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                    Prognoseabdeckung
+                    {t.scenarios.forecastCoverage}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>
                     {selectedVariant.forecastCoverage.toFixed(1)}%
@@ -518,10 +518,10 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
               {/* Tabs */}
               <div className="flex gap-1 mb-4 border-b" style={{ borderColor: 'var(--border-default)' }}>
                 {[
-                  { key: 'overview', label: 'Übersicht' },
-                  { key: 'capacity', label: 'Kapazität' },
-                  { key: 'forecast', label: 'Prognose' },
-                  { key: 'exceptions', label: 'Ausnahmen' }
+                  { key: 'overview', label: t.scenarios.overview },
+                  { key: 'capacity', label: t.scenarios.capacity },
+                  { key: 'forecast', label: t.scenarios.forecast },
+                  { key: 'exceptions', label: t.scenarios.exceptions }
                 ].map((tab) => (
                   <button
                     key={tab.key}
@@ -551,12 +551,12 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                       }}
                     >
                       <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-                        Varianten-Details
+                        {t.scenarios.variantDetails}
                       </h3>
                       <div className="grid grid-cols-2 gap-6">
                         <div>
                           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                            Variantenname
+                            {t.scenarios.variantName}
                           </div>
                           <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                             {selectedVariant.name}
@@ -646,7 +646,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                     }}
                   >
                     <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-                      Prognose vs. Allokation
+                      {t.scenarios.forecastVsAllocation}
                     </h3>
                     <ResponsiveContainer width="100%" height={350} minWidth={0} minHeight={0}>
                       <LineChart data={FORECAST_TREND}>
@@ -786,7 +786,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
               marginBottom: '16px'
             }}
           >
-            Entscheidung & Übergabe
+            {t.scenarios.decisionAndHandover}
           </h2>
 
           {!selectedVariant && (
@@ -836,7 +836,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                       fontWeight: 'var(--font-weight-medium)'
                     }}
                   >
-                    {validationRunning ? 'Validierung läuft...' : 'Validierung starten'}
+                    {validationRunning ? t.scenarios.validationRunning : t.scenarios.startValidation}
                   </button>
                   {validationRunning && (
                     <div className="mt-2 text-center">
@@ -861,13 +861,13 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                         color: 'var(--text-muted)'
                       }}
                     >
-                      Begründung der Freigabe *
+                      {t.scenarios.approvalReason} *
                     </label>
                     <textarea
                       value={approvalReason}
                       onChange={(e) => setApprovalReason(e.target.value)}
                       rows={4}
-                      placeholder="Bitte geben Sie eine Begründung für die Freigabe ein..."
+                      placeholder={t.scenarios.approvalPlaceholder}
                       className="w-full px-3 py-2 rounded-lg border"
                       style={{
                         borderColor: 'var(--border-default)',
@@ -958,7 +958,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '12px' }}>
-                    Validierungsergebnisse
+                    {t.scenarios.validationResults}
                   </div>
                   <div className="space-y-2">
                     {Object.entries(selectedVariant.validationResults).map(([key, passed]) => {
@@ -1008,7 +1008,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
           >
             <div className="p-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
               <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
-                Validierungsbericht
+                {t.scenarios.validationReport}
               </h2>
             </div>
 
