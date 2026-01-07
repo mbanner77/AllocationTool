@@ -11,7 +11,7 @@ services:
     runtime: node
     rootDir: Dashboardcapacity/backend
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    startCommand: node dist/db/migrate.js && node dist/db/seed.js && npm start
     envVars:
       - key: NODE_VERSION
         value: 20
