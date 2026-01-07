@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronRight, Plus, Search, X, Info, Edit2, History, ArrowUpRight, Check, ChevronDown, MapPin, AlertCircle, Filter } from 'lucide-react';
 import type { Screen } from '../../App';
 import { ArticleHierarchySelector, ARTICLE_HIERARCHY } from '../common/ArticleHierarchySelector';
 import { LocationSelectionModal } from '../common/LocationSelectionModal';
 import { StoreBlockingTab } from './ParametersScreen/StoreBlockingTab';
+import { dataService } from '../../services/dataService';
 
 type TabKey = 'capacity' | 'presentation' | 'time' | 'logic' | 'forecast' | 'governance' | 'storeBlocking';
 type ParameterStatus = 'active' | 'inactive' | 'overridden' | 'inherited';
@@ -490,6 +491,44 @@ const SOURCE_LABELS = {
 export function ParametersScreen() {
   const [activeTab, setActiveTab] = useState<TabKey>('capacity');
   const [parameters, setParameters] = useState<Parameter[]>(MOCK_PARAMETERS);
+  const [loading, setLoading] = useState(true);
+
+  // Load parameters from dataService
+  useEffect(() => {
+    const loadParameters = async () => {
+      setLoading(true);
+      try {
+        const data = await dataService.getParameters();
+        // Map API data to local Parameter type if needed
+        const mapped: Parameter[] = data.map((p: any) => ({
+          id: p.id,
+          name: p.name || p.key || '',
+          description: p.description || '',
+          level: (p.level || 'company') as HierarchyLevel,
+          value: p.value,
+          unit: p.unit,
+          type: (p.type || 'number') as ParameterType,
+          enumValues: p.enumValues,
+          source: (p.source || 'default') as 'direct' | 'inherited' | 'default',
+          inheritedFrom: p.inheritedFrom,
+          validFrom: p.validFrom || new Date().toISOString(),
+          validTo: p.validTo || null,
+          hasOverride: p.hasOverride || false,
+          category: (p.category || 'capacity') as TabKey,
+          priority: p.priority,
+          articleHierarchyScope: p.articleHierarchyScope,
+          planningLevel: p.planningLevel
+        }));
+        setParameters(mapped);
+      } catch (error) {
+        console.error('Failed to load parameters:', error);
+        setParameters(MOCK_PARAMETERS);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadParameters();
+  }, []);
   const [selectedParameter, setSelectedParameter] = useState<Parameter | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
