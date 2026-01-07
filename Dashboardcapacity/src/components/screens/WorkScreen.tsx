@@ -813,8 +813,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 minWidth: '280px'
               }}
             >
-              Für diesen Artikel liegt ein übernommener Simulationsvorschlag vor.<br />
-              Die Allokation wurde noch nicht freigegeben.
+              {t.workQueue.simulationNote}
             </div>
           )}
         </div>
@@ -1140,7 +1139,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             }}
             size={1}
           >
-            <option value="" disabled>Artikelgruppe</option>
+            <option value="" disabled>{t.workQueue.articleGroup}</option>
             {articleGroups.map(group => (
               <option key={group} value={group}>{group}</option>
             ))}
@@ -1204,10 +1203,10 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               backgroundColor: 'var(--surface-page)'
             }}
           >
-            <option value="">Status (Alle)</option>
-            <option value="Offen">Offen</option>
-            <option value="In Planung">In Planung</option>
-            <option value="Simuliert">Simuliert</option>
+            <option value="">{t.workQueue.statusAll}</option>
+            <option value="Offen">{t.workQueue.open}</option>
+            <option value="In Planung">{t.workQueue.inPlanning}</option>
+            <option value="Simuliert">{t.workQueue.simulated}</option>
             <option value="Allokiert">Allokiert</option>
           </select>
         </div>
@@ -1300,7 +1299,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 fontWeight: 'var(--font-weight-medium)'
               }}
             >
-              Allokationsstatus
+              {t.workQueue.allocationStatus}
             </h3>
           </div>
           
@@ -1382,7 +1381,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 fontWeight: 'var(--font-weight-medium)'
               }}
             >
-              Allokationen nach Monat
+              {t.workQueue.allocationsByMonth}
             </h3>
             
             {/* Toggle */}
@@ -1515,7 +1514,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              {selectedArticles.length} Artikel ausgewählt
+              {selectedArticles.length} {t.workQueue.articlesSelected}
             </span>
             {overCapacitySelectedCount > 0 && (
               <div 
@@ -1527,7 +1526,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 }}
               >
                 <Info size={16} />
-                <span>Hinweis: Die Auswahl enthält Artikel mit möglichem Kapazitätsengpass.</span>
+                <span>{t.workQueue.capacityWarning}</span>
               </div>
             )}
           </div>
@@ -1889,7 +1888,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                         Status
                       </th>
                       <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                        Artikelanzahl
+                        {t.workQueue.articleCount}
                       </th>
                     </tr>
                   </thead>

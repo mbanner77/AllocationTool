@@ -709,6 +709,32 @@ export const translations = {
       hookWall: 'Hakenwand',
       checkoutModule: 'Kassenmodul',
     },
+    // Work Queue Screen
+    workQueue: {
+      title: 'Work Queue',
+      subtitle: 'Manage allocation tasks and create new assignments',
+      initialAllocation: 'Initial Allocation',
+      replenishment: 'Replenishment',
+      manualControl: 'Manual Control',
+      allocationStatus: 'Allokationsstatus',
+      allocationsByMonth: 'Allokationen nach Monat',
+      articleGroup: 'Artikelgruppe',
+      season: 'Saison',
+      capacityEffect: 'Kapazitätswirkung',
+      statusAll: 'Status (Alle)',
+      open: 'Offen',
+      inPlanning: 'In Planung',
+      simulated: 'Simuliert',
+      allocated: 'Allokiert',
+      articlesSelected: 'Artikel ausgewählt',
+      capacityWarning: 'Hinweis: Die Auswahl enthält Artikel mit möglichem Kapazitätsengpass.',
+      articleCount: 'Artikelanzahl',
+      overCapacity: 'Überkapazität',
+      underCapacity: 'Unterfüllung',
+      balanced: 'Ausgeglichen',
+      addAllocation: 'Allokation hinzufügen',
+      simulationNote: 'Für diesen Artikel liegt ein übernommener Simulationsvorschlag vor. Die Allokation wurde noch nicht freigegeben.',
+    },
     // Exceptions Screen
     exceptionsScreen: {
       title: 'Ausnahmen',
@@ -765,18 +791,6 @@ export const translations = {
       addAllocator: 'Allokator hinzufügen',
       editAllocator: 'Allokator bearbeiten',
       editDC: 'Verteilzentrum bearbeiten',
-    },
-    // Store Layout
-    storeLayout: {
-      title: 'Filiallayout & Warenträger',
-      subtitle: 'Visualisieren und planen Sie Verkaufsflächen mit Warenträger-Drag & Drop',
-      fixtures: 'Warenträger',
-      floorPlan: 'Grundriss',
-      addFixture: 'Warenträger hinzufügen',
-      editFixture: 'Warenträger bearbeiten',
-      deleteFixture: 'Warenträger löschen',
-      salesArea: 'Verkaufsfläche',
-      storageArea: 'Lagerfläche',
     },
     // Analytics
     analytics: {
@@ -1523,6 +1537,32 @@ export const translations = {
       hookWall: 'Hook Wall',
       checkoutModule: 'Checkout Module',
     },
+    // Work Queue Screen
+    workQueue: {
+      title: 'Work Queue',
+      subtitle: 'Manage allocation tasks and create new assignments',
+      initialAllocation: 'Initial Allocation',
+      replenishment: 'Replenishment',
+      manualControl: 'Manual Control',
+      allocationStatus: 'Allocation Status',
+      allocationsByMonth: 'Allocations by Month',
+      articleGroup: 'Article Group',
+      season: 'Season',
+      capacityEffect: 'Capacity Effect',
+      statusAll: 'Status (All)',
+      open: 'Open',
+      inPlanning: 'In Planning',
+      simulated: 'Simulated',
+      allocated: 'Allocated',
+      articlesSelected: 'articles selected',
+      capacityWarning: 'Note: Selection contains articles with potential capacity constraints.',
+      articleCount: 'Article Count',
+      overCapacity: 'Over Capacity',
+      underCapacity: 'Under Capacity',
+      balanced: 'Balanced',
+      addAllocation: 'Add Allocation',
+      simulationNote: 'A simulation proposal has been accepted for this article. The allocation has not yet been released.',
+    },
     // Exceptions Screen
     exceptionsScreen: {
       title: 'Exceptions',
@@ -1579,18 +1619,6 @@ export const translations = {
       addAllocator: 'Add Allocator',
       editAllocator: 'Edit Allocator',
       editDC: 'Edit Distribution Center',
-    },
-    // Store Layout
-    storeLayout: {
-      title: 'Store Layout & Fixtures',
-      subtitle: 'Visualize and plan sales areas with fixture drag & drop',
-      fixtures: 'Fixtures',
-      floorPlan: 'Floor Plan',
-      addFixture: 'Add Fixture',
-      editFixture: 'Edit Fixture',
-      deleteFixture: 'Delete Fixture',
-      salesArea: 'Sales Area',
-      storageArea: 'Storage Area',
     },
     // Analytics
     analytics: {
