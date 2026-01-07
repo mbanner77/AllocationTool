@@ -278,6 +278,8 @@ const RUN_TYPE_LABELS = {
 };
 
 export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
+  const [runs, setRuns] = useState<AllocationRun[]>(MOCK_RUNS);
+  const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState<RunArticle | null>(null);
   const [showSizeModal, setShowSizeModal] = useState(false);
   const [sizeModalData, setSizeModalData] = useState<{ title: string; field: string } | null>(null);
@@ -290,14 +292,42 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
   const [filterDateTo, setFilterDateTo] = useState('');
   const [filterUser, setFilterUser] = useState('all');
 
+  // Load runs from dataService
+  useEffect(() => {
+    const loadRuns = async () => {
+      setLoading(true);
+      try {
+        const data = await dataService.getRuns();
+        const mapped: AllocationRun[] = data.map(r => ({
+          id: r.id,
+          type: (r.type || 'initial') as RunType,
+          status: (r.status === 'completed' ? 'Abgeschlossen' : r.status === 'running' ? 'Läuft' : r.status === 'with_exceptions' ? 'Mit Ausnahmen' : 'Geplant') as RunStatus,
+          startDate: r.startDate || new Date().toISOString(),
+          endDate: r.endDate,
+          progress: r.progress || 0,
+          articleCount: r.articleCount || 0,
+          storeCount: r.storeCount || 0,
+          user: r.user || 'System'
+        }));
+        setRuns(mapped);
+      } catch (error) {
+        console.error('Failed to load runs:', error);
+        setRuns(MOCK_RUNS);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadRuns();
+  }, []);
+
   // Get unique users for filter
   const uniqueUsers = useMemo(() => {
-    return Array.from(new Set(MOCK_RUNS.map(run => run.user))).sort();
-  }, []);
+    return Array.from(new Set(runs.map(run => run.user))).sort();
+  }, [runs]);
 
   // Filtered runs
   const filteredRuns = useMemo(() => {
-    return MOCK_RUNS.filter(run => {
+    return runs.filter(run => {
       if (filterType !== 'all' && run.type !== filterType) return false;
       if (filterUser !== 'all' && run.user !== filterUser) return false;
       
