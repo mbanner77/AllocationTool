@@ -194,16 +194,37 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
     }
   };
 
+  // Run database migration
+  const handleMigrateDb = async () => {
+    if (!confirm('Datenbank-Tabellen erstellen? Dies erstellt alle fehlenden Tabellen.')) return;
+    setDbActionLoading('migrate');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/migrate`, { method: 'POST' });
+      const result = await response.json();
+      if (result.success) {
+        alert('Migration erfolgreich! Tabellen wurden erstellt.');
+        loadDbStatus();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
   // Re-seed database
   const handleReseedDb = async () => {
-    if (!confirm('Datenbank neu befüllen? Bestehende Daten bleiben erhalten, fehlende werden ergänzt.')) return;
+    if (!confirm('Testdaten einfügen? Bestehende Daten bleiben erhalten.')) return;
     setDbActionLoading('seed');
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
       const response = await fetch(`${apiUrl}/db/seed`, { method: 'POST' });
       const result = await response.json();
       if (result.success) {
-        alert('Datenbank erfolgreich befüllt!');
+        alert('Testdaten erfolgreich eingefügt!');
         loadDbStatus();
       } else {
         alert('Fehler: ' + result.error);
@@ -990,6 +1011,19 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         </h4>
                         <div className="space-y-3">
                           <button
+                            onClick={handleMigrateDb}
+                            disabled={!dbStatus.connected || dbActionLoading === 'migrate'}
+                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            style={{ 
+                              background: dbStatus.connected ? 'var(--brand-primary)' : 'var(--surface-subtle)', 
+                              color: dbStatus.connected ? 'white' : 'var(--text-muted)',
+                              cursor: dbStatus.connected ? 'pointer' : 'not-allowed'
+                            }}
+                          >
+                            {dbActionLoading === 'migrate' ? <RefreshCw size={16} className="animate-spin" /> : <Table size={16} />}
+                            1. Tabellen erstellen (Migration)
+                          </button>
+                          <button
                             onClick={handleReseedDb}
                             disabled={!dbStatus.connected || dbActionLoading === 'seed'}
                             className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
@@ -1000,7 +1034,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                             }}
                           >
                             {dbActionLoading === 'seed' ? <RefreshCw size={16} className="animate-spin" /> : <Database size={16} />}
-                            Testdaten laden (Seed)
+                            2. Testdaten laden (Seed)
                           </button>
                           <button
                             onClick={handleResetToDefaults}

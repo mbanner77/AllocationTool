@@ -616,11 +616,144 @@ router.get('/db/status', async (req, res) => {
   }
 });
 
+router.post('/db/migrate', async (req, res) => {
+  try {
+    // Run migration inline
+    const migrationSQL = `
+      CREATE TABLE IF NOT EXISTS stores (
+        id VARCHAR(50) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        cluster VARCHAR(50) NOT NULL,
+        region VARCHAR(100),
+        address TEXT,
+        total_capacity DECIMAL(10,2) DEFAULT 0,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS articles (
+        id VARCHAR(50) PRIMARY KEY,
+        article_number VARCHAR(100) UNIQUE NOT NULL,
+        description TEXT,
+        color VARCHAR(50),
+        brand VARCHAR(100),
+        product_group VARCHAR(100),
+        season VARCHAR(50),
+        price DECIMAL(10,2),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS allocation_runs (
+        id VARCHAR(50) PRIMARY KEY,
+        type VARCHAR(20) NOT NULL,
+        status VARCHAR(20) NOT NULL DEFAULT 'planned',
+        start_date TIMESTAMP,
+        end_date TIMESTAMP,
+        article_count INTEGER DEFAULT 0,
+        store_count INTEGER DEFAULT 0,
+        progress INTEGER DEFAULT 0,
+        user_name VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS scenarios (
+        id VARCHAR(50) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        type VARCHAR(50),
+        status VARCHAR(20) DEFAULT 'draft',
+        created_by VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS exceptions (
+        id VARCHAR(50) PRIMARY KEY,
+        type VARCHAR(50) NOT NULL,
+        severity VARCHAR(20) NOT NULL,
+        status VARCHAR(20) DEFAULT 'open',
+        title VARCHAR(255),
+        description TEXT,
+        article VARCHAR(255),
+        category VARCHAR(255),
+        cause TEXT,
+        process VARCHAR(50),
+        source VARCHAR(50),
+        recommended_action TEXT,
+        assigned_to VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS tasks (
+        id VARCHAR(50) PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        type VARCHAR(50),
+        status VARCHAR(20) DEFAULT 'open',
+        priority VARCHAR(20) DEFAULT 'medium',
+        assigned_to VARCHAR(100),
+        due_date TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE IF NOT EXISTS allocation_parameters (
+        id VARCHAR(50) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        category VARCHAR(100),
+        value TEXT,
+        unit VARCHAR(50),
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    
+    await query(migrationSQL);
+    res.json({ success: true, message: 'Migration completed successfully' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 router.post('/db/seed', async (req, res) => {
   try {
-    // Re-run seed script
-    const { execSync } = require('child_process');
-    execSync('node dist/db/seed.js', { cwd: process.cwd() });
+    // Insert seed data inline
+    const seedSQL = `
+      INSERT INTO stores (id, name, cluster, region, total_capacity, is_active) VALUES
+        ('STR-001', 'Zürich Bahnhofstrasse', 'Urban Premium', 'Zürich', 450, true),
+        ('STR-002', 'Basel City Center', 'Urban Premium', 'Basel', 380, true),
+        ('STR-003', 'Bern Marktgasse', 'Urban Standard', 'Bern', 320, true),
+        ('STR-004', 'Genf Rue du Rhône', 'Urban Premium', 'Genf', 420, true),
+        ('STR-005', 'Luzern Altstadt', 'Urban Standard', 'Luzern', 280, true)
+      ON CONFLICT (id) DO NOTHING;
+      
+      INSERT INTO exceptions (id, type, severity, status, title, description, article, category, cause, process, source, recommended_action) VALUES
+        ('EXC-001', 'overcapacity', 'critical', 'open', 'Überkapazität Running Shoes', 'SOLL-Kapazität wird um 23% überschritten', 'ART-10245 - Running Shoes Elite', 'Shoes › Running', 'Cluster Urban Premium überbucht', 'initial', 'simulation', 'Liefertermin verschieben'),
+        ('EXC-002', 'lot-conflict', 'blocking', 'open', 'LOT-Konflikt Casual Jacket', 'Nur 4 von 6 Größen verfügbar', 'ART-10892 - Casual Jacket Spring', 'Apparel › Jackets', 'LOT-Zwang verletzt', 'initial', 'planning', 'Artikel entfernen oder Größen beschaffen'),
+        ('EXC-003', 'delivery-conflict', 'critical', 'in_progress', 'Liefertermin-Konflikt', '3 Kollektionen in KW 15', 'ART-11234 - Summer Dress', 'Apparel › Dresses', 'Zeitliche Verdichtung', 'replenishment', 'simulation', 'Liefertermin verschieben'),
+        ('EXC-004', 'undercapacity', 'info', 'resolved', 'Unterauslastung Accessories', 'Nur 78% Auslastung', 'Kategorie: Accessories', 'Accessories', 'Geringe Nachfrage', 'initial', 'planning', 'Zusätzliche Artikel einplanen')
+      ON CONFLICT (id) DO NOTHING;
+      
+      INSERT INTO tasks (id, title, type, status, priority, assigned_to, description) VALUES
+        ('TSK-001', 'Kapazitätsplanung Q2', 'planning', 'in_progress', 'high', 'Maria Müller', 'Quartalsplanung durchführen'),
+        ('TSK-002', 'Exception Review', 'review', 'open', 'medium', 'Thomas Schmidt', 'Offene Exceptions prüfen'),
+        ('TSK-003', 'Cluster-Optimierung', 'optimization', 'open', 'low', NULL, 'Store-Cluster analysieren')
+      ON CONFLICT (id) DO NOTHING;
+      
+      INSERT INTO allocation_runs (id, type, status, start_date, article_count, store_count, progress, user_name) VALUES
+        ('RUN-001', 'initial', 'completed', '2026-01-05 09:00:00', 145, 12, 100, 'Maria Müller'),
+        ('RUN-002', 'replenishment', 'running', '2026-01-07 08:30:00', 89, 8, 65, 'Thomas Schmidt'),
+        ('RUN-003', 'initial', 'planned', NULL, 0, 0, 0, 'Anna Weber')
+      ON CONFLICT (id) DO NOTHING;
+    `;
+    
+    await query(seedSQL);
     res.json({ success: true, message: 'Database seeded successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
