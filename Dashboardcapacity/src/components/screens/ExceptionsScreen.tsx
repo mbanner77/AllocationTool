@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   ChevronRight, X, AlertTriangle, AlertCircle, Info, 
   ExternalLink, CheckCircle, Clock, ArrowRight, TrendingUp,
@@ -6,6 +6,7 @@ import {
   User, BarChart3, Filter, Search
 } from 'lucide-react';
 import type { Screen } from '../../App';
+import { dataService, Exception as ServiceException } from '../../services/dataService';
 
 interface ExceptionsScreenProps {
   onNavigate: (screen: Screen) => void;
