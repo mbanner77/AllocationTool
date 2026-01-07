@@ -575,4 +575,72 @@ router.get('/data-manager/export/:entityName', async (req, res) => {
   }
 });
 
+// ============ Database Status & Management ============
+
+router.get('/db/status', async (req, res) => {
+  try {
+    // Test database connection
+    const dbTest = await query('SELECT NOW() as time, current_database() as database');
+    
+    // Get table row counts
+    const tables = ['stores', 'articles', 'allocation_runs', 'scenarios', 'exceptions', 'tasks', 'allocation_parameters'];
+    const tableCounts: Record<string, number> = {};
+    
+    for (const table of tables) {
+      try {
+        const result = await query(`SELECT COUNT(*) as count FROM ${table}`);
+        tableCounts[table] = parseInt(result[0]?.count || '0');
+      } catch {
+        tableCounts[table] = -1; // Table doesn't exist
+      }
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        connected: true,
+        database: dbTest[0]?.database,
+        serverTime: dbTest[0]?.time,
+        tables: tableCounts,
+        environment: process.env.NODE_ENV || 'development'
+      }
+    });
+  } catch (error: any) {
+    res.json({
+      success: false,
+      data: {
+        connected: false,
+        error: error.message
+      }
+    });
+  }
+});
+
+router.post('/db/seed', async (req, res) => {
+  try {
+    // Re-run seed script
+    const { execSync } = require('child_process');
+    execSync('node dist/db/seed.js', { cwd: process.cwd() });
+    res.json({ success: true, message: 'Database seeded successfully' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/db/truncate/:table', async (req, res) => {
+  const allowedTables = ['allocation_runs', 'scenarios', 'exceptions', 'tasks'];
+  const table = req.params.table;
+  
+  if (!allowedTables.includes(table)) {
+    return res.status(400).json({ success: false, error: 'Table not allowed for truncation' });
+  }
+  
+  try {
+    await query(`DELETE FROM ${table}`);
+    res.json({ success: true, message: `Table ${table} cleared` });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;

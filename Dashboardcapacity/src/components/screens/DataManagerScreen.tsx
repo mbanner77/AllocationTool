@@ -73,6 +73,16 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
   const [loadingData, setLoadingData] = useState(false);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [editJson, setEditJson] = useState('');
+  const [dbStatus, setDbStatus] = useState<{
+    connected: boolean;
+    database?: string;
+    serverTime?: string;
+    tables?: Record<string, number>;
+    environment?: string;
+    error?: string;
+    loading: boolean;
+  }>({ connected: false, loading: true });
+  const [dbActionLoading, setDbActionLoading] = useState<string | null>(null);
 
   // Load entity data based on selected entity
   const loadEntityData = async (entityName: string) => {
@@ -140,8 +150,68 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
     }
   };
 
+  // Load database status
+  const loadDbStatus = async () => {
+    setDbStatus(prev => ({ ...prev, loading: true }));
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/status`);
+      const result = await response.json();
+      if (result.success) {
+        setDbStatus({ ...result.data, loading: false });
+      } else {
+        setDbStatus({ connected: false, error: result.data?.error || 'Connection failed', loading: false });
+      }
+    } catch (error: any) {
+      setDbStatus({ connected: false, error: error.message, loading: false });
+    }
+  };
+
+  // Re-seed database
+  const handleReseedDb = async () => {
+    if (!confirm('Datenbank neu befüllen? Bestehende Daten bleiben erhalten, fehlende werden ergänzt.')) return;
+    setDbActionLoading('seed');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/seed`, { method: 'POST' });
+      const result = await response.json();
+      if (result.success) {
+        alert('Datenbank erfolgreich befüllt!');
+        loadDbStatus();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
+  // Clear a specific table
+  const handleClearTable = async (table: string) => {
+    if (!confirm(`Tabelle "${table}" wirklich leeren? Diese Aktion kann nicht rückgängig gemacht werden.`)) return;
+    setDbActionLoading(`clear-${table}`);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+      const response = await fetch(`${apiUrl}/db/truncate/${table}`, { method: 'POST' });
+      const result = await response.json();
+      if (result.success) {
+        alert(`Tabelle "${table}" wurde geleert.`);
+        loadDbStatus();
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error: any) {
+      alert('Fehler: ' + error.message);
+    } finally {
+      setDbActionLoading(null);
+    }
+  };
+
   useEffect(() => {
     loadConfigs();
+    loadDbStatus();
   }, []);
 
   useEffect(() => {
@@ -768,32 +838,67 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                 {/* DB Management Tab */}
                 {activeTab === 'db' && (
                   <div>
-                    <h3 className="mb-4" style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                      <HardDrive size={18} className="inline mr-2" />
-                      Datenbank-Verwaltung
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                        <HardDrive size={18} className="inline mr-2" />
+                        Datenbank-Verwaltung
+                      </h3>
+                      <button
+                        onClick={loadDbStatus}
+                        disabled={dbStatus.loading}
+                        className="px-3 py-1.5 rounded-lg flex items-center gap-2"
+                        style={{ background: 'var(--surface-subtle)', border: '1px solid var(--border-default)' }}
+                      >
+                        <RefreshCw size={14} className={dbStatus.loading ? 'animate-spin' : ''} />
+                        Aktualisieren
+                      </button>
+                    </div>
                     
                     <div className="grid grid-cols-2 gap-6">
-                      {/* Reset Data */}
-                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                      {/* Database Connection Status */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: `1px solid ${dbStatus.connected ? 'var(--status-success)' : 'var(--status-danger)'}` }}>
                         <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                          <RotateCw size={18} style={{ color: 'var(--status-warning)' }} />
-                          Daten zurücksetzen
+                          <Database size={18} style={{ color: dbStatus.connected ? 'var(--status-success)' : 'var(--status-danger)' }} />
+                          PostgreSQL Datenbank
                         </h4>
-                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
-                          Setzt alle lokalen Daten auf die Standardwerte zurück. Dies betrifft alle Entitäten.
-                        </p>
-                        <button
-                          onClick={handleResetToDefaults}
-                          className="px-4 py-2 rounded-lg flex items-center gap-2"
-                          style={{ background: 'var(--status-warning)', color: 'white' }}
-                        >
-                          <RotateCcw size={16} />
-                          Auf Standardwerte zurücksetzen
-                        </button>
+                        {dbStatus.loading ? (
+                          <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
+                            <RefreshCw size={14} className="animate-spin" /> Verbindung wird geprüft...
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                            <div className="flex justify-between mb-2">
+                              <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                              <span className="flex items-center gap-1" style={{ color: dbStatus.connected ? 'var(--status-success)' : 'var(--status-danger)' }}>
+                                {dbStatus.connected ? <><CheckCircle size={14} /> Verbunden</> : <><XCircle size={14} /> Nicht verbunden</>}
+                              </span>
+                            </div>
+                            {dbStatus.connected && (
+                              <>
+                                <div className="flex justify-between mb-2">
+                                  <span style={{ color: 'var(--text-muted)' }}>Datenbank:</span>
+                                  <span className="font-mono">{dbStatus.database}</span>
+                                </div>
+                                <div className="flex justify-between mb-2">
+                                  <span style={{ color: 'var(--text-muted)' }}>Umgebung:</span>
+                                  <span>{dbStatus.environment}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span style={{ color: 'var(--text-muted)' }}>Server-Zeit:</span>
+                                  <span>{dbStatus.serverTime ? new Date(dbStatus.serverTime).toLocaleString('de-CH') : '-'}</span>
+                                </div>
+                              </>
+                            )}
+                            {dbStatus.error && (
+                              <div className="mt-2 p-2 rounded" style={{ background: 'var(--status-danger-light)', color: 'var(--status-danger)', fontSize: 'var(--font-size-xs)' }}>
+                                Fehler: {dbStatus.error}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
 
-                      {/* Connection Info */}
+                      {/* API Connection Info */}
                       <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
                         <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
                           <Globe size={18} style={{ color: 'var(--status-info)' }} />
@@ -802,26 +907,90 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         <div style={{ fontSize: 'var(--font-size-sm)' }}>
                           <div className="flex justify-between mb-2">
                             <span style={{ color: 'var(--text-muted)' }}>API URL:</span>
-                            <span className="font-mono">{import.meta.env.VITE_API_URL || 'localhost:3002'}</span>
+                            <span className="font-mono text-xs">{import.meta.env.VITE_API_URL || 'localhost:3002'}</span>
                           </div>
                           <div className="flex justify-between mb-2">
-                            <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-                            <span className="flex items-center gap-1" style={{ color: 'var(--status-success)' }}>
-                              <CheckCircle size={14} /> Verbunden (Fallback)
+                            <span style={{ color: 'var(--text-muted)' }}>Modus:</span>
+                            <span style={{ color: dbStatus.connected ? 'var(--status-success)' : 'var(--status-warning)' }}>
+                              {dbStatus.connected ? 'Live-Datenbank' : 'Fallback (localStorage)'}
                             </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span style={{ color: 'var(--text-muted)' }}>Speicher:</span>
-                            <span>localStorage</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Storage Info */}
+                      {/* Table Statistics */}
                       <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
                         <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                          <Database size={18} style={{ color: 'var(--brand-primary)' }} />
-                          Lokaler Speicher
+                          <Table size={18} style={{ color: 'var(--brand-primary)' }} />
+                          Tabellen-Statistik
+                        </h4>
+                        {dbStatus.tables ? (
+                          <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                            <div className="space-y-2">
+                              {Object.entries(dbStatus.tables).map(([table, count]) => (
+                                <div key={table} className="flex justify-between items-center">
+                                  <span style={{ color: 'var(--text-muted)' }}>{table}:</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-mono">{count === -1 ? '—' : count}</span>
+                                    {count > 0 && ['allocation_runs', 'scenarios', 'exceptions', 'tasks'].includes(table) && (
+                                      <button
+                                        onClick={() => handleClearTable(table)}
+                                        disabled={dbActionLoading === `clear-${table}`}
+                                        className="p-1 rounded hover:bg-red-100"
+                                        style={{ color: 'var(--status-danger)' }}
+                                        title="Tabelle leeren"
+                                      >
+                                        {dbActionLoading === `clear-${table}` ? <RefreshCw size={12} className="animate-spin" /> : <Trash2 size={12} />}
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+                            {dbStatus.loading ? 'Wird geladen...' : 'Keine Verbindung zur Datenbank'}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Database Actions */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <Settings size={18} style={{ color: 'var(--status-warning)' }} />
+                          Datenbank-Aktionen
+                        </h4>
+                        <div className="space-y-3">
+                          <button
+                            onClick={handleReseedDb}
+                            disabled={!dbStatus.connected || dbActionLoading === 'seed'}
+                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            style={{ 
+                              background: dbStatus.connected ? 'var(--status-info)' : 'var(--surface-subtle)', 
+                              color: dbStatus.connected ? 'white' : 'var(--text-muted)',
+                              cursor: dbStatus.connected ? 'pointer' : 'not-allowed'
+                            }}
+                          >
+                            {dbActionLoading === 'seed' ? <RefreshCw size={16} className="animate-spin" /> : <Database size={16} />}
+                            Testdaten laden (Seed)
+                          </button>
+                          <button
+                            onClick={handleResetToDefaults}
+                            className="w-full px-4 py-2 rounded-lg flex items-center gap-2 justify-center"
+                            style={{ background: 'var(--status-warning)', color: 'white' }}
+                          >
+                            <RotateCcw size={16} />
+                            Lokale Daten zurücksetzen
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Local Storage Info */}
+                      <div style={{ padding: 'var(--space-4)', background: 'var(--surface-page)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <h4 className="flex items-center gap-2 mb-3" style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          <HardDrive size={18} style={{ color: 'var(--text-muted)' }} />
+                          Lokaler Speicher (Browser)
                         </h4>
                         <div style={{ fontSize: 'var(--font-size-sm)' }}>
                           <div className="space-y-1">
@@ -835,7 +1004,9 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                             }).map(([label, key]) => (
                               <div key={key} className="flex justify-between">
                                 <span style={{ color: 'var(--text-muted)' }}>{label}:</span>
-                                <span>{localStorage.getItem(key) ? 'Vorhanden' : 'Leer'}</span>
+                                <span style={{ color: localStorage.getItem(key) ? 'var(--status-success)' : 'var(--text-muted)' }}>
+                                  {localStorage.getItem(key) ? 'Vorhanden' : 'Leer'}
+                                </span>
                               </div>
                             ))}
                           </div>
