@@ -194,6 +194,7 @@ const FORECAST_TREND = [
 ];
 
 export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
+  const { t } = useLanguage();
   const [selectedScenario, setSelectedScenario] = useState('fs25-initial');
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(MOCK_VARIANTS[1]);
   const [activeTab, setActiveTab] = useState<'overview' | 'capacity' | 'forecast' | 'exceptions'>('overview');

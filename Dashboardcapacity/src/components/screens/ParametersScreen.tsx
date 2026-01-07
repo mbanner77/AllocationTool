@@ -490,6 +490,7 @@ const SOURCE_LABELS = {
 };
 
 export function ParametersScreen() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabKey>('capacity');
   const [parameters, setParameters] = useState<Parameter[]>(MOCK_PARAMETERS);
   const [loading, setLoading] = useState(true);

@@ -202,6 +202,7 @@ const ANALYTICS_TABLE_DATA: AnalyticsData[] = [
 ];
 
 export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
+  const { t } = useLanguage();
   // Filter states
   const [filterSeason, setFilterSeason] = useState('all');
   const [filterProcess, setFilterProcess] = useState('all');

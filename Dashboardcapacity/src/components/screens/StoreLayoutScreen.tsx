@@ -239,6 +239,7 @@ const ZONES: Zone[] = [
 ];
 
 export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
+  const { t } = useLanguage();
   const [selectedStore, setSelectedStore] = useState<string>(MOCK_STORES[0].id);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showKIModal, setShowKIModal] = useState(false);

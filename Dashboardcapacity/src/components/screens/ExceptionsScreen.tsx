@@ -216,7 +216,8 @@ const MOCK_EXCEPTIONS: Exception[] = [
 ];
 
 export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
-  const [exceptions, setExceptions] = useState<Exception[]>([]);
+  const { t } = useLanguage();
+  const [exceptions, setExceptions] = useState<Exception[]>(MOCK_EXCEPTIONS);
   const [loading, setLoading] = useState(true);
   const [selectedFilters, setSelectedFilters] = useState({
     process: [] as ProcessContext[],
