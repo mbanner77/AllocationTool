@@ -432,7 +432,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'articleCount', 
-        label: 'Anzahl Artikel',
+        label: t.runs.articleCount,
         align: 'right',
         sortable: true,
         render: (value) => (
@@ -517,7 +517,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Allokationsprozess
+                {t.runs.allocationProcess}
               </label>
               <select
                 id="filterType"
@@ -530,10 +530,10 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">Alle Typen</option>
-                <option value="initial">Initiale Allokation</option>
-                <option value="replenishment">Nachschub</option>
-                <option value="manual">Manuelle Einsteuerung</option>
+                <option value="all">{t.runs.allTypes}</option>
+                <option value="initial">{t.runs.initialAllocation}</option>
+                <option value="replenishment">{t.runs.replenishment}</option>
+                <option value="manual">{t.runs.manualAllocation}</option>
               </select>
             </div>
 
@@ -548,7 +548,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Datum von
+                {t.runs.dateFrom}
               </label>
               <input
                 type="date"
@@ -575,7 +575,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Datum bis
+                {t.runs.dateTo}
               </label>
               <input
                 type="date"
@@ -602,7 +602,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Benutzer
+                {t.runs.user}
               </label>
               <select
                 id="filterUser"
@@ -615,7 +615,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">Alle Benutzer</option>
+                <option value="all">{t.runs.allUsers}</option>
                 {uniqueUsers.map(user => (
                   <option key={user} value={user}>{user}</option>
                 ))}
@@ -641,7 +641,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                Filter zurücksetzen
+                {t.runs.resetFilter}
               </button>
             </div>
           )}
@@ -649,7 +649,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
 
         {/* Results Count */}
         <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-          {filteredRuns.length} {filteredRuns.length === 1 ? 'Lauf' : 'Läufe'} gefunden
+          {filteredRuns.length} {filteredRuns.length === 1 ? t.runs.run : t.runs.runs} gefunden
         </div>
 
         {/* Runs Table */}
@@ -684,38 +684,38 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     const totalVZBestand = 2400; // VZ-Bestand (central warehouse)
 
     const aggregatedData = [
-      { name: 'Filialbestand gesamt', value: totalCurrentStock },
-      { name: 'Sollbestand gesamt', value: totalTargetStock },
-      { name: 'Allokationsmenge', value: totalAllocated },
-      { name: 'Über-/Unterdeckung', value: totalOverUnder },
-      { name: 'Bedarf', value: totalDemand },
-      { name: 'VZ-Bestand', value: totalVZBestand }
+      { name: t.runs.totalCurrentStock, value: totalCurrentStock },
+      { name: t.runs.totalTargetStock, value: totalTargetStock },
+      { name: t.runs.totalAllocated, value: totalAllocated },
+      { name: t.runs.totalOverUnder, value: totalOverUnder },
+      { name: t.runs.totalDemand, value: totalDemand },
+      { name: t.runs.totalVZBestand, value: totalVZBestand }
     ];
 
     // Segmented data: each metric broken down by size
     const segmentedData = [
       { 
-        name: 'Filialbestand gesamt',
+        name: t.runs.totalCurrentStock,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: size.currentStock }), {})
       },
       { 
-        name: 'Sollbestand gesamt',
+        name: t.runs.totalTargetStock,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: size.targetStock }), {})
       },
       { 
-        name: 'Allokationsmenge',
+        name: t.runs.totalAllocated,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: size.allocatedQuantity }), {})
       },
       { 
-        name: 'Über-/Unterdeckung',
+        name: t.runs.totalOverUnder,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: size.allocatedQuantity - size.demand }), {})
       },
       { 
-        name: 'Bedarf',
+        name: t.runs.totalDemand,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: size.demand }), {})
       },
       { 
-        name: 'VZ-Bestand',
+        name: t.runs.totalVZBestand,
         ...MOCK_SIZE_DETAILS.reduce((acc, size) => ({ ...acc, [size.size]: 200 }), {})
       }
     ];
@@ -745,22 +745,22 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     const storeColumns: Column<StoreAllocation>[] = [
       { 
         key: 'storeName', 
-        label: 'Filiale',
+        label: t.runs.store,
         sortable: true,
         render: (value) => (
           <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{value}</span>
         )
       },
-      { key: 'storeDescription', label: 'Filialbeschreibung' },
+      { key: 'storeDescription', label: t.runs.storeDescription },
       { 
         key: 'allocatedQuantity', 
-        label: 'Allokationsmenge',
+        label: t.runs.allocatedQuantity,
         align: 'right',
         sortable: true,
         render: (value) => (
           <button
             onClick={() => {
-              setSizeModalData({ title: 'Allokationsmenge', field: 'allocatedQuantity' });
+              setSizeModalData({ title: t.runs.allocatedQuantity, field: 'allocatedQuantity' });
               setShowSizeModal(true);
             }}
             className="hover:underline cursor-pointer"
@@ -775,13 +775,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'demand', 
-        label: 'Bedarf',
+        label: t.runs.demand,
         align: 'right',
         sortable: true,
         render: (value) => (
           <button
             onClick={() => {
-              setSizeModalData({ title: 'Bedarf', field: 'demand' });
+              setSizeModalData({ title: t.runs.demand, field: 'demand' });
               setShowSizeModal(true);
             }}
             className="hover:underline cursor-pointer"
@@ -796,13 +796,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'overUnder', 
-        label: 'Über-/Unterdeckung',
+        label: t.runs.overUnder,
         align: 'right',
         sortable: true,
         render: (value) => (
           <button
             onClick={() => {
-              setSizeModalData({ title: 'Über-/Unterdeckung', field: 'overUnder' });
+              setSizeModalData({ title: t.runs.overUnder, field: 'overUnder' });
               setShowSizeModal(true);
             }}
             className="hover:underline cursor-pointer"
@@ -817,13 +817,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'targetStock', 
-        label: 'Sollbestand',
+        label: t.runs.targetStock,
         align: 'right',
         sortable: true,
         render: (value) => (
           <button
             onClick={() => {
-              setSizeModalData({ title: 'Sollbestand', field: 'targetStock' });
+              setSizeModalData({ title: t.runs.targetStock, field: 'targetStock' });
               setShowSizeModal(true);
             }}
             className="hover:underline cursor-pointer"
@@ -838,13 +838,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'currentStock', 
-        label: 'Filialbestand',
+        label: t.runs.currentStock,
         align: 'right',
         sortable: true,
         render: (value) => (
           <button
             onClick={() => {
-              setSizeModalData({ title: 'Filialbestand', field: 'currentStock' });
+              setSizeModalData({ title: t.runs.currentStock, field: 'currentStock' });
               setShowSizeModal(true);
             }}
             className="hover:underline cursor-pointer"
@@ -859,7 +859,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'salesLast2Weeks', 
-        label: 'Umsatz letzte 2 Wochen',
+        label: t.runs.salesLast2Weeks,
         align: 'right',
         sortable: true
       }
@@ -874,7 +874,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
           style={{ color: 'var(--text-muted)' }}
         >
           <ChevronLeft size={20} />
-          <span>Zurück zum Allokationslauf</span>
+          <span>{t.runs.backToRun}</span>
         </button>
 
         {/* Header */}
@@ -886,7 +886,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
               marginBottom: 'var(--space-2)'
             }}
           >
-            Artikel – Allokationsdetails
+            {t.runs.articleDetails}
           </h1>
         </div>
 
