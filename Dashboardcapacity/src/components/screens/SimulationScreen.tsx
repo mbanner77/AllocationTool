@@ -67,6 +67,7 @@ const SEVERITY_CONFIG = {
 };
 
 export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRelease }: SimulationScreenProps) {
+  const { t } = useLanguage();
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>('planned');
   const [isSimulating, setIsSimulating] = useState(false);
   const [customDeliveryFrom, setCustomDeliveryFrom] = useState('');
@@ -233,7 +234,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
       {/* Breadcrumb */}
       <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--surface-page)' }}>
         <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-          Arbeitsvorrat › Simulation – Initiale Allokation
+          {t.simulationScreen.breadcrumb}
         </div>
       </div>
       
@@ -247,14 +248,14 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}
           >
             <ChevronLeft size={16} />
-            Zurück zum Arbeitsvorrat
+            {t.simulationScreen.backToWorkQueue}
           </button>
           
           <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-            Simulation – Initiale Allokation
+            {t.simulationScreen.simulationTitle}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            Bewertung der kapazitiven und zeitlichen Wirkung der ausgewählten Artikel
+            {t.simulationScreen.description}
           </p>
         </div>
         
@@ -302,10 +303,10 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                Szenario
+                {t.simulationScreen.scenario}
               </div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                Initiale Allokation
+                {t.simulationScreen.initialAllocation}
               </div>
             </div>
           </div>
@@ -449,7 +450,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             }}
           >
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-              IST-Auslastung (nach Simulation)
+              {t.simulationScreen.actualUtilization}
             </div>
             <div 
               style={{ 
@@ -471,13 +472,13 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             }}
           >
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-              SOLL-Auslastung
+              {t.simulationScreen.targetUtilization}
             </div>
             <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
               {simulationResults.targetUtilization}%
             </div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              Kapazitätsplanung
+              {t.simulationScreen.capacityPlanning}
             </div>
           </div>
           
@@ -502,7 +503,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
               {simulationResults.deviation > 0 ? '+' : ''}{simulationResults.deviation}%
             </div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              {simulationResults.deviation > 0 ? 'Überkapazität' : simulationResults.deviation < 0 ? 'Untererfüllung' : 'Ausgeglichen'}
+              {simulationResults.deviation > 0 ? t.simulationScreen.overCapacity : simulationResults.deviation < 0 ? t.simulationScreen.underCapacity : t.simulationScreen.balanced}
             </div>
           </div>
           
@@ -515,13 +516,13 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             }}
           >
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-              Betroffene Stores
+              {t.simulationScreen.affectedStores}
             </div>
             <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
               {simulationResults.affectedStores}
             </div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              Stores außerhalb SOLL-Rahmen
+              {t.simulationScreen.storesOutsideTarget}
             </div>
           </div>
         </div>
@@ -538,7 +539,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             }}
           >
             <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-3)' }}>
-              Kapazitätswirkung nach Simulation
+              {t.simulationScreen.capacityImpact}
             </h3>
             
             <ResponsiveContainer width="100%" height={250} minHeight={250}>
@@ -587,7 +588,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
             style={{ backgroundColor: 'var(--surface-page)', borderColor: 'var(--border-default)' }}
           >
             <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-3)' }}>
-              Auffälligkeiten aus der Simulation
+              {t.simulationScreen.issuesFromSimulation}
             </h3>
             
             <div className="space-y-2">
@@ -658,7 +659,7 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
                     Kapazitätswirkung
                   </th>
                   <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)' }}>
-                    Liefertermin (Simulation)
+                    {t.simulationScreen.deliveryDateSimulation}
                   </th>
                 </tr>
               </thead>
@@ -740,49 +741,6 @@ export function SimulationScreen({ articles, onBack, onAccept, onDiscard, onRele
           className="px-4 py-2 rounded-lg border"
           style={{
             backgroundColor: 'var(--button-secondary-bg)',
-            borderColor: 'var(--button-secondary-border)',
-            color: 'var(--button-secondary-text)',
-            height: 'var(--height-button-md)'
-          }}
-        >
-          Zurück zum Arbeitsvorrat
-        </button>
-        
-        <button
-          onClick={onDiscard}
-          className="px-4 py-2 rounded-lg border"
-          style={{
-            backgroundColor: 'var(--button-secondary-bg)',
-            borderColor: 'var(--button-secondary-border)',
-            color: 'var(--button-secondary-text)',
-            height: 'var(--height-button-md)'
-          }}
-        >
-          Simulation verwerfen
-        </button>
-        
-        <button
-          onClick={() => {
-            if (deliveryOption === 'custom' && customDeliveryFrom && customDeliveryTo) {
-              onAccept(deliveryOption, { from: customDeliveryFrom, to: customDeliveryTo });
-            } else {
-              onAccept(deliveryOption);
-            }
-          }}
-          className="px-4 py-2 rounded-lg"
-          style={{
-            backgroundColor: 'var(--button-primary-bg)',
-            color: 'var(--button-primary-text)',
-            height: 'var(--height-button-md)'
-          }}
-        >
-          Simulation übernehmen
-        </button>
-        
-        <button
-          onClick={onRelease}
-          className="px-4 py-2 rounded-lg"
-          style={{
             backgroundColor: 'var(--brand-primary)',
             color: 'var(--text-inverse)',
             height: 'var(--height-button-md)',
