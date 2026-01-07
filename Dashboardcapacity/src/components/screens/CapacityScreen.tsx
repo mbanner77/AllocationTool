@@ -837,7 +837,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               opacity: hasChanges ? 1 : 0.5
             }}
           >
-            Änderungen übernehmen
+            {t.actions.apply}
           </button>
         </div>
       </div>
@@ -1661,7 +1661,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Abbrechen
+                {t.actions.cancel}
               </button>
               <button
                 onClick={handleApplyProductSelection}
@@ -1803,7 +1803,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Abbrechen
+                {t.actions.cancel}
               </button>
               <button
                 onClick={() => handleApplyForecast(prognoseDetails.id)}
@@ -1814,7 +1814,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Prognosewert übernehmen
+                {t.actions.apply}
               </button>
             </div>
           </div>
@@ -1853,7 +1853,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               height: 'var(--height-button-md)'
             }}
           >
-            Änderungen übernehmen
+            {t.actions.apply}
           </button>
         </div>
       )}
