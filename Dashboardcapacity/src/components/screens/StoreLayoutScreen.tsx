@@ -658,11 +658,11 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
       {/* Tabs Navigation */}
       <Tabs defaultValue="layout" className="flex-1 flex flex-col min-h-0">
         <TabsList style={{ width: 'fit-content', marginBottom: 'var(--space-6)' }}>
-          <TabsTrigger value="layout">Layout & Warenträger</TabsTrigger>
-          <TabsTrigger value="analysis">Sortimentsverteilung (Analyse)</TabsTrigger>
+          <TabsTrigger value="layout">{t.storeLayout.tabLayout}</TabsTrigger>
+          <TabsTrigger value="analysis">{t.storeLayout.tabAnalysis}</TabsTrigger>
         </TabsList>
 
-        {/* Tab: Layout & Warenträger */}
+        {/* Tab: Layout & Fixtures */}
         <TabsContent value="layout" className="flex-1 flex flex-col min-h-0 mt-0">
           {/* Control Card */}
           <div 
@@ -754,7 +754,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                 </div>
                 <div className="text-center">
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Kapazitätswirkung
+                    {t.storeLayout.capacityEffect}
                   </div>
                   <div 
                     style={{ 
@@ -814,7 +814,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                     marginBottom: 'var(--space-3)'
                   }}
                 >
-                  Warenträger
+                  {t.storeLayout.fixtures}
                 </h3>
                 <div className="space-y-2">
                   {FIXTURES.map(fixture => (
@@ -844,7 +844,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                         </span>
                       </div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                        Kapazität: {fixture.capacity} m²
+                        {t.storeLayout.capacity}: {fixture.capacity} m²
                       </div>
                       {fixture.preferredCategory && (
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -1007,7 +1007,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                       pointerEvents: 'none'
                     }}
                   >
-                    Ziehen Sie Warenträger aus der linken Palette auf die Fläche
+                    {t.storeLayout.dragFixtureHint}
                   </div>
                 )}
 
@@ -1038,7 +1038,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                               <div style={{ fontSize: 'var(--font-size-sm)' }}>{fixture.fixtureType}</div>
                             </div>
                             <div>
-                              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Kapazität</div>
+                              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.storeLayout.capacity}</div>
                               <div style={{ fontSize: 'var(--font-size-sm)' }}>{fixture.capacity} m²</div>
                             </div>
                             <div>
@@ -1080,7 +1080,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
               >
                 <div className="p-4 border-b" style={{ borderColor: 'var(--border-default)' }}>
                   <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}>
-                    Warenträgerübersicht
+                    {t.storeLayout.fixtureOverview}
                   </h3>
                 </div>
                 <div className="overflow-x-auto">
@@ -1088,7 +1088,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                     <thead>
                       <tr style={{ backgroundColor: 'var(--surface-alt)', borderBottom: '1px solid var(--border-default)' }}>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                          Warenträger-Typ
+                          {t.storeLayout.fixtureType}
                         </th>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                           Anzahl
@@ -1108,7 +1108,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                       {fixtureStats.length === 0 ? (
                         <tr>
                           <td colSpan={5} className="text-center p-6" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                            Keine Warenträger platziert
+                            {t.storeLayout.noFixturesPlaced}
                           </td>
                         </tr>
                       ) : (
@@ -1151,10 +1151,10 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                 <Info size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginTop: '2px' }} />
                 <div>
                   <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: '2px' }}>
-                    Integration mit Kapazitätsplanung
+                    {t.storeLayout.integrationNote}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                    Dieses Layout bestimmt die IST-Kapazität der Filiale und fließt direkt in Simulation, Allokation und Prognose ein.
+                    {t.storeLayout.integrationDesc}
                   </div>
                 </div>
               </div>
@@ -1167,7 +1167,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
               <DialogHeader>
                 <DialogTitle>Grundriss importieren</DialogTitle>
                 <DialogDescription>
-                  Laden Sie einen Grundriss hoch, um das Layout automatisch zu erkennen
+                  {t.storeLayout.uploadFloorplanHint}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
@@ -1270,7 +1270,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                       color: 'var(--text-secondary)',
                     }}
                   >
-                    Der KI-Vorschlag dient als Ausgangspunkt. Sie können jeden Warenträger individuell anpassen.
+                    {t.storeLayout.aiHint}
                   </div>
                 </div>
               </div>
