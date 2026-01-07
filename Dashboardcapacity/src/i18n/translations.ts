@@ -561,6 +561,23 @@ export const translations = {
       // Actions
       newParameter: 'Neuen Parameter anlegen',
       parameterCount: 'Parameter',
+      // Status options
+      allStatus: 'Alle Status',
+      active: 'Aktiv',
+      inactive: 'Inaktiv',
+      overridden: 'Überschrieben',
+      inherited: 'Geerbt',
+      inheritedFrom: 'Geerbt von',
+      // Source labels
+      directlyManaged: 'Direkt gepflegt',
+      inheritedSource: 'Geerbt',
+      defaultSystem: 'Default-Systemwert',
+      // Hierarchy levels
+      company: 'Unternehmen',
+      division: 'Einkaufsbereich',
+      categoryLevel: 'Warengruppe',
+      productGroup: 'Produktgruppe',
+      article: 'Artikel',
     },
     // Store Layout
     storeLayout: {
@@ -1171,6 +1188,23 @@ export const translations = {
       // Actions
       newParameter: 'Create New Parameter',
       parameterCount: 'Parameters',
+      // Status options
+      allStatus: 'All Status',
+      active: 'Active',
+      inactive: 'Inactive',
+      overridden: 'Overridden',
+      inherited: 'Inherited',
+      inheritedFrom: 'Inherited from',
+      // Source labels
+      directlyManaged: 'Directly managed',
+      inheritedSource: 'Inherited',
+      defaultSystem: 'Default system value',
+      // Hierarchy levels
+      company: 'Company',
+      division: 'Division',
+      categoryLevel: 'Category',
+      productGroup: 'Product Group',
+      article: 'Article',
       value: 'Value',
       unit: 'Unit',
       category: 'Category',

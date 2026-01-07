@@ -475,11 +475,7 @@ const MOCK_PARAMETERS: Parameter[] = [
 
 // TABS will be defined inside the component to use translations
 
-const SOURCE_LABELS = {
-  'direct': 'Direkt gepflegt',
-  'inherited': 'Geerbt',
-  'default': 'Default-Systemwert'
-};
+// SOURCE_LABELS will be defined inside component to use translations
 
 export function ParametersScreen() {
   const { t } = useLanguage();
@@ -493,6 +489,12 @@ export function ParametersScreen() {
     { key: 'governance' as TabKey, label: t.parameters.governanceTab },
     { key: 'storeBlocking' as TabKey, label: t.parameters.storeBlockingTab }
   ];
+  
+  const SOURCE_LABELS: Record<string, string> = {
+    'direct': t.parameters.directlyManaged,
+    'inherited': t.parameters.inheritedSource,
+    'default': t.parameters.defaultSystem
+  };
   
   const [activeTab, setActiveTab] = useState<TabKey>('capacity');
   const [parameters, setParameters] = useState<Parameter[]>(MOCK_PARAMETERS);
@@ -802,11 +804,11 @@ export function ParametersScreen() {
                 fontSize: 'var(--font-size-sm)'
               }}
             >
-              <option value="">Alle Status</option>
-              <option value="active">Aktiv</option>
-              <option value="inactive">Inaktiv</option>
-              <option value="overridden">Überschrieben</option>
-              <option value="inherited">Geerbt</option>
+              <option value="">{t.parameters.allStatus}</option>
+              <option value="active">{t.parameters.active}</option>
+              <option value="inactive">{t.parameters.inactive}</option>
+              <option value="overridden">{t.parameters.overridden}</option>
+              <option value="inherited">{t.parameters.inherited}</option>
             </select>
             
             {/* Article Hierarchy Filter Button */}
