@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { dataService } from '../../services/dataService';
+import { useLanguage } from '../../i18n';
 
 interface DataManagerScreenProps {
   onNavigate: (screen: string) => void;
@@ -36,18 +37,11 @@ interface SyncLog {
   completed_at: string | null;
 }
 
-const ENTITY_LABELS: Record<string, { name: string; description: string }> = {
-  stores: { name: 'Filialen', description: 'Stammdaten der Verkaufsstellen' },
-  articles: { name: 'Artikel', description: 'Produktstammdaten' },
-  allocation_runs: { name: 'Allocation Runs', description: 'Allokationsläufe und deren Status' },
-  scenarios: { name: 'Szenarien', description: 'Planungsszenarien und Simulationen' },
-  exceptions: { name: 'Exceptions', description: 'Ausnahmen und Warnungen' },
-  tasks: { name: 'Tasks', description: 'Aufgaben und Workflows' },
-};
+// Entity labels are now dynamic via translations - see getEntityLabel function
 
 const CATEGORY_COLORS = {
-  master: { bg: 'var(--status-info)', label: 'Stammdaten' },
-  transaction: { bg: 'var(--status-success)', label: 'Bewegungsdaten' }
+  master: { bg: 'var(--status-info)' },
+  transaction: { bg: 'var(--status-success)' }
 };
 
 // Fallback mock data when API is not available
@@ -61,6 +55,25 @@ const MOCK_CONFIGS: DataConfig[] = [
 ];
 
 export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
+  const { t } = useLanguage();
+  
+  // Dynamic entity labels based on current language
+  const getEntityLabel = (entityName: string) => {
+    const labels: Record<string, { name: string; description: string }> = {
+      stores: { name: t.dataManager.stores, description: t.dataManager.storesDesc },
+      articles: { name: t.dataManager.articles, description: t.dataManager.articlesDesc },
+      allocation_runs: { name: t.dataManager.allocationRuns, description: t.dataManager.allocationRunsDesc },
+      scenarios: { name: t.dataManager.scenariosEntity, description: t.dataManager.scenariosDesc },
+      exceptions: { name: t.dataManager.exceptionsEntity, description: t.dataManager.exceptionsDesc },
+      tasks: { name: t.dataManager.tasksEntity, description: t.dataManager.tasksDesc },
+    };
+    return labels[entityName] || { name: entityName, description: '' };
+  };
+  
+  const getCategoryLabel = (category: 'master' | 'transaction') => {
+    return category === 'master' ? t.dataManager.masterData : t.dataManager.transactionData;
+  };
+
   const [configs, setConfigs] = useState<DataConfig[]>(MOCK_CONFIGS);
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const [syncLogs, setSyncLogs] = useState<SyncLog[]>([]);
@@ -532,10 +545,10 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
       <div className="mb-6">
         <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
           <Database className="inline mr-2" size={24} />
-          Datenmanager
+          {t.dataManager.title}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Konfigurieren Sie die Schnittstellen für Stamm- und Bewegungsdaten
+          {t.dataManager.selectEntity}
         </p>
       </div>
 
@@ -544,7 +557,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
         <div className="col-span-3">
           <div style={{ background: 'var(--surface-raised)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-default)' }}>
             <div style={{ padding: 'var(--space-4)', borderBottom: '1px solid var(--border-default)' }}>
-              <h2 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)' }}>Entitäten</h2>
+              <h2 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)' }}>{t.common.all}</h2>
             </div>
             <div className="p-2">
               {configs.map(config => (
@@ -559,7 +572,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                 >
                   <div className="flex items-center justify-between">
                     <span style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                      {ENTITY_LABELS[config.entity_name]?.name || config.entity_name}
+                      {getEntityLabel(config.entity_name).name}
                     </span>
                     <span 
                       className="text-xs px-2 py-0.5 rounded"
@@ -568,11 +581,11 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         color: 'white'
                       }}
                     >
-                      {CATEGORY_COLORS[config.data_category].label}
+                      {getCategoryLabel(config.data_category)}
                     </span>
                   </div>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    {ENTITY_LABELS[config.entity_name]?.description}
+                    {getEntityLabel(config.entity_name).description}
                   </div>
                   <div className="flex gap-2 mt-2">
                     {config.inbound_enabled && (
@@ -609,12 +622,12 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         color: activeTab === tab ? 'white' : 'var(--text-primary)'
                       }}
                     >
-                      {tab === 'data' && <><Table size={16} className="inline mr-2" />Daten</>}
-                      {tab === 'config' && <><Settings size={16} className="inline mr-2" />Konfiguration</>}
-                      {tab === 'logs' && <><History size={16} className="inline mr-2" />Sync-Protokoll</>}
-                      {tab === 'import' && <><Download size={16} className="inline mr-2" />Import</>}
-                      {tab === 'export' && <><Upload size={16} className="inline mr-2" />Export</>}
-                      {tab === 'db' && <><HardDrive size={16} className="inline mr-2" />DB-Verwaltung</>}
+                      {tab === 'data' && <><Table size={16} className="inline mr-2" />{t.dataManager.tabData}</>}
+                      {tab === 'config' && <><Settings size={16} className="inline mr-2" />{t.dataManager.tabConfig}</>}
+                      {tab === 'logs' && <><History size={16} className="inline mr-2" />{t.dataManager.tabLogs}</>}
+                      {tab === 'import' && <><Download size={16} className="inline mr-2" />{t.dataManager.tabImport}</>}
+                      {tab === 'export' && <><Upload size={16} className="inline mr-2" />{t.dataManager.tabExport}</>}
+                      {tab === 'db' && <><HardDrive size={16} className="inline mr-2" />{t.dataManager.tabDb}</>}
                     </button>
                   ))}
                 </div>
@@ -627,7 +640,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                     <div className="flex justify-between items-center mb-4">
                       <h3 style={{ fontWeight: 'var(--font-weight-medium)' }}>
                         <Table size={18} className="inline mr-2" />
-                        {ENTITY_LABELS[selectedEntity!]?.name || selectedEntity} - Datensätze ({entityData.length})
+                        {getEntityLabel(selectedEntity!).name} - {t.dataManager.rows} ({entityData.length})
                       </h3>
                       <div className="flex gap-2">
                         <button
@@ -636,7 +649,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                           style={{ border: '1px solid var(--border-default)' }}
                         >
                           <RefreshCw size={14} />
-                          Aktualisieren
+                          {t.common.refresh}
                         </button>
                         <button
                           onClick={() => {
@@ -656,12 +669,12 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                     {loadingData ? (
                       <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
                         <RefreshCw size={24} className="mx-auto mb-2 animate-spin" />
-                        <p>Lade Daten...</p>
+                        <p>{t.common.loading}</p>
                       </div>
                     ) : entityData.length === 0 ? (
                       <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
                         <Database size={32} className="mx-auto mb-2 opacity-50" />
-                        <p>Keine Datensätze vorhanden</p>
+                        <p>{t.common.noData}</p>
                       </div>
                     ) : (
                       <div className="space-y-2 max-h-96 overflow-y-auto">
