@@ -1,4 +1,5 @@
 import { Home, Settings, Package, Briefcase, PlayCircle, AlertTriangle, Sliders, LayoutGrid, GitBranch, Layers, Database } from 'lucide-react';
+import { useLanguage } from '../../i18n';
 
 interface SideNavProps {
   currentScreen: string;
@@ -7,26 +8,27 @@ interface SideNavProps {
 
 interface NavItem {
   id: string;
-  label: string;
+  labelKey: string;
   icon: any;
   badge?: number;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'settings', label: 'Einstellungen', icon: Settings },
-  { id: 'parameters', label: 'Parameter', icon: Sliders },
-  { id: 'capacity', label: 'Kapazität', icon: Package },
-  { id: 'cluster', label: 'Cluster', icon: Layers },
-  { id: 'storeLayout', label: 'Filiallayout', icon: LayoutGrid },
-  { id: 'work', label: 'Arbeitsvorrat', icon: Briefcase, badge: 3 },
-  { id: 'runs', label: 'Runs', icon: PlayCircle },
-  { id: 'scenarios', label: 'Szenarien', icon: GitBranch },
-  { id: 'exceptions', label: 'Exceptions', icon: AlertTriangle, badge: 12 },
-  { id: 'dataManager', label: 'Datenmanager', icon: Database },
+  { id: 'home', labelKey: 'dashboard', icon: Home },
+  { id: 'settings', labelKey: 'settings', icon: Settings },
+  { id: 'parameters', labelKey: 'parameters', icon: Sliders },
+  { id: 'capacity', labelKey: 'capacity', icon: Package },
+  { id: 'cluster', labelKey: 'cluster', icon: Layers },
+  { id: 'storeLayout', labelKey: 'storeLayout', icon: LayoutGrid },
+  { id: 'work', labelKey: 'workQueue', icon: Briefcase, badge: 3 },
+  { id: 'runs', labelKey: 'runs', icon: PlayCircle },
+  { id: 'scenarios', labelKey: 'scenarios', icon: GitBranch },
+  { id: 'exceptions', labelKey: 'exceptions', icon: AlertTriangle, badge: 12 },
+  { id: 'dataManager', labelKey: 'dataManager', icon: Database },
 ];
 
 export function SideNav({ currentScreen, onNavigate }: SideNavProps) {
+  const { t } = useLanguage();
   return (
     <aside 
       className="flex flex-col border-r"
@@ -61,7 +63,7 @@ export function SideNav({ currentScreen, onNavigate }: SideNavProps) {
             padding: '0 var(--space-3)',
             marginBottom: 'var(--space-2)'
           }}>
-            Navigation
+            {t.nav.navigation}
           </p>
           
           <div className="space-y-1">
@@ -97,7 +99,7 @@ export function SideNav({ currentScreen, onNavigate }: SideNavProps) {
                     fontSize: 'var(--font-size-sm)',
                     fontWeight: isActive ? 'var(--font-weight-medium)' : 'var(--font-weight-regular)'
                   }}>
-                    {item.label}
+                    {(t.nav as any)[item.labelKey] || item.labelKey}
                   </span>
                   {item.badge && (
                     <span 
