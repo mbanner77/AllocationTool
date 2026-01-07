@@ -153,17 +153,44 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
   // Load database status
   const loadDbStatus = async () => {
     setDbStatus(prev => ({ ...prev, loading: true }));
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+    const baseUrl = apiUrl.replace('/api', '');
+    
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/status`);
+      // First check if API is reachable at all (health check)
+      const healthResponse = await fetch(`${baseUrl}/health`, { 
+        method: 'GET',
+        signal: AbortSignal.timeout(10000) // 10 second timeout
+      });
+      
+      if (!healthResponse.ok) {
+        setDbStatus({ 
+          connected: false, 
+          error: `API nicht erreichbar (Status: ${healthResponse.status})`, 
+          loading: false 
+        });
+        return;
+      }
+      
+      // Now check database status
+      const response = await fetch(`${apiUrl}/db/status`, {
+        signal: AbortSignal.timeout(10000)
+      });
       const result = await response.json();
+      
       if (result.success) {
         setDbStatus({ ...result.data, loading: false });
       } else {
-        setDbStatus({ connected: false, error: result.data?.error || 'Connection failed', loading: false });
+        setDbStatus({ connected: false, error: result.data?.error || 'DB-Verbindung fehlgeschlagen', loading: false });
       }
     } catch (error: any) {
-      setDbStatus({ connected: false, error: error.message, loading: false });
+      let errorMessage = error.message;
+      if (error.name === 'AbortError' || error.message.includes('timeout')) {
+        errorMessage = 'Zeitüberschreitung - API antwortet nicht';
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        errorMessage = `API nicht erreichbar (${baseUrl}). Render-Service möglicherweise nicht gestartet.`;
+      }
+      setDbStatus({ connected: false, error: errorMessage, loading: false });
     }
   };
 
