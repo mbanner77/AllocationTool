@@ -1292,7 +1292,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
     },
     { 
       key: 'storeCount', 
-      label: 'Anzahl Filialen',
+      label: t.runs.storeCount,
       align: 'right',
       sortable: true
     },
@@ -1460,7 +1460,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Startdatum
+                {t.runs.startDate}
               </div>
               <div style={{ fontWeight: 'var(--font-weight-medium)' }}>
                 {new Date(selectedRun.startDate).toLocaleString('de-DE')}
@@ -1476,7 +1476,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                Anzahl Filialen
+                {t.runs.storeCount}
               </div>
               <div style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)' }}>
                 {selectedRun.storeCount}
