@@ -33,6 +33,7 @@ interface Store {
 
 // Store Select Modal
 function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfirm: (stores: string[]) => void }) {
+  const { t } = useLanguage();
   const [searchId, setSearchId] = useState('');
   const [searchName, setSearchName] = useState('');
   const [searchCountry, setSearchCountry] = useState('');
@@ -80,7 +81,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
           <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
-            Filialen auswählen
+            {t.clusterScreen.selectStores}
           </h2>
           <button onClick={onClose} className="p-1 rounded" style={{ color: 'var(--text-muted)' }}>
             <X size={20} />
@@ -151,7 +152,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
                 <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Name</th>
                 <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Adresse</th>
                 <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Land</th>
-                <th className="text-right pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Größe (m²)</th>
+                <th className="text-right pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.size}</th>
               </tr>
             </thead>
             <tbody>
@@ -178,7 +179,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t" style={{ borderColor: 'var(--border-default)' }}>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-            {selectedStores.length} Filialen ausgewählt
+            {selectedStores.length} {t.clusterScreen.storesSelected}
           </span>
           <div className="flex gap-2">
             <button
@@ -190,7 +191,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
                 fontSize: 'var(--font-size-sm)'
               }}
             >
-              Abbrechen
+              {t.actions.cancel}
             </button>
             <button
               onClick={() => onConfirm(selectedStores)}
@@ -212,6 +213,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
 
 // Attribute Select Modal
 function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; onCalculate: (attributes: string[], min: number, max: number) => void }) {
+  const { t } = useLanguage();
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>(['Region', 'Umsatz (jährlich)', 'Verkaufsfläche (m²)']);
   const [minClusters, setMinClusters] = useState(3);
   const [maxClusters, setMaxClusters] = useState(7);
@@ -258,7 +260,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
           <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
-            Attribute auswählen
+            {t.clusterScreen.selectAttributes}
           </h2>
           <button onClick={onClose} className="p-1 rounded" style={{ color: 'var(--text-muted)' }}>
             <X size={20} />
@@ -268,7 +270,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
-            Diese Attribute werden für den systemgestützten Clustervorschlag verwendet.
+            {t.clusterScreen.attributeHint}
           </p>
 
           {/* Attributes List */}
@@ -292,7 +294,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
           <div className="space-y-4">
             <div>
               <label style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-2)', display: 'block' }}>
-                Minimale Clusteranzahl: {minClusters}
+                {t.clusterScreen.minClusterCount}: {minClusters}
               </label>
               <input
                 type="range"
@@ -305,7 +307,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
             </div>
             <div>
               <label style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-2)', display: 'block' }}>
-                Maximale Clusteranzahl: {maxClusters}
+                {t.clusterScreen.maxClusterCount}: {maxClusters}
               </label>
               <input
                 type="range"
@@ -322,7 +324,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t" style={{ borderColor: 'var(--border-default)' }}>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-            {selectedAttributes.length} Attribute ausgewählt
+            {selectedAttributes.length} {t.clusterScreen.attributesSelected}
           </span>
           <div className="flex gap-2">
             <button
@@ -334,7 +336,7 @@ function AttributeSelectModal({ onClose, onCalculate }: { onClose: () => void; o
                 fontSize: 'var(--font-size-sm)'
               }}
             >
-              Abbrechen
+              {t.actions.cancel}
             </button>
             <button
               onClick={() => onCalculate(selectedAttributes, minClusters, maxClusters)}
