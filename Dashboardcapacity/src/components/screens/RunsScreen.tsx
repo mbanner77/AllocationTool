@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DataGrid, Column } from '../common/DataGrid';
 import { ChevronLeft, TrendingUp, TrendingDown, Circle, Info, X, Filter } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { dataService } from '../../services/dataService';
 
 interface RunsScreenProps {
   onNavigate: (screen: string, params?: { runId?: string }) => void;
