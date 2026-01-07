@@ -525,7 +525,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
   const handleStartAllocation = () => {
     const bookmarkedArticles = articles.filter(a => a.bookmarked);
     if (bookmarkedArticles.length === 0) {
-      setToast({ message: 'Keine Artikel für Allokation ausgewählt', type: 'error' });
+      setToast({ message: t.work.noArticlesSelected, type: 'error' });
       setTimeout(() => setToast(null), 3000);
       return;
     }
@@ -557,7 +557,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
           : article
       ));
       
-      setToast({ message: 'Allokation zur Verarbeitung eingeplant', type: 'success' });
+      setToast({ message: t.work.allocationScheduled, type: 'success' });
       setTimeout(() => setToast(null), 3000);
       
       setShowModal(false);
@@ -611,7 +611,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
       return article;
     }));
     
-    setToast({ message: 'Simulation erfolgreich übernommen', type: 'success' });
+    setToast({ message: t.work.simulationAccepted, type: 'success' });
     setTimeout(() => setToast(null), 3000);
     
     setShowSimulationResults(false);
@@ -990,10 +990,10 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             color: 'var(--button-secondary-text)',
             fontSize: 'var(--font-size-xs)'
           }}
-          title="Allokationslauf öffnen"
+          title={t.work.openAllocationRun}
         >
           <ExternalLink size={14} />
-          <span>Lauf öffnen</span>
+          <span>{t.work.openAllocationRun}</span>
         </button>
       )
     }
@@ -1033,7 +1033,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               }}
             >
               <RotateCcw size={16} />
-              Simulation verwerfen ({simulatedArticles.length})
+              {t.work.discardSimulation} ({simulatedArticles.length})
             </button>
           )}
 
@@ -1049,7 +1049,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               }}
             >
               <Info size={16} />
-              Allokationsanalyse
+              {t.work.allocationAnalysis}
             </button>
           )}
           
@@ -1062,7 +1062,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               height: 'var(--height-button-md)'
             }}
           >
-            Plan & Vorschau
+            {t.work.planPreview}
           </button>
           
           <button
@@ -1077,7 +1077,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               opacity: bookmarkedCount > 0 ? 1 : 0.5
             }}
           >
-            Allokation durchführen
+            {t.work.performAllocation}
           </button>
         </div>
       </div>
@@ -1094,7 +1094,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             fontWeight: 'var(--font-weight-medium)'
           }}
         >
-          Erstallokation
+          {t.work.initialAllocation}
         </button>
         <button
           onClick={() => setWorkView('replenishment')}
@@ -1106,7 +1106,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             fontWeight: 'var(--font-weight-medium)'
           }}
         >
-          Nachschub
+          {t.work.replenishment}
         </button>
         <button
           onClick={() => setWorkView('manual')}
@@ -1118,7 +1118,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             fontWeight: 'var(--font-weight-medium)'
           }}
         >
-          Manuelle Einsteuerung
+          {t.work.manualControl}
         </button>
       </div>
       
@@ -1580,7 +1580,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 marginBottom: 'var(--space-4)'
               }}
             >
-              Allokation durchführen
+              {t.work.performAllocation}
             </h2>
             
             {/* Capacity Summary */}
@@ -1593,19 +1593,19 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 }}
               >
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-                  Kapazitätszusammenfassung
+                  {t.work.capacitySummary}
                 </div>
                 <div className="space-y-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
                   {modalArticles.filter(a => a.capacityImpact === 'Überkapazität').length > 0 && (
                     <div>
-                      • Anzahl Artikel mit Überkapazitätsrisiko: <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>
+                      • {t.work.overcapacityRisk}: <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>
                         {modalArticles.filter(a => a.capacityImpact === 'Überkapazität').length}
                       </span>
                     </div>
                   )}
                   {modalArticles.filter(a => a.capacityImpact === 'Untererfüllung').length > 0 && (
                     <div>
-                      • Anzahl Artikel mit Untererfüllungsrisiko: <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>
+                      • {t.work.underfulfillmentRisk}: <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>
                         {modalArticles.filter(a => a.capacityImpact === 'Untererfüllung').length}
                       </span>
                     </div>
@@ -1619,7 +1619,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                     color: 'var(--text-muted)'
                   }}
                 >
-                  Die Kapazitätswirkung basiert auf prognostischen Daten und wird in der Simulation konkretisiert.
+                  {t.work.capacityNote}
                 </div>
               </div>
             )}
@@ -1636,10 +1636,10 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 />
                 <div>
                   <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                    Allokation simulieren
+                    {t.work.simulateAllocation}
                   </span>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Bei Aktivierung werden keine realen Allokationen erzeugt.
+                    {t.work.simulateNote}
                   </p>
                 </div>
               </label>
@@ -1653,7 +1653,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   style={{ accentColor: 'var(--brand-primary)' }}
                 />
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                  Hintergrundverarbeitung einplanen
+                  {t.work.scheduleBackground}
                 </span>
               </label>
               
@@ -1684,11 +1684,11 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               <div
                 style={{
                   fontSize: 'var(--font-size-sm)',
-                  fontWeight: 'var(--font-weight-medium)',
+                  fontWeight: 'var(--font-weight-semibold)',
                   marginBottom: 'var(--space-3)'
                 }}
               >
-                Ausgewählte Artikel ({modalArticles.length})
+                {t.work.selectedArticles} ({modalArticles.length})
               </div>
               
               <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -1743,7 +1743,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Abbrechen
+                {t.common.cancel}
               </button>
               <button
                 onClick={handleConfirmAllocation}
@@ -1754,7 +1754,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                {simulateMode ? 'Simulation starten' : 'Allokation starten'}
+                {simulateMode ? t.work.startSimulation : t.work.startAllocation}
               </button>
             </div>
           </div>
@@ -1805,10 +1805,10 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                       marginBottom: 'var(--space-2)'
                     }}
                   >
-                    Allokationslauf auswählen
+                    {t.work.selectAllocationRun}
                   </h3>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-                    Wählen Sie einen bestehenden Allokationslauf aus, um die Details anzuzeigen
+                    {t.work.selectRunDescription}
                   </p>
                 </div>
                 <button
