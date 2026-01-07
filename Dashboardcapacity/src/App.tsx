@@ -16,6 +16,7 @@ import { SimulationAnalysisScreen } from './components/allocation/SimulationAnal
 import { ReplenishmentSimulationScreen } from './components/allocation/ReplenishmentSimulationScreen';
 import { ExplainabilityScreen } from './components/allocation/ExplainabilityScreen';
 import { ClusterScreen } from './components/screens/ClusterScreen';
+import { DataManagerScreen } from './components/screens/DataManagerScreen';
 
 export type Screen = 
   | 'home'
@@ -33,7 +34,8 @@ export type Screen =
   | 'parameters'
   | 'allocationAnalysis'
   | 'storeLayout'
-  | 'cluster';
+  | 'cluster'
+  | 'dataManager';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -122,6 +124,8 @@ export default function App() {
         return <StoreLayoutScreen onNavigate={navigateTo} />;
       case 'cluster':
         return <ClusterScreen onNavigate={navigateTo} />;
+      case 'dataManager':
+        return <DataManagerScreen onNavigate={navigateTo} />;
       default:
         return <HomeScreen onNavigate={navigateTo} />;
     }
