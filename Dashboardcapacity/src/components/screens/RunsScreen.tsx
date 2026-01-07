@@ -416,18 +416,18 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'startDate', 
-        label: 'Startdatum',
+        label: t.runs.startDate,
         sortable: true,
         render: (value) => new Date(value as string).toLocaleString('de-DE')
       },
       { 
         key: 'endDate', 
-        label: 'Enddatum',
+        label: t.runs.endDate,
         render: (value) => value ? new Date(value as string).toLocaleString('de-DE') : '-'
       },
       { 
         key: 'user', 
-        label: 'Benutzer',
+        label: t.runs.user,
         sortable: true
       },
       { 
@@ -443,13 +443,13 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
       },
       { 
         key: 'storeCount', 
-        label: 'Anzahl Filialen',
+        label: t.runs.storeCount,
         align: 'right',
         sortable: true
       },
       {
         key: 'actions',
-        label: 'Aktion',
+        label: t.runs.action,
         align: 'center',
         width: '140px',
         render: (value, row) => (
@@ -466,7 +466,7 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
               fontSize: 'var(--font-size-xs)'
             }}
           >
-            Details anzeigen
+            {t.runs.viewDetails}
           </button>
         )
       }
