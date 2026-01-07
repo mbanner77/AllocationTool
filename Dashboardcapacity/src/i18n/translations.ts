@@ -623,6 +623,19 @@ export const translations = {
       utilization: 'Auslastung',
       deviation: 'Abweichung',
     },
+    // Exceptions Screen
+    exceptionsScreen: {
+      title: 'Ausnahmen',
+      openExceptions: 'Offene Ausnahmen',
+      process: 'Prozess',
+      processAll: 'Prozess: Alle',
+      initial: 'Initial',
+      initialAllocation: 'Initiale Allokation',
+      replenishment: 'Nachschub',
+      resolveException: 'Ausnahme lösen',
+      articleCategory: 'Artikel / Kategorie',
+      cause: 'Ursache',
+    },
     // Store Layout
     storeLayout: {
       title: 'Filiallayout & Warenträger',
@@ -1293,6 +1306,19 @@ export const translations = {
       targetCapacity: 'Target Capacity',
       utilization: 'Utilization',
       deviation: 'Deviation',
+    },
+    // Exceptions Screen
+    exceptionsScreen: {
+      title: 'Exceptions',
+      openExceptions: 'Open Exceptions',
+      process: 'Process',
+      processAll: 'Process: All',
+      initial: 'Initial',
+      initialAllocation: 'Initial Allocation',
+      replenishment: 'Replenishment',
+      resolveException: 'Resolve Exception',
+      articleCategory: 'Article / Category',
+      cause: 'Cause',
     },
     // Store Layout
     storeLayout: {

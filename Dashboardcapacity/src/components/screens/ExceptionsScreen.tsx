@@ -371,7 +371,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
       <div className="flex items-center gap-2 mb-4" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
         <span>Cockpit</span>
         <ChevronRight size={16} />
-        <span>Ausnahmen</span>
+        <span>{t.exceptionsScreen.title}</span>
       </div>
       
       {/* Header */}
@@ -436,9 +436,9 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                 minWidth: '150px'
               }}
             >
-              <option value="">Prozess: Alle</option>
-              <option value="initial">Initiale Allokation</option>
-              <option value="replenishment">Nachschub</option>
+              <option value="">{t.exceptionsScreen.processAll}</option>
+              <option value="initial">{t.exceptionsScreen.initialAllocation}</option>
+              <option value="replenishment">{t.exceptionsScreen.replenishment}</option>
             </select>
             
             {/* Severity Filter */}
@@ -532,7 +532,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                 className="px-2 py-1 rounded flex items-center gap-1"
                 style={{ backgroundColor: 'var(--surface-info-subtle)', fontSize: 'var(--font-size-xs)' }}
               >
-                {p === 'initial' ? 'Initial' : 'Nachschub'}
+                {p === 'initial' ? t.exceptionsScreen.initial : t.exceptionsScreen.replenishment}
                 <button onClick={() => setSelectedFilters(prev => ({ ...prev, process: prev.process.filter(x => x !== p) }))}>
                   <X size={12} />
                 </button>
@@ -563,7 +563,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-            Offene Ausnahmen
+            {t.exceptionsScreen.openExceptions}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
             {kpis.total}
@@ -708,7 +708,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                         fontWeight: 'var(--font-weight-medium)'
                       }}
                     >
-                      {exc.process === 'initial' ? 'Initial' : 'Nachschub'}
+                      {exc.process === 'initial' ? t.exceptionsScreen.initial : t.exceptionsScreen.replenishment}
                     </span>
                   </td>
                   <td style={{ padding: '16px', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
@@ -991,7 +991,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                         Prozess
                       </div>
                       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                        {selectedException.process === 'initial' ? 'Initiale Allokation' : 'Nachschub'}
+                        {selectedException.process === 'initial' ? t.exceptionsScreen.initialAllocation : t.exceptionsScreen.replenishment}
                       </div>
                     </div>
                   </div>
@@ -1231,7 +1231,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                     fontSize: 'var(--font-size-sm)'
                   }}
                 >
-                  <span>Ausnahme lösen</span>
+                  <span>{t.exceptionsScreen.resolveException}</span>
                   <CheckCircle size={16} />
                 </button>
               </div>
