@@ -543,6 +543,24 @@ export const translations = {
       category: 'Kategorie',
       editParameter: 'Parameter bearbeiten',
       addParameter: 'Parameter hinzufügen',
+      // Tabs
+      capacityTab: 'Kapazität & Fläche',
+      presentationTab: 'Präsentationsregeln',
+      timeTab: 'Zeit- & Verdichtungsparameter',
+      logicTab: 'Allokationslogik & Priorisierung',
+      forecastTab: 'Prognose- & KPI-Gewichtung',
+      governanceTab: 'Governance & Einschränkungen',
+      storeBlockingTab: 'Filialspezifische Einschränkungen',
+      // Table columns
+      articleHierarchy: 'Artikelhierarchie',
+      source: 'Herkunft',
+      validFrom: 'Gültig von',
+      validTo: 'Gültig bis',
+      override: 'Override',
+      actions: 'Aktionen',
+      // Actions
+      newParameter: 'Neuen Parameter anlegen',
+      parameterCount: 'Parameter',
     },
     // Store Layout
     storeLayout: {
@@ -1135,6 +1153,24 @@ export const translations = {
       title: 'Allocation Parameters',
       subtitle: 'Central management of capacity, presentation, and control parameters',
       parameterName: 'Parameter Name',
+      // Tabs
+      capacityTab: 'Capacity & Space',
+      presentationTab: 'Presentation Rules',
+      timeTab: 'Time & Compression Parameters',
+      logicTab: 'Allocation Logic & Prioritization',
+      forecastTab: 'Forecast & KPI Weighting',
+      governanceTab: 'Governance & Restrictions',
+      storeBlockingTab: 'Store-specific Restrictions',
+      // Table columns
+      articleHierarchy: 'Article Hierarchy',
+      source: 'Source',
+      validFrom: 'Valid From',
+      validTo: 'Valid To',
+      override: 'Override',
+      actions: 'Actions',
+      // Actions
+      newParameter: 'Create New Parameter',
+      parameterCount: 'Parameters',
       value: 'Value',
       unit: 'Unit',
       category: 'Category',

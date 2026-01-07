@@ -473,15 +473,7 @@ const MOCK_PARAMETERS: Parameter[] = [
   }
 ];
 
-const TABS = [
-  { key: 'capacity' as TabKey, label: 'Kapazität & Fläche' },
-  { key: 'presentation' as TabKey, label: 'Präsentationsregeln' },
-  { key: 'time' as TabKey, label: 'Zeit- & Verdichtungsparameter' },
-  { key: 'logic' as TabKey, label: 'Allokationslogik & Priorisierung' },
-  { key: 'forecast' as TabKey, label: 'Prognose- & KPI-Gewichtung' },
-  { key: 'governance' as TabKey, label: 'Governance & Einschränkungen' },
-  { key: 'storeBlocking' as TabKey, label: 'Filialspezifische Einschränkungen' }
-];
+// TABS will be defined inside the component to use translations
 
 const SOURCE_LABELS = {
   'direct': 'Direkt gepflegt',
@@ -491,6 +483,17 @@ const SOURCE_LABELS = {
 
 export function ParametersScreen() {
   const { t } = useLanguage();
+  
+  const TABS = [
+    { key: 'capacity' as TabKey, label: t.parameters.capacityTab },
+    { key: 'presentation' as TabKey, label: t.parameters.presentationTab },
+    { key: 'time' as TabKey, label: t.parameters.timeTab },
+    { key: 'logic' as TabKey, label: t.parameters.logicTab },
+    { key: 'forecast' as TabKey, label: t.parameters.forecastTab },
+    { key: 'governance' as TabKey, label: t.parameters.governanceTab },
+    { key: 'storeBlocking' as TabKey, label: t.parameters.storeBlockingTab }
+  ];
+  
   const [activeTab, setActiveTab] = useState<TabKey>('capacity');
   const [parameters, setParameters] = useState<Parameter[]>(MOCK_PARAMETERS);
   const [loading, setLoading] = useState(true);
@@ -877,7 +880,7 @@ export function ParametersScreen() {
             }}
           >
             <Plus size={16} />
-            Neuen Parameter anlegen
+            {t.parameters.newParameter}
           </button>
         </div>
       </div>
