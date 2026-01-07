@@ -635,7 +635,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Filiallayout & Warenträger</BreadcrumbPage>
+              <BreadcrumbPage>{t.storeLayout.title}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -648,10 +648,10 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
           fontWeight: 'var(--font-weight-semibold)',
           marginBottom: 'var(--space-2)'
         }}>
-          Filiallayout & Warenträger
+          {t.storeLayout.title}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Visualisierung und Planung der Verkaufsfläche auf Basis von Warenträgern und Kapazitätswirkung
+          {t.storeLayout.subtitle}
         </p>
       </div>
 

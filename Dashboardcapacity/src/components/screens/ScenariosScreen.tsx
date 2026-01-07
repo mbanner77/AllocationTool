@@ -408,10 +408,10 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   marginBottom: 'var(--space-2)'
                 }}
               >
-                Szenario- & Variantenmanagement
+                {t.scenariosScreen.title}
               </h1>
               <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                Vergleichen, validieren und freigeben Sie Allokationsvarianten für verschiedene Szenarien.
+                {t.scenariosScreen.subtitle}
               </p>
             </div>
             <button

@@ -720,23 +720,23 @@ export function ParametersScreen() {
       <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
         <span>Einstellungen</span>
         <ChevronRight size={16} />
-        <span>Allokationsparameter</span>
+        <span>{t.parameters.title}</span>
       </div>
       
       {/* Header */}
-      <div>
-        <h1
-          style={{
-            fontSize: 'var(--font-size-xl)',
-            fontWeight: 'var(--font-weight-semibold)',
-            marginBottom: 'var(--space-2)'
-          }}
-        >
-          Allokationsparameter
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1
+            style={{
+              fontSize: 'var(--font-size-xl)',
+              fontWeight: 'var(--font-weight-semibold)',
+              marginBottom: 'var(--space-2)'
+            }}
+          >
+          {t.parameters.title}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', maxWidth: '800px' }}>
-          Zentrale Pflege steuerungsrelevanter Parameter für Kapazität, Präsentation, Zeitlogik
-          und Allokationsalgorithmen. Änderungen wirken hierarchisch und overridefähig.
+          {t.parameters.subtitle}
         </p>
       </div>
       

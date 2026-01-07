@@ -1013,10 +1013,10 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               marginBottom: 'var(--space-2)'
             }}
           >
-            Arbeitsvorrat
+            {t.work.title}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            Verwalten Sie initiale Allokationen, simulieren Sie Verteilungen und geben Sie diese frei
+            {t.work.subtitle}
           </p>
         </div>
         

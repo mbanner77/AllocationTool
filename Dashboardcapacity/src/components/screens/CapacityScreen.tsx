@@ -540,7 +540,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     if (overCapacity > 0) {
       setToast({ message: `Überkapazität in ${overCapacity} Bereichen erkannt`, type: 'warning' });
     } else {
-      setToast({ message: 'Kapazitätsplanung gespeichert', type: 'success' });
+      setToast({ message: t.capacity.title + ' ' + t.common.success.toLowerCase(), type: 'success' });
     }
     
     setTimeout(() => setToast(null), 3000);
@@ -804,10 +804,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               marginBottom: 'var(--space-2)'
             }}
           >
-            Kapazitätsplanung
+            {t.capacity.title}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            Analyse, Steuerung und Optimierung der Flächenkapazität je Filiale und Sortiment
+            {t.capacity.subtitle}
           </p>
         </div>
         

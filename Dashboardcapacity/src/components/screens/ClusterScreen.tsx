@@ -500,7 +500,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
               fontSize: 'var(--font-size-lg)',
               fontWeight: 'var(--font-weight-semibold)'
             }}>
-              Cluster Sets
+  {t.cluster.title}
             </h2>
             <button
               className="px-3 py-2 rounded-lg flex items-center gap-2 transition-colors"
@@ -512,7 +512,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
               onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             >
               <Plus size={16} />
-              <span style={{ fontSize: 'var(--font-size-sm)' }}>Neu</span>
+              <span style={{ fontSize: 'var(--font-size-sm)' }}>{t.common.create}</span>
             </button>
           </div>
 
@@ -530,7 +530,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
             />
             <input
               type="text"
-              placeholder="Cluster-Set suchen..."
+              placeholder={t.common.search + '...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-3 py-2 rounded-lg border"
@@ -557,7 +557,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                   borderColor: statusFilter === status ? 'var(--brand-primary)' : 'var(--border-subtle)'
                 }}
               >
-                {status === 'All' ? 'Alle' : status}
+                {status === 'All' ? t.common.all : status}
               </button>
             ))}
           </div>
@@ -613,7 +613,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                   fontSize: 'var(--font-size-xs)',
                   color: 'var(--text-muted)'
                 }}>
-                  {clusterSet.clusterCount} Cluster • {clusterSet.storeCount} Filialen
+                  {clusterSet.clusterCount} Cluster • {clusterSet.storeCount} {t.allocation.stores}
                 </span>
               </div>
 
@@ -659,7 +659,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {['Duplizieren', 'Umbenennen', 'Archivieren', 'Exportieren'].map(action => (
+                  {[t.common.edit, t.common.delete, t.common.export].map(action => (
                     <button
                       key={action}
                       className="w-full px-3 py-2 text-left transition-colors"
@@ -709,7 +709,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                   <textarea
                     value={editDescription || selectedClusterSet.description}
                     onChange={(e) => setEditDescription(e.target.value)}
-                    placeholder="Beschreibung hinzufügen..."
+                    placeholder={t.common.description + '...'}
                     className="w-full bg-transparent border-0 focus:outline-none resize-none"
                     style={{
                       fontSize: 'var(--font-size-sm)',
@@ -727,7 +727,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                       fontSize: 'var(--font-size-sm)'
                     }}
                   >
-                    Abbrechen
+{t.common.cancel}
                   </button>
                   <button
                     className="px-4 py-2 rounded-lg transition-colors"
@@ -737,7 +737,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                       fontSize: 'var(--font-size-sm)'
                     }}
                   >
-                    Speichern
+                    {t.common.save}
                   </button>
                 </div>
               </div>
@@ -746,7 +746,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Erstellt:
+                    {t.common.date}:
                   </span>
                   <span style={{ fontSize: 'var(--font-size-xs)' }}>
                     {formatDate(selectedClusterSet.createdAt)} von {selectedClusterSet.owner}
@@ -754,7 +754,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Typ:
+                    {t.common.type}:
                   </span>
                   <span
                     className="px-2 py-0.5 rounded"
@@ -769,7 +769,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Status:
+                    {t.common.status}:
                   </span>
                   <span
                     className="px-2 py-0.5 rounded"
@@ -799,7 +799,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-default)'}
               >
                 <Building2 size={16} />
-                Filialen auswählen
+                {t.cluster.assignStores}
               </button>
               <button
                 onClick={() => setShowAttributeSelectModal(true)}
@@ -813,7 +813,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-default)'}
               >
                 <Sparkles size={16} />
-                Attribute auswählen
+                {t.common.filter}
               </button>
             </div>
 
@@ -827,7 +827,7 @@ export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
             className="flex-1 flex items-center justify-center"
             style={{ color: 'var(--text-muted)' }}
           >
-            <p>Wählen Sie ein Cluster-Set aus der Liste</p>
+            <p>{t.common.noData}</p>
           </div>
         )}
       </div>

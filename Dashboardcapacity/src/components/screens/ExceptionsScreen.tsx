@@ -358,11 +358,10 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
             marginBottom: 'var(--space-2)'
           }}
         >
-          Exception-Cockpit
+          {t.exceptions.title}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', maxWidth: '900px' }}>
-          Zentrale Übersicht und Steuerung von kapazitiven, zeitlichen und
-          allokationsbezogenen Ausnahmen entlang des gesamten Prozesses.
+          {t.exceptions.subtitle}
         </p>
       </div>
       

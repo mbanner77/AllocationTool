@@ -483,10 +483,10 @@ export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
               marginBottom: 'var(--space-2)'
             }}
           >
-            Allokationsläufe
+            {t.runs.title}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            Übersicht und Verwaltung aller Allokationsläufe
+            {t.runs.subtitle}
           </p>
         </div>
 

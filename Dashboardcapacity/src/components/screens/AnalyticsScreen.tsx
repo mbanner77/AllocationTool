@@ -404,10 +404,10 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
             marginBottom: 'var(--space-2)'
           }}
         >
-          Allocation & Capacity Analytics
+          {t.analytics.title}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Zentrale Analyse von Prognose, Kapazität, Bedarf, Beständen und Allokationsergebnissen über Zeit, Artikelhierarchie und Stores.
+          {t.analytics.subtitle}
         </p>
       </div>
 
