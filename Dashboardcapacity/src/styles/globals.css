@@ -1,0 +1,225 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Blickpunkt Allocation MVP Design Tokens */
+  
+  /* Brand Colors */
+  --brand-primary: #2563eb;
+  --brand-primary-hover: #1e40af;
+  --brand-accent: #0063e3;
+  --brand-accent-hover: #1a66ff;
+  
+  /* Text Colors */
+  --text-primary: #1e293b;
+  --text-secondary: #334155;
+  --text-muted: #555555;
+  --text-inverse: #ffffff;
+  --text-link-secondary: #404040;
+  --text-link-secondary-hover: #3b82f6;
+  
+  /* Surface Colors */
+  --surface-page: #ffffff;
+  --surface-surface: #fafafa;
+  --surface-alt: #f7f7f7;
+  --surface-footer: #f5f5f5;
+  --surface-subtle-tint: #f0f5fa;
+  --surface-code-block: #eceff3;
+  --surface-overlay-80: rgba(0, 0, 0, 0.8);
+  
+  /* Border Colors */
+  --border-default: #e5e5e5;
+  --border-subtle: #e6e6e6;
+  --border-input: #cccccc;
+  --border-focus: #2563eb;
+  
+  /* State Colors */
+  --state-focus-ring: rgba(59, 130, 246, 0.5);
+  
+  /* Status Colors */
+  --status-success: #16a34a;
+  --status-warning: #f59e0b;
+  --status-danger: #dc2626;
+  --status-info: #0ea5e9;
+  
+  /* Spacing */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  
+  /* Border Radius */
+  --radius-0: 0px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+  
+  /* Border Width */
+  --border-width-hairline: 1px;
+  --border-width-focus: 2px;
+  
+  /* Shadows */
+  --shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0px 6px 20px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0px 18px 40px rgba(0, 0, 0, 0.16);
+  
+  /* Typography */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  
+  --line-height-xs: 16px;
+  --line-height-sm: 20px;
+  --line-height-md: 24px;
+  --line-height-lg: 26px;
+  --line-height-xl: 32px;
+  
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Semantic Token Mappings */
+  --bg-page: var(--surface-page);
+  --bg-surface: var(--surface-surface);
+  --bg-surface-alt: var(--surface-alt);
+  --bg-tint: var(--surface-subtle-tint);
+  --bg-overlay: var(--surface-overlay-80);
+  
+  --fg-default: var(--text-primary);
+  --fg-muted: var(--text-muted);
+  --fg-inverse: var(--text-inverse);
+  --fg-link: var(--brand-primary);
+  --fg-link-hover: var(--brand-primary-hover);
+  
+  --button-primary-bg: var(--brand-primary);
+  --button-primary-bg-hover: var(--brand-primary-hover);
+  --button-primary-text: var(--text-inverse);
+  --button-secondary-bg: var(--surface-page);
+  --button-secondary-text: var(--text-secondary);
+  --button-secondary-border: var(--border-default);
+  
+  /* Component Heights */
+  --height-topbar: 56px;
+  --height-button-md: 40px;
+  --height-button-sm: 32px;
+  --height-input-md: 40px;
+  --height-input-sm: 32px;
+  --height-table-header: 44px;
+  --height-table-row: 44px;
+  --height-table-header-compact: 36px;
+  --height-table-row-compact: 36px;
+  
+  /* Layout */
+  --sidenav-width-desktop: 264px;
+  --sidenav-width-tablet: 72px;
+  --drawer-width: 480px;
+  --modal-width: 560px;
+}
+
+@theme inline {
+  /* Brand */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-accent: var(--brand-accent);
+  
+  /* Text */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  
+  /* Surface */
+  --color-surface-page: var(--surface-page);
+  --color-surface: var(--surface-surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-surface-tint: var(--surface-subtle-tint);
+  
+  /* Border */
+  --color-border-default: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-input: var(--border-input);
+  --color-border-focus: var(--border-focus);
+  
+  /* Status */
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
+}
+
+@layer base {
+  * {
+    @apply border-border-default;
+  }
+  
+  body {
+    @apply bg-surface-page text-text-primary;
+    font-family: var(--font-family-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/**
+ * Typography styles for Allocation MVP
+ */
+@layer base {
+  h1 {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  h2 {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  h3 {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-md);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  p {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-regular);
+  }
+  
+  label {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  button {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  input,
+  select,
+  textarea {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-regular);
+  }
+}
+
+html {
+  font-size: 16px;
+}
