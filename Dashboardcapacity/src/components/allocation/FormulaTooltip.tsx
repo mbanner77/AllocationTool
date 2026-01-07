@@ -172,7 +172,6 @@ export function FormulaTooltip({ formula, inputs, result, explanation }: Formula
               position: 'absolute',
               bottom: '-6px',
               left: '50%',
-              transform: 'translateX(-50%)',
               width: '12px',
               height: '12px',
               backgroundColor: 'var(--surface-page)',

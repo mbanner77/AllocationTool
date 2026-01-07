@@ -1,4 +1,5 @@
 import { Settings, Package, Briefcase, PlayCircle, AlertTriangle, BarChart3, Sliders, LayoutGrid, GitBranch, Layers } from 'lucide-react';
+import { useApp } from '../../store/AppContext';
 
 interface HomeScreenProps {
   onNavigate: (screen: string) => void;
@@ -85,6 +86,13 @@ const FEATURE_CARDS = [
 ];
 
 export function HomeScreen({ onNavigate }: HomeScreenProps) {
+  const { state } = useApp();
+  
+  // Calculate real KPIs from state
+  const openTasks = state.tasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
+  const activeRuns = state.runs.filter(r => r.status === 'running' || r.status === 'planned').length;
+  const openExceptions = state.exceptions.filter(e => e.status === 'open' || e.status === 'in_progress').length;
+  
   return (
     <div>
       <div className="mb-8">
@@ -97,6 +105,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
           Verwalten Sie Ihre Allokationsprozesse zentral und effizient
+          {state.currentUser && ` • Angemeldet als ${state.currentUser.name}`}
         </p>
       </div>
       
@@ -189,7 +198,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                 Offene Tasks
               </p>
               <p style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)' }}>
-                23
+                {openTasks}
               </p>
             </div>
           </div>
@@ -206,7 +215,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                 Aktive Runs
               </p>
               <p style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)' }}>
-                5
+                {activeRuns}
               </p>
             </div>
           </div>
@@ -223,7 +232,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                 Exceptions
               </p>
               <p style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)' }}>
-                12
+                {openExceptions}
               </p>
             </div>
           </div>

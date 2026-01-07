@@ -187,7 +187,7 @@ const CAPACITY_COMPARISON = [
 
 const FORECAST_TREND = [
   { week: 'KW 1', forecast: 4500, variant1: 4200, variant2: 4350, variant3: 4100 },
-  { week: 'KW 2', forecast: 5000, variant2: 4800, variant2: 4900, variant3: 4600 },
+  { week: 'KW 2', forecast: 5000, variant1: 4800, variant2: 4900, variant3: 4600 },
   { week: 'KW 3', forecast: 4800, variant1: 4600, variant2: 4700, variant3: 4450 },
   { week: 'KW 4', forecast: 5500, variant1: 5300, variant2: 5400, variant3: 5100 }
 ];
