@@ -333,6 +333,7 @@ interface WorkScreenProps {
 }
 
 export function WorkScreen({ onNavigate }: WorkScreenProps) {
+  const { t } = useLanguage();
   const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
   const [loading, setLoading] = useState(true);
 

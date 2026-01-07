@@ -460,6 +460,7 @@ const formatDate = (dateString: string): string => {
 };
 
 export function ClusterScreen({ onNavigate }: ClusterScreenProps) {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<ClusterSetStatus | 'All'>('All');
   const [selectedClusterSet, setSelectedClusterSet] = useState<ClusterSet | null>(MOCK_CLUSTER_SETS[0]);

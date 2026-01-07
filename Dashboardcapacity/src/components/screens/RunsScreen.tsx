@@ -279,6 +279,7 @@ const RUN_TYPE_LABELS = {
 };
 
 export function RunsScreen({ onNavigate, runId }: RunsScreenProps) {
+  const { t } = useLanguage();
   const [runs, setRuns] = useState<AllocationRun[]>(MOCK_RUNS);
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState<RunArticle | null>(null);
