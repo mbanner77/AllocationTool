@@ -47,26 +47,51 @@ interface Exception {
   assignedTo?: string;
 }
 
-const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
-  'overcapacity': 'Überkapazität',
-  'undercapacity': 'Untererfüllung SOLL-Kapazität',
-  'delivery-conflict': 'Liefertermin-Konflikt',
-  'lot-conflict': 'LOT / Größenlauf-Konflikt',
-  'parameter-conflict': 'Parameterkonflikt',
-  'manual-deviation': 'Manuelle Abweichung'
-};
+// Exception type labels are now dynamic - use getExceptionTypeLabel(type, t) function
 
 const SEVERITY_CONFIG = {
-  'info': { label: 'Hinweis', color: 'var(--status-info)', icon: Info },
-  'critical': { label: 'Kritisch', color: 'var(--status-warning)', icon: AlertTriangle },
-  'blocking': { label: 'Blockierend', color: 'var(--status-danger)', icon: AlertCircle }
+  'info': { color: 'var(--status-info)', icon: Info },
+  'critical': { color: 'var(--status-warning)', icon: AlertTriangle },
+  'blocking': { color: 'var(--status-danger)', icon: AlertCircle }
 };
 
 const STATUS_CONFIG = {
-  'new': { label: 'Neu', color: 'var(--status-info)' },
-  'in-progress': { label: 'In Bearbeitung', color: 'var(--status-warning)' },
-  'accepted': { label: 'Akzeptiert', color: 'var(--brand-primary)' },
-  'resolved': { label: 'Gelöst', color: 'var(--status-success)' }
+  'new': { color: 'var(--status-info)' },
+  'in-progress': { color: 'var(--status-warning)' },
+  'accepted': { color: 'var(--brand-primary)' },
+  'resolved': { color: 'var(--status-success)' }
+};
+
+// Helper functions for translated labels
+const getExceptionTypeLabel = (type: ExceptionType, t: any) => {
+  const labels: Record<ExceptionType, string> = {
+    'overcapacity': t.exceptions.overcapacity,
+    'undercapacity': t.exceptions.undercapacity,
+    'delivery-conflict': t.exceptions.deliveryConflict,
+    'lot-conflict': t.exceptions.lotConflict,
+    'parameter-conflict': t.exceptions.parameterConflict,
+    'manual-deviation': t.exceptions.manualDeviation
+  };
+  return labels[type];
+};
+
+const getSeverityLabel = (severity: Severity, t: any) => {
+  const labels: Record<Severity, string> = {
+    'info': t.exceptions.info,
+    'critical': t.exceptions.critical,
+    'blocking': t.exceptions.blocking
+  };
+  return labels[severity];
+};
+
+const getStatusLabel = (status: ExceptionStatus, t: any) => {
+  const labels: Record<ExceptionStatus, string> = {
+    'new': t.exceptions.new,
+    'in-progress': t.exceptions.inProgress,
+    'accepted': t.exceptions.accepted,
+    'resolved': t.exceptions.resolved
+  };
+  return labels[status];
 };
 
 const MOCK_EXCEPTIONS: Exception[] = [
@@ -656,12 +681,12 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                           fontWeight: 'var(--font-weight-medium)'
                         }}
                       >
-                        {SEVERITY_CONFIG[exc.severity].label}
+                        {getSeverityLabel(exc.severity, t)}
                       </span>
                     </div>
                   </td>
                   <td style={{ padding: '16px', fontSize: 'var(--font-size-sm)' }}>
-                    {EXCEPTION_TYPE_LABELS[exc.type]}
+                    {getExceptionTypeLabel(exc.type, t)}
                   </td>
                   <td style={{ padding: '16px' }}>
                     <div>
@@ -757,7 +782,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-                    {EXCEPTION_TYPE_LABELS[group.type as ExceptionType]}
+                    {getExceptionTypeLabel(group.type as ExceptionType, t)}
                   </h3>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                     {group.categories.size} Kategorien betroffen
@@ -909,7 +934,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                       fontWeight: 'var(--font-weight-medium)'
                     }}
                   >
-                    {SEVERITY_CONFIG[selectedException.severity].label}
+                    {getSeverityLabel(selectedException.severity, t)}
                   </span>
                 </div>
                 <span 
@@ -1043,7 +1068,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                       Exception-Typ
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      {EXCEPTION_TYPE_LABELS[selectedException.type]}
+                      {getExceptionTypeLabel(selectedException.type, t)}
                     </span>
                   </div>
                 </div>
