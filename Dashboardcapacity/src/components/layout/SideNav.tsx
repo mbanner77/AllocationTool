@@ -1,4 +1,4 @@
-import { Home, Settings, Package, Briefcase, PlayCircle, AlertTriangle, Sliders, LayoutGrid, GitBranch, Layers } from 'lucide-react';
+import { Home, Settings, Package, Briefcase, PlayCircle, AlertTriangle, Sliders, LayoutGrid, GitBranch, Layers, Database } from 'lucide-react';
 
 interface SideNavProps {
   currentScreen: string;
@@ -23,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'runs', label: 'Runs', icon: PlayCircle },
   { id: 'scenarios', label: 'Szenarien', icon: GitBranch },
   { id: 'exceptions', label: 'Exceptions', icon: AlertTriangle, badge: 12 },
+  { id: 'dataManager', label: 'Datenmanager', icon: Database },
 ];
 
 export function SideNav({ currentScreen, onNavigate }: SideNavProps) {
