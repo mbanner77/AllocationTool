@@ -455,7 +455,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     { 
       key: 'warehouses', 
-      label: 'Lagerorte',
+      label: t.settings.warehouses,
       render: (value: string[], row) => (
         <button
           onClick={(e) => {
@@ -547,7 +547,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     { key: 'address', label: 'Adresse' },
     { 
       key: 'cluster', 
-      label: 'Clusterzuordnung',
+      label: t.settings.clusterAssignment,
       render: (value, row) => (
         <select
           value={value}
@@ -621,7 +621,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     {
       key: 'actions',
-      label: 'Aktionen',
+      label: t.settings.actions,
       align: 'right',
       render: () => (
         <div className="flex items-center justify-end gap-2">
@@ -1507,7 +1507,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                     display: 'block'
                   }}
                 >
-                  Lagerorte
+                  {t.settings.warehouses}
                 </label>
                 <select
                   multiple
