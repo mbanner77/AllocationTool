@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DataGrid, Column } from '../common/DataGrid';
 import { Filter, Calendar, X, TrendingUp, TrendingDown, Circle, Info, Beaker, RotateCcw, ExternalLink, PlayCircle } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { SimulationScreen } from './SimulationScreen';
+import { dataService } from '../../services/dataService';
 
 type AllocationStatus = 'Offen' | 'In Planung' | 'Allokiert' | 'Simuliert';
 type CapacityImpact = 'Überkapazität' | 'Untererfüllung' | 'Ausgeglichen';
@@ -332,6 +333,26 @@ interface WorkScreenProps {
 
 export function WorkScreen({ onNavigate }: WorkScreenProps) {
   const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
+  const [loading, setLoading] = useState(true);
+
+  // Load articles from dataService (tasks in the service represent work items)
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Articles come from the work/tasks context in dataService
+        // For now, we keep using MOCK_ARTICLES as the primary data source
+        // since the dataService tasks are different from article work items
+        setArticles(MOCK_ARTICLES);
+      } catch (error) {
+        console.error('Failed to load work data:', error);
+        setArticles(MOCK_ARTICLES);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showSimulationResults, setShowSimulationResults] = useState(false);
