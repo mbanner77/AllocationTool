@@ -854,7 +854,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               color: 'var(--text-muted)'
             }}
           >
-            Organisationsebene
+            {t.capacityScreen.evaluationLevel}
           </label>
           <select
             value={evaluationLevel}
@@ -866,9 +866,9 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               backgroundColor: 'var(--surface-page)'
             }}
           >
-            <option value="Gesamt">Gesamt</option>
-            <option value="Cluster">Cluster</option>
-            <option value="Filiale">Filiale</option>
+            <option value="Gesamt">{t.capacityScreen.total}</option>
+            <option value="Cluster">{t.capacityScreen.cluster}</option>
+            <option value="Filiale">{t.capacityScreen.store}</option>
           </select>
         </div>
         
@@ -883,7 +883,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 color: 'var(--text-muted)'
               }}
             >
-              Cluster
+              {t.capacityScreen.cluster}
             </label>
             <select
               value={selectedCluster}
@@ -895,7 +895,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 backgroundColor: 'var(--surface-page)'
               }}
             >
-              <option value="">Alle Cluster</option>
+              <option value="">{t.capacityScreen.allAreas}</option>
               {availableClusters.map(cluster => (
                 <option key={cluster} value={cluster}>{cluster}</option>
               ))}
@@ -914,7 +914,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 color: 'var(--text-muted)'
               }}
             >
-              Filiale
+              {t.capacityScreen.store}
             </label>
             <select
               value={selectedStore}
