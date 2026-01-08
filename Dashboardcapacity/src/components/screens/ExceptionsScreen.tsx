@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { Screen } from '../../App';
 import { useLanguage } from '../../i18n';
+import { useToast } from '../ui/Toast';
 
 interface ExceptionsScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -325,6 +326,8 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
     return { total, criticalBlocking, accepted, avgDays };
   }, [filteredExceptions]);
   
+  const toast = useToast();
+
   const handleAcceptDeviation = () => {
     if (selectedException && acceptReason.trim()) {
       // Update exception status
@@ -333,7 +336,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
           ? { ...exc, status: 'accepted' as ExceptionStatus }
           : exc
       ));
-      alert(`Abweichung akzeptiert: ${selectedException.id}\nBegründung: ${acceptReason}`);
+      toast.success('Abweichung akzeptiert', `Exception ${selectedException.id} wurde mit Begründung akzeptiert.`);
       setShowAcceptModal(false);
       setAcceptReason('');
       setSelectedException(null);
@@ -346,7 +349,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
         ? { ...e, status: 'resolved' as ExceptionStatus }
         : e
     ));
-    alert(`Exception ${exc.id} als gelöst markiert`);
+    toast.success('Exception gelöst', `Exception ${exc.id} wurde als gelöst markiert.`);
     setSelectedException(null);
   };
   

@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useLanguage } from '../../i18n';
 import { DataGrid, Column } from '../common/DataGrid';
-import { Filter, Download, Save, TrendingUp, TrendingDown } from 'lucide-react';
+import { Filter, Download, Save, TrendingUp, TrendingDown, CheckCircle } from 'lucide-react';
+import { ExportDialog } from '../ui/ConfirmDialog';
+import { useToast } from '../ui/Toast';
 import {
   LineChart,
   Line,
@@ -294,12 +296,69 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     }));
   }, [sizeCurveMode]);
 
-  const handleExport = () => {
-    alert('Export-Funktionalität: CSV/Excel-Download würde hier ausgeführt');
+  // Dialog states
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const toast = useToast();
+
+  const handleExport = (format: 'csv' | 'excel' | 'json', options: { includeHeaders: boolean }) => {
+    // Generate export data
+    const exportData = filteredData.map(row => ({
+      [t.analytics.article]: row.article,
+      [t.analytics.category]: row.category,
+      [t.analytics.season]: row.season,
+      [t.analytics.targetCapacity]: row.targetCapacity,
+      [t.analytics.actual]: row.actualCapacity,
+      [t.analytics.overCapacityTotal]: row.overCapacity,
+      [t.analytics.underCapacityTotal]: row.underCapacity,
+    }));
+
+    let content: string;
+    let mimeType: string;
+    let extension: string;
+
+    if (format === 'json') {
+      content = JSON.stringify(exportData, null, 2);
+      mimeType = 'application/json';
+      extension = 'json';
+    } else if (format === 'csv') {
+      const headers = options.includeHeaders ? Object.keys(exportData[0] || {}).join(';') + '\n' : '';
+      const rows = exportData.map(row => Object.values(row).join(';')).join('\n');
+      content = headers + rows;
+      mimeType = 'text/csv';
+      extension = 'csv';
+    } else {
+      // Excel format - simplified as CSV with BOM for Excel compatibility
+      const headers = options.includeHeaders ? Object.keys(exportData[0] || {}).join('\t') + '\n' : '';
+      const rows = exportData.map(row => Object.values(row).join('\t')).join('\n');
+      content = '\uFEFF' + headers + rows; // BOM for Excel
+      mimeType = 'application/vnd.ms-excel';
+      extension = 'xls';
+    }
+
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics_export_${new Date().toISOString().split('T')[0]}.${extension}`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast.success('Export erfolgreich', `${filteredData.length} Datensätze als ${format.toUpperCase()} exportiert.`);
   };
 
   const handleSaveView = () => {
-    alert(t.analytics.saveView + ': Die aktuelle Filtereinstellung würde gespeichert');
+    // Save current filter settings to localStorage
+    const viewSettings = {
+      filterCategory,
+      filterSeason,
+      filterProcess,
+      filterDateFrom,
+      filterDateTo,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('analytics_saved_view', JSON.stringify(viewSettings));
+    toast.success(t.analytics.saveView, 'Ihre Filtereinstellungen wurden gespeichert.');
   };
 
   const tableColumns: Column<AnalyticsData>[] = [
