@@ -5,8 +5,10 @@ import {
   Globe, Webhook, Save, RotateCcw, FileJson, History,
   Plus, Trash2, Edit2, Eye, Table, HardDrive, RotateCw,
   Activity, Zap, Shield, Copy, FileUp, AlertCircle, Info,
-  Languages, Search, ChevronDown, ChevronRight, RotateCw as Reload
+  Languages, Search, ChevronDown, ChevronRight, RotateCw as Reload,
+  Filter, ArrowUpDown, CheckSquare, Square, BarChart3, TrendingUp, Layers
 } from 'lucide-react';
+import { useToast } from '../ui/Toast';
 import { api } from '../../services/api';
 import { dataService } from '../../services/dataService';
 import { useLanguage } from '../../i18n';
@@ -125,6 +127,16 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
     recent_records?: any[];
   } | null>(null);
   const [backupData, setBackupData] = useState<string | null>(null);
+  
+  // Search, filter, sort state
+  const [dataSearchQuery, setDataSearchQuery] = useState('');
+  const [dataSortField, setDataSortField] = useState<string>('id');
+  const [dataSortDirection, setDataSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [showStats, setShowStats] = useState(true);
+  
+  // Toast notifications
+  const toast = useToast();
 
   // Load entity data based on selected entity
   const loadEntityData = async (entityName: string) => {
@@ -168,8 +180,70 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
       if (selectedEntity) {
         loadEntityData(selectedEntity);
       }
-      alert('Daten wurden zurückgesetzt.');
+      toast.success('Daten zurückgesetzt', 'Alle lokalen Daten wurden auf die Standardwerte zurückgesetzt.');
     }
+  };
+
+  // Filtered and sorted entity data
+  const filteredEntityData = useMemo(() => {
+    let filtered = entityData;
+    
+    // Search filter
+    if (dataSearchQuery) {
+      const query = dataSearchQuery.toLowerCase();
+      filtered = filtered.filter((item: any) => 
+        Object.values(item).some(val => 
+          String(val).toLowerCase().includes(query)
+        )
+      );
+    }
+    
+    // Sort
+    filtered = [...filtered].sort((a: any, b: any) => {
+      const aVal = a[dataSortField] ?? '';
+      const bVal = b[dataSortField] ?? '';
+      const comparison = String(aVal).localeCompare(String(bVal));
+      return dataSortDirection === 'asc' ? comparison : -comparison;
+    });
+    
+    return filtered;
+  }, [entityData, dataSearchQuery, dataSortField, dataSortDirection]);
+
+  // Toggle item selection
+  const toggleItemSelection = (id: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  // Select/deselect all
+  const toggleSelectAll = () => {
+    if (selectedItems.size === filteredEntityData.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(filteredEntityData.map((item: any) => item.id)));
+    }
+  };
+
+  // Bulk delete selected items
+  const handleBulkDelete = () => {
+    if (selectedItems.size === 0) return;
+    if (!confirm(`${selectedItems.size} Einträge wirklich löschen?`)) return;
+    
+    setEntityData(prev => prev.filter((item: any) => !selectedItems.has(item.id)));
+    toast.success('Einträge gelöscht', `${selectedItems.size} Einträge wurden erfolgreich gelöscht.`);
+    setSelectedItems(new Set());
+  };
+
+  // Copy selected items to clipboard
+  const handleCopySelected = () => {
+    const selectedData = entityData.filter((item: any) => selectedItems.has(item.id));
+    navigator.clipboard.writeText(JSON.stringify(selectedData, null, 2));
+    toast.success('Kopiert', `${selectedItems.size} Einträge in die Zwischenablage kopiert.`);
   };
 
   // Save edited item
@@ -651,12 +725,55 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                 {/* Data Tab */}
                 {activeTab === 'data' && (
                   <div>
+                    {/* Statistics Cards */}
+                    {showStats && entityData.length > 0 && (
+                      <div className="grid grid-cols-4 gap-4 mb-4">
+                        <div className="p-4 rounded-lg" style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Layers size={16} style={{ color: 'var(--brand-primary)' }} />
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Gesamt</span>
+                          </div>
+                          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)' }}>{entityData.length}</div>
+                        </div>
+                        <div className="p-4 rounded-lg" style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Filter size={16} style={{ color: 'var(--status-info)' }} />
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Gefiltert</span>
+                          </div>
+                          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)' }}>{filteredEntityData.length}</div>
+                        </div>
+                        <div className="p-4 rounded-lg" style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <CheckSquare size={16} style={{ color: 'var(--status-success)' }} />
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Ausgewählt</span>
+                          </div>
+                          <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)' }}>{selectedItems.size}</div>
+                        </div>
+                        <div className="p-4 rounded-lg" style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <TrendingUp size={16} style={{ color: 'var(--status-warning)' }} />
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Kategorie</span>
+                          </div>
+                          <div style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)' }}>{getCategoryLabel(selectedConfig?.data_category || 'master')}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Header with actions */}
                     <div className="flex justify-between items-center mb-4">
                       <h3 style={{ fontWeight: 'var(--font-weight-medium)' }}>
                         <Table size={18} className="inline mr-2" />
-                        {getEntityLabel(selectedEntity!).name} - {t.dataManager.rows} ({entityData.length})
+                        {getEntityLabel(selectedEntity!).name}
                       </h3>
                       <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowStats(!showStats)}
+                          className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                          style={{ border: '1px solid var(--border-default)', background: showStats ? 'var(--brand-primary-light)' : 'transparent' }}
+                          title="Statistiken ein/ausblenden"
+                        >
+                          <BarChart3 size={14} />
+                        </button>
                         <button
                           onClick={() => loadEntityData(selectedEntity!)}
                           className="px-3 py-1 rounded flex items-center gap-1 text-sm"
@@ -680,6 +797,75 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                       </div>
                     </div>
 
+                    {/* Search and Filter Bar */}
+                    <div className="flex gap-3 mb-4">
+                      <div className="flex-1 relative">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+                        <input
+                          type="text"
+                          placeholder="Suchen..."
+                          value={dataSearchQuery}
+                          onChange={(e) => setDataSearchQuery(e.target.value)}
+                          className="w-full pl-10 pr-4 py-2 rounded-lg"
+                          style={{ border: '1px solid var(--border-default)', background: 'var(--surface-page)' }}
+                        />
+                      </div>
+                      <select
+                        value={dataSortField}
+                        onChange={(e) => setDataSortField(e.target.value)}
+                        className="px-3 py-2 rounded-lg"
+                        style={{ border: '1px solid var(--border-default)', background: 'var(--surface-page)' }}
+                      >
+                        <option value="id">ID</option>
+                        <option value="name">Name</option>
+                        <option value="status">Status</option>
+                        <option value="created_at">Erstellt</option>
+                      </select>
+                      <button
+                        onClick={() => setDataSortDirection(d => d === 'asc' ? 'desc' : 'asc')}
+                        className="px-3 py-2 rounded-lg flex items-center gap-1"
+                        style={{ border: '1px solid var(--border-default)', background: 'var(--surface-page)' }}
+                        title={dataSortDirection === 'asc' ? 'Aufsteigend' : 'Absteigend'}
+                      >
+                        <ArrowUpDown size={14} />
+                        {dataSortDirection === 'asc' ? '↑' : '↓'}
+                      </button>
+                    </div>
+
+                    {/* Bulk Actions Bar */}
+                    {selectedItems.size > 0 && (
+                      <div className="flex items-center gap-3 mb-4 p-3 rounded-lg" style={{ background: 'var(--brand-primary-light)', border: '1px solid var(--brand-primary)' }}>
+                        <span style={{ fontWeight: 'var(--font-weight-medium)' }}>
+                          {selectedItems.size} ausgewählt
+                        </span>
+                        <div className="flex gap-2 ml-auto">
+                          <button
+                            onClick={handleCopySelected}
+                            className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                            style={{ background: 'white', border: '1px solid var(--border-default)' }}
+                          >
+                            <Copy size={14} />
+                            Kopieren
+                          </button>
+                          <button
+                            onClick={handleBulkDelete}
+                            className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                            style={{ background: 'var(--status-danger)', color: 'white' }}
+                          >
+                            <Trash2 size={14} />
+                            Löschen
+                          </button>
+                          <button
+                            onClick={() => setSelectedItems(new Set())}
+                            className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+                            style={{ background: 'white', border: '1px solid var(--border-default)' }}
+                          >
+                            Auswahl aufheben
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     {loadingData ? (
                       <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
                         <RefreshCw size={24} className="mx-auto mb-2 animate-spin" />
@@ -690,14 +876,50 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                         <Database size={32} className="mx-auto mb-2 opacity-50" />
                         <p>{t.common.noData}</p>
                       </div>
+                    ) : filteredEntityData.length === 0 ? (
+                      <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
+                        <Search size={32} className="mx-auto mb-2 opacity-50" />
+                        <p>Keine Ergebnisse für "{dataSearchQuery}"</p>
+                        <button 
+                          onClick={() => setDataSearchQuery('')}
+                          className="mt-2 text-sm underline"
+                          style={{ color: 'var(--brand-primary)' }}
+                        >
+                          Filter zurücksetzen
+                        </button>
+                      </div>
                     ) : (
                       <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {entityData.map((item: any) => (
+                        {/* Select All Header */}
+                        <div className="flex items-center gap-3 px-3 py-2" style={{ borderBottom: '1px solid var(--border-default)' }}>
+                          <button onClick={toggleSelectAll} className="p-1">
+                            {selectedItems.size === filteredEntityData.length ? (
+                              <CheckSquare size={18} style={{ color: 'var(--brand-primary)' }} />
+                            ) : (
+                              <Square size={18} style={{ color: 'var(--text-muted)' }} />
+                            )}
+                          </button>
+                          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+                            {filteredEntityData.length} Einträge
+                          </span>
+                        </div>
+                        
+                        {filteredEntityData.map((item: any) => (
                           <div
                             key={item.id}
-                            className="p-3 rounded-lg flex items-center justify-between"
-                            style={{ background: 'var(--surface-page)', border: '1px solid var(--border-default)' }}
+                            className="p-3 rounded-lg flex items-center gap-3"
+                            style={{ 
+                              background: selectedItems.has(item.id) ? 'var(--brand-primary-light)' : 'var(--surface-page)', 
+                              border: `1px solid ${selectedItems.has(item.id) ? 'var(--brand-primary)' : 'var(--border-default)'}` 
+                            }}
                           >
+                            <button onClick={() => toggleItemSelection(item.id)} className="p-1">
+                              {selectedItems.has(item.id) ? (
+                                <CheckSquare size={18} style={{ color: 'var(--brand-primary)' }} />
+                              ) : (
+                                <Square size={18} style={{ color: 'var(--text-muted)' }} />
+                              )}
+                            </button>
                             <div className="flex-1">
                               <div style={{ fontWeight: 'var(--font-weight-medium)' }}>
                                 {item.name || item.title || item.id}
