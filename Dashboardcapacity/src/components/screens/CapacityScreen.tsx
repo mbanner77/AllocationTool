@@ -502,8 +502,8 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
   const chartData = useMemo(() => {
     return aggregatedData.slice(0, 10).map(row => ({
       name: row.level,
-      'SOLL': row.targetCapacity,
-      'IST': row.actualCapacity
+      [t.capacityScreen.soll]: row.targetCapacity,
+      [t.capacityScreen.ist]: row.actualCapacity
     }));
   }, [aggregatedData]);
   
@@ -745,13 +745,13 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     },
     {
       key: 'inventory',
-      label: 'Bestand (in Stück)',
+      label: t.capacityScreen.inventoryPcs,
       align: 'right',
       render: (value) => value ? (value as number).toLocaleString('de-CH') : '-'
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t.capacityScreen.status,
       render: (value) => (
         <span
           className="px-3 py-1 rounded-full"
@@ -1353,8 +1353,8 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                     <YAxis style={{ fontSize: 'var(--font-size-xs)' }} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="SOLL" fill="var(--brand-primary)" opacity={0.6} />
-                    <Bar dataKey="IST" fill="var(--brand-accent)" />
+                    <Bar dataKey={t.capacityScreen.soll} fill="var(--brand-primary)" opacity={0.6} />
+                    <Bar dataKey={t.capacityScreen.ist} fill="var(--brand-accent)" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -1748,7 +1748,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   
                   <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                     <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                      Ø Bestandsmenge
+                      {t.capacityScreen.avgInventory}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                       {Math.round(prognoseDetails.forecastSuggestion * 0.8)} {t.capacityScreen.units}
