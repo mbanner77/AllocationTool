@@ -652,7 +652,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
 
           <div className="flex gap-2">
             <button
-              onClick={handleExport}
+              onClick={() => setShowExportDialog(true)}
               className="px-4 py-2 rounded-lg border flex items-center gap-2 hover:bg-surface-tint transition-colors"
               style={{
                 backgroundColor: 'var(--button-secondary-bg)',
@@ -963,6 +963,15 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           onRowClick={() => {}}
         />
       </div>
+      
+      {/* Export Dialog */}
+      <ExportDialog
+        isOpen={showExportDialog}
+        onClose={() => setShowExportDialog(false)}
+        onExport={handleExport}
+        title="Analytics Export"
+        description={`${filteredData.length} Datensätze werden exportiert`}
+      />
     </div>
   );
 }
