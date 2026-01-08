@@ -557,6 +557,21 @@ export function ParametersScreen() {
   const [showStoreSelectionModal, setShowStoreSelectionModal] = useState(false);
   const [articleHierarchyFilter, setArticleHierarchyFilter] = useState<string[]>([]);
   
+  // Create Parameter Modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newParameter, setNewParameter] = useState<Partial<Parameter>>({
+    name: '',
+    description: '',
+    level: 'company',
+    value: '',
+    unit: '',
+    type: 'number',
+    source: 'direct',
+    category: 'capacity',
+    validFrom: new Date().toISOString().split('T')[0],
+    validTo: ''
+  });
+  
   const handleArticleHierarchyConfirm = (selected: string[]) => {
     setSelectedArticleNodes(selected);
     setArticleHierarchyFilter(selected);
@@ -569,6 +584,42 @@ export function ParametersScreen() {
   const handleConfirmStoreSelection = (selected: any[]) => {
     // TODO: Add new store blocking rules
     setShowStoreSelectionModal(false);
+  };
+  
+  const handleCreateParameter = () => {
+    if (!newParameter.name?.trim()) return;
+    
+    const param: Parameter = {
+      id: `param-${Date.now()}`,
+      name: newParameter.name || '',
+      description: newParameter.description || '',
+      level: (newParameter.level || 'company') as HierarchyLevel,
+      value: newParameter.type === 'number' ? parseFloat(newParameter.value as string) || 0 : 
+             newParameter.type === 'boolean' ? newParameter.value === 'true' : 
+             newParameter.value || '',
+      unit: newParameter.unit || '',
+      type: (newParameter.type || 'number') as ParameterType,
+      source: 'direct',
+      category: activeTab as any,
+      validFrom: newParameter.validFrom || new Date().toISOString().split('T')[0],
+      validTo: newParameter.validTo,
+      hasOverride: false
+    };
+    
+    setParameters(prev => [param, ...prev]);
+    setShowCreateModal(false);
+    setNewParameter({
+      name: '',
+      description: '',
+      level: 'company',
+      value: '',
+      unit: '',
+      type: 'number',
+      source: 'direct',
+      category: activeTab,
+      validFrom: new Date().toISOString().split('T')[0],
+      validTo: ''
+    });
   };
   
   // Filter parameters
@@ -877,6 +928,7 @@ export function ParametersScreen() {
           </div>
           
           <button
+            onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 rounded-lg flex items-center gap-2"
             style={{
               backgroundColor: 'var(--button-primary-bg)',
@@ -1385,6 +1437,170 @@ export function ParametersScreen() {
                 }}
               >
                 {t.common.save}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Create Parameter Modal */}
+      {showCreateModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ backgroundColor: 'var(--bg-overlay)' }}
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-lg"
+            style={{ boxShadow: 'var(--shadow-lg)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-default)' }}>
+              <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
+                {t.parameters.newParameter}
+              </h3>
+              <button onClick={() => setShowCreateModal(false)} className="p-1 hover:bg-surface-tint rounded">
+                <X size={20} style={{ color: 'var(--text-muted)' }} />
+              </button>
+            </div>
+            
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">{t.parameters.name}</label>
+                <input
+                  type="text"
+                  value={newParameter.name || ''}
+                  onChange={(e) => setNewParameter(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  style={{ borderColor: 'var(--border-input)' }}
+                  placeholder="Parameter Name"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">{t.parameters.description}</label>
+                <textarea
+                  value={newParameter.description || ''}
+                  onChange={(e) => setNewParameter(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  style={{ borderColor: 'var(--border-input)' }}
+                  rows={2}
+                  placeholder="Beschreibung"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.level}</label>
+                  <select
+                    value={newParameter.level || 'company'}
+                    onChange={(e) => setNewParameter(prev => ({ ...prev, level: e.target.value as HierarchyLevel }))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    style={{ borderColor: 'var(--border-input)' }}
+                  >
+                    {HIERARCHY_LEVELS.map(level => (
+                      <option key={level.value} value={level.value}>{level.label}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.type}</label>
+                  <select
+                    value={newParameter.type || 'number'}
+                    onChange={(e) => setNewParameter(prev => ({ ...prev, type: e.target.value as ParameterType }))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    style={{ borderColor: 'var(--border-input)' }}
+                  >
+                    <option value="number">Zahl</option>
+                    <option value="percentage">Prozent</option>
+                    <option value="boolean">Ja/Nein</option>
+                    <option value="text">Text</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.value}</label>
+                  {newParameter.type === 'boolean' ? (
+                    <select
+                      value={newParameter.value?.toString() || 'false'}
+                      onChange={(e) => setNewParameter(prev => ({ ...prev, value: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      style={{ borderColor: 'var(--border-input)' }}
+                    >
+                      <option value="true">Ja</option>
+                      <option value="false">Nein</option>
+                    </select>
+                  ) : (
+                    <input
+                      type={newParameter.type === 'number' || newParameter.type === 'percentage' ? 'number' : 'text'}
+                      value={newParameter.value || ''}
+                      onChange={(e) => setNewParameter(prev => ({ ...prev, value: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      style={{ borderColor: 'var(--border-input)' }}
+                      placeholder="Wert"
+                    />
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.unit}</label>
+                  <input
+                    type="text"
+                    value={newParameter.unit || ''}
+                    onChange={(e) => setNewParameter(prev => ({ ...prev, unit: e.target.value }))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    style={{ borderColor: 'var(--border-input)' }}
+                    placeholder="z.B. m², %, Stück"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.validFrom}</label>
+                  <input
+                    type="date"
+                    value={newParameter.validFrom || ''}
+                    onChange={(e) => setNewParameter(prev => ({ ...prev, validFrom: e.target.value }))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    style={{ borderColor: 'var(--border-input)' }}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">{t.parameters.validTo}</label>
+                  <input
+                    type="date"
+                    value={newParameter.validTo || ''}
+                    onChange={(e) => setNewParameter(prev => ({ ...prev, validTo: e.target.value }))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    style={{ borderColor: 'var(--border-input)' }}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 border-t flex justify-end gap-2" style={{ borderColor: 'var(--border-default)' }}>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="px-4 py-2 rounded-lg border"
+                style={{ borderColor: 'var(--border-default)' }}
+              >
+                {t.common.cancel}
+              </button>
+              <button
+                onClick={handleCreateParameter}
+                disabled={!newParameter.name?.trim()}
+                className="px-4 py-2 rounded-lg"
+                style={{
+                  backgroundColor: newParameter.name?.trim() ? 'var(--button-primary-bg)' : 'var(--surface-disabled)',
+                  color: newParameter.name?.trim() ? 'var(--button-primary-text)' : 'var(--text-disabled)'
+                }}
+              >
+                {t.common.create}
               </button>
             </div>
           </div>
