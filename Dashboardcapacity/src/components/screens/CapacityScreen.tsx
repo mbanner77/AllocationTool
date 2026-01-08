@@ -1023,7 +1023,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 color: 'var(--text-muted)'
               }}
             >
-              Produkt ({selectedProducts.length} ausgewählt)
+              {t.capacityScreen.product} ({selectedProducts.length} {t.common.selected || 'selected'})
             </label>
             <button
               onClick={() => setShowProductModal(true)}
@@ -1035,7 +1035,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 textAlign: 'left'
               }}
             >
-              <span>{selectedProducts.length > 0 ? `${selectedProducts.length} Produkte` : 'Produkt auswählen'}</span>
+              <span>{selectedProducts.length > 0 ? `${selectedProducts.length} ${t.capacityScreen.product}` : t.storeLayout.selectStore}</span>
               <Search size={16} />
             </button>
           </div>
@@ -1051,7 +1051,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               color: 'var(--text-muted)'
             }}
           >
-            Saison ({selectedSeasons.length} ausgewählt)
+            {t.capacityScreen.season} ({selectedSeasons.length} {t.common.selected || 'selected'})
           </label>
           <div className="relative">
             <select
@@ -1071,8 +1071,8 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               }}
               value=""
             >
-              <option value="" disabled>Saison wählen...</option>
-              <option value="ALL">{selectedSeasons.length === availableSeasons.length ? '☑ Alle abwählen' : '☐ Alle auswählen'}</option>
+              <option value="" disabled>{t.capacityScreen.season}...</option>
+              <option value="ALL">{selectedSeasons.length === availableSeasons.length ? `☑ ${t.common.all}` : `☐ ${t.common.all}`}</option>
               {availableSeasons.map(season => (
                 <option key={season} value={season}>
                   {selectedSeasons.includes(season) ? '☑ ' : '☐ '}{season}
@@ -1119,7 +1119,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
               color: 'var(--text-muted)'
             }}
           >
-            Einheit
+            {t.capacityScreen.unit}
           </label>
           <div className="flex items-center gap-2 border rounded-lg p-1" style={{ borderColor: 'var(--border-input)' }}>
             <button
@@ -1144,7 +1144,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 opacity: 0.5
               }}
             >
-              Warenträger
+              {t.capacityScreen.fixtures}
             </button>
           </div>
         </div>
@@ -1189,10 +1189,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
           <Info size={20} style={{ color: 'var(--status-danger)', flexShrink: 0, marginTop: '2px' }} />
           <div>
             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--status-danger)', marginBottom: '4px' }}>
-              Keine Saison ausgewählt
+              {t.common.noSeasonSelected}
             </div>
             <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-              Bitte wählen Sie mindestens eine Saison aus, um Kapazitätsdaten anzuzeigen.
+              {t.common.pleaseSelectSeason}
             </div>
           </div>
         </div>
@@ -1464,7 +1464,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                 className="py-12 text-center"
                 style={{ color: 'var(--text-muted)' }}
               >
-                Keine Daten für die ausgewählten Filter verfügbar.
+                {t.common.noDataForFilters}
               </div>
             ) : (
               <DataGrid
@@ -1520,7 +1520,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   fontSize: 'var(--font-size-lg)',
                   fontWeight: 'var(--font-weight-semibold)'
                 }}>
-                  Produkt auswählen
+                  {t.capacityScreen.product} {t.common.selectAll?.split(' ')[1] || ''}
                 </h2>
                 <button
                   onClick={() => setShowProductModal(false)}
@@ -1609,7 +1609,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   onCheckedChange={handleProductSelectionToggleAll}
                 />
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                  Alle auswählen ({productsForModal.length} Produkte)
+                  {t.common.selectAll} ({productsForModal.length} {t.capacityScreen.product})
                 </span>
               </div>
               
@@ -1672,7 +1672,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   height: 'var(--height-button-md)'
                 }}
               >
-                {selectedProducts.length} Produkte übernehmen
+                {selectedProducts.length} {t.capacityScreen.product} {t.common.apply}
               </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, GripVertical, Trash2, Plus } from 'lucide-react';
+import { useLanguage } from '../../i18n';
 
 interface StoreInCluster {
   id: string;
@@ -34,6 +35,7 @@ const MOCK_STORES: StoreInCluster[] = [
 ];
 
 export function ClusterTable({ onAddCluster }: ClusterTableProps) {
+  const { t } = useLanguage();
   const [clusters, setClusters] = useState<Cluster[]>([
     {
       id: 'cluster-1',
@@ -58,7 +60,7 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
     },
     {
       id: 'unassigned',
-      name: 'Nicht zugeordnet',
+      name: t.clusterScreen.unassigned,
       stores: [],
       color: '#6b7280',
       isExpanded: true
@@ -148,7 +150,7 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
       {/* Header with Add Cluster Button */}
       <div className="flex items-center justify-between mb-4">
         <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)' }}>
-          Cluster-Zuordnung
+          {t.clusterScreen.clusterAssignment}
         </h3>
         <button
           onClick={onAddCluster}
@@ -161,7 +163,7 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
           }}
         >
           <Plus size={14} />
-          Neuen Cluster anlegen
+          {t.clusterScreen.newCluster}
         </button>
       </div>
 
@@ -171,11 +173,11 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
           <thead style={{ position: 'sticky', top: 0, backgroundColor: 'var(--surface-alt)', zIndex: 10 }}>
             <tr style={{ borderBottom: '1px solid var(--border-default)' }}>
               <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '40px' }}></th>
-              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '250px' }}>Cluster / Filiale</th>
-              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Beschreibung</th>
-              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Adresse</th>
-              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Land</th>
-              <th className="text-right p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Größe (m²)</th>
+              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '250px' }}>{t.clusterScreen.clusters} / {t.clusterScreen.stores}</th>
+              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.description}</th>
+              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.address}</th>
+              <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.country}</th>
+              <th className="text-right p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.size}</th>
               <th className="text-right p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '50px' }}></th>
             </tr>
           </thead>
