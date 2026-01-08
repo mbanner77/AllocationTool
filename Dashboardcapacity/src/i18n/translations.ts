@@ -167,6 +167,13 @@ export const translations = {
       systemChecksRunning: 'Systemprüfungen werden durchgeführt...',
       transferredToRun: 'Zur Umsetzung übertragen',
       draftStatus: 'Variante ist im Entwurfsstadium',
+      released: 'Freigegeben',
+      recipientDetermination: 'Empfängerermittlung',
+      deliveryDates: 'Liefertermine',
+      availability: 'Verfügbarkeit',
+      capacityAssumptions: 'Kapazitätsannahmen',
+      blockingExceptions: 'Blockierende Ausnahmen',
+      variantReleased: 'Variante erfolgreich freigegeben',
     },
     // Exceptions
     exceptions: {

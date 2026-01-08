@@ -76,7 +76,7 @@ const STATUS_CONFIG = {
     icon: CheckCircle
   },
   approved: {
-    label: 'Freigegeben',
+    label: t?.scenarios?.released || 'Freigegeben',
     color: '#10b981',
     bgColor: '#d1fae5',
     icon: CheckCircle
@@ -225,7 +225,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
       const updatedVariant = { ...selectedVariant, status: 'approved' as VariantStatus };
       setSelectedVariant(updatedVariant);
       setApprovalReason('');
-      alert('Variante erfolgreich freigegeben');
+      alert(t.scenarios.variantReleased);
     }
   };
 
@@ -963,11 +963,11 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   <div className="space-y-2">
                     {Object.entries(selectedVariant.validationResults).map(([key, passed]) => {
                       const labels: Record<string, string> = {
-                        recipientDetermination: 'Empfängerermittlung',
-                        deliveryDates: 'Liefertermine',
-                        availability: 'Verfügbarkeit',
-                        capacityAssumptions: 'Kapazitätsannahmen',
-                        blockingExceptions: 'Blockierende Ausnahmen'
+                        recipientDetermination: t.scenarios.recipientDetermination,
+                        deliveryDates: t.scenarios.deliveryDates,
+                        availability: t.scenarios.availability,
+                        capacityAssumptions: t.scenarios.capacityAssumptions,
+                        blockingExceptions: t.scenarios.blockingExceptions
                       };
                       return (
                         <div key={key} className="flex items-center justify-between">
@@ -1016,11 +1016,11 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
               <div className="space-y-4">
                 {selectedVariant.validationResults && Object.entries(selectedVariant.validationResults).map(([key, passed]) => {
                   const labels: Record<string, string> = {
-                    recipientDetermination: 'Empfängerermittlung',
-                    deliveryDates: 'Liefertermine',
-                    availability: 'Verfügbarkeit',
-                    capacityAssumptions: 'Kapazitätsannahmen',
-                    blockingExceptions: 'Blockierende Ausnahmen'
+                    recipientDetermination: t.scenarios.recipientDetermination,
+                    deliveryDates: t.scenarios.deliveryDates,
+                    availability: t.scenarios.availability,
+                    capacityAssumptions: t.scenarios.capacityAssumptions,
+                    blockingExceptions: t.scenarios.blockingExceptions
                   };
                   return (
                     <div
