@@ -258,6 +258,18 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
   const statusConfig = selectedVariant ? STATUS_CONFIG[selectedVariant.status] : null;
   const StatusIcon = statusConfig?.icon;
 
+  // Helper to get translated status labels
+  const getStatusLabel = (status: VariantStatus) => {
+    const labels: Record<VariantStatus, string> = {
+      draft: t.scenariosScreen.statusDraft,
+      simulated: t.scenariosScreen.statusSimulated,
+      validated: t.scenariosScreen.statusValidated,
+      approved: t.scenarios.released,
+      transferred: t.scenarios.transferredToRun
+    };
+    return labels[status];
+  };
+
   return (
     <div className="flex h-screen" style={{ backgroundColor: 'var(--surface-base)' }}>
       {/* LEFT SIDEBAR - Scenario & Variants */}
@@ -346,7 +358,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                         }}
                       >
                         <Icon size={12} />
-                        <span>{config.label}</span>
+                        <span>{getStatusLabel(variant.status)}</span>
                       </div>
                     </div>
 
@@ -810,15 +822,15 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                 <div className="flex items-center gap-2 mb-2">
                   {StatusIcon && <StatusIcon size={20} style={{ color: statusConfig?.color }} />}
                   <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: statusConfig?.color }}>
-                    {statusConfig?.label}
+                    {getStatusLabel(selectedVariant.status)}
                   </span>
                 </div>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {selectedVariant.status === 'simulated' && 'Simulation abgeschlossen – Validierung erforderlich'}
-                  {selectedVariant.status === 'validated' && 'Alle Systemprüfungen bestanden'}
-                  {selectedVariant.status === 'approved' && 'Variante ist zur Umsetzung freigegeben'}
-                  {selectedVariant.status === 'transferred' && 'Variante wurde als Allokationslauf übertragen'}
-                  {selectedVariant.status === 'draft' && 'Variante ist im Entwurfsstadium'}
+                  {selectedVariant.status === 'simulated' && t.scenarios.simulationComplete}
+                  {selectedVariant.status === 'validated' && t.scenarios.allChecksPassed}
+                  {selectedVariant.status === 'approved' && t.scenarios.approvedForRelease}
+                  {selectedVariant.status === 'transferred' && t.scenarios.transferred}
+                  {selectedVariant.status === 'draft' && t.scenarios.draftStatus}
                 </p>
               </div>
 
