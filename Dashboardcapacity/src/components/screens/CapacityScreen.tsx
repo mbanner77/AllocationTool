@@ -538,7 +538,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
     const overCapacity = aggregatedData.filter(row => row.status === 'Überbelegt').length;
     
     if (overCapacity > 0) {
-      setToast({ message: `Überkapazität in ${overCapacity} Bereichen erkannt`, type: 'warning' });
+      setToast({ message: t.capacityScreen.overAllocated + `: ${overCapacity}`, type: 'warning' });
     } else {
       setToast({ message: t.capacity.title + ' ' + t.common.success.toLowerCase(), type: 'success' });
     }
@@ -612,7 +612,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
   const columns: Column<CapacityRow>[] = [
     { 
       key: 'level', 
-      label: 'Ebene', 
+      label: t.capacityScreen.level, 
       sortable: true,
       render: (value, row) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -954,7 +954,7 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
                   fontWeight: 'var(--font-weight-medium)'
                 }}
               >
-                Planungsebene
+                {t.capacityScreen.level}
               </span>
             )}
           </label>
@@ -1219,10 +1219,10 @@ export function CapacityScreen({ onNavigate }: CapacityScreenProps) {
             </div>
             <div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '2px' }}>
-                Sortimentsverteilung für {selectedStore} analysieren
+                {t.storeLayout.tabAnalysis} - {selectedStore}
               </div>
               <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                Visualisieren Sie, wie Produktgruppen auf Warenträgern verteilt sind
+                {t.storeLayout.subtitle}
               </div>
             </div>
           </div>
