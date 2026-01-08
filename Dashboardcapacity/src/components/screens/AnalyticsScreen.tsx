@@ -267,7 +267,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
   };
 
   const handleSaveView = () => {
-    alert('Ansicht speichern: Die aktuelle Filtereinstellung würde gespeichert');
+    alert(t.analytics.saveView + ': Die aktuelle Filtereinstellung würde gespeichert');
   };
 
   const tableColumns: Column<AnalyticsData>[] = [
@@ -283,13 +283,13 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     { key: 'season', label: t.analytics.season, sortable: true },
     { 
       key: 'targetCapacity', 
-      label: 'SOLL-Kapazität (m²)',
+      label: t.analytics.targetCapacity + ' (m²)',
       align: 'right',
       sortable: true
     },
     { 
       key: 'actualCapacity', 
-      label: 'IST-Kapazität (m²)',
+      label: t.analytics.actual + ' (m²)',
       align: 'right',
       sortable: true,
       render: (value, row) => (
@@ -431,7 +431,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Zeitraum von
+                {t.analytics.dateFrom}
               </label>
               <input
                 type="date"
@@ -456,7 +456,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Zeitraum bis
+                {t.analytics.dateTo}
               </label>
               <input
                 type="date"
@@ -585,7 +585,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
               }}
             >
               <Save size={16} />
-              Ansicht speichern
+              {t.analytics.saveView}
             </button>
           </div>
         </div>
@@ -602,7 +602,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            SOLL-Kapazität
+            {t.analytics.targetCapacity}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>
             {kpis.targetCapacity.toLocaleString('de-DE')} m²
@@ -618,7 +618,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            IST-Kapazitätsauslastung
+            {t.analytics.actualCapacityUtilization}
           </div>
           <div 
             style={{ 
@@ -672,7 +672,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            Prognoseabdeckung
+            {t.analytics.forecastCoverage}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>
             {kpis.forecastCoverage.toFixed(1)}%
@@ -694,7 +694,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-            Kapazität SOLL vs. IST über Zeit
+            {t.analytics.capacityTargetVsActual}
           </h3>
           <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0}>
             <AreaChart data={CAPACITY_OVER_TIME}>
@@ -703,10 +703,10 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
               <YAxis style={{ fontSize: 'var(--font-size-xs)' }} />
               <Tooltip />
               <Legend />
-              <Area type="monotone" dataKey="over" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.3} name="Überkapazität" />
-              <Area type="monotone" dataKey="under" stackId="2" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} name="Untererfüllung" />
-              <Line type="monotone" dataKey="target" stroke="#94a3b8" strokeDasharray="5 5" strokeWidth={2} name="SOLL" dot={false} />
-              <Line type="monotone" dataKey="actual" stroke="#2563eb" strokeWidth={2} name="IST" />
+              <Area type="monotone" dataKey="over" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.3} name={t.analytics.overCapacity} />
+              <Area type="monotone" dataKey="under" stackId="2" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} name={t.analytics.underCapacity} />
+              <Line type="monotone" dataKey="target" stroke="#94a3b8" strokeDasharray="5 5" strokeWidth={2} name={t.analytics.target} dot={false} />
+              <Line type="monotone" dataKey="actual" stroke="#2563eb" strokeWidth={2} name={t.analytics.actual} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -754,7 +754,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-            Bestände & Bedarf
+            {t.analytics.stockAndDemand}
           </h3>
           <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0}>
             <BarChart data={STOCK_AND_DEMAND}>
@@ -763,9 +763,9 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
               <YAxis style={{ fontSize: 'var(--font-size-xs)' }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="storeStock" stackId="a" fill="#3b82f6" name="Filialbestand" />
-              <Bar dataKey="warehouseStock" stackId="a" fill="#60a5fa" name="VZ-Bestand" />
-              <Line type="monotone" dataKey="demand" stroke="#ef4444" strokeWidth={2} name="Bedarf" />
+              <Bar dataKey="storeStock" stackId="a" fill="#3b82f6" name={t.analytics.storeStock} />
+              <Bar dataKey="warehouseStock" stackId="a" fill="#60a5fa" name={t.analytics.warehouseStock} />
+              <Line type="monotone" dataKey="demand" stroke="#ef4444" strokeWidth={2} name={t.analytics.demand} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -779,7 +779,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-            Prognose vs. Allokation
+            {t.analytics.forecastVsAllocation}
           </h3>
           <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0}>
             <BarChart data={FORECAST_VS_ALLOCATION}>
@@ -788,9 +788,9 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
               <YAxis style={{ fontSize: 'var(--font-size-xs)' }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="forecast" fill="#94a3b8" name="Prognose" />
-              <Bar dataKey="allocated" fill="#2563eb" name="Allokiert" />
-              <Bar dataKey="sales" fill="#10b981" name="Abverkauf" />
+              <Bar dataKey="forecast" fill="#94a3b8" name={t.analytics.forecast} />
+              <Bar dataKey="allocated" fill="#2563eb" name={t.analytics.allocated} />
+              <Bar dataKey="sales" fill="#10b981" name={t.analytics.sales} />
             </BarChart>
           </ResponsiveContainer>
         </div>

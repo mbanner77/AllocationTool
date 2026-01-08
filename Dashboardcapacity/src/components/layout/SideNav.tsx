@@ -1,4 +1,4 @@
-import { Home, Settings, Package, Briefcase, PlayCircle, AlertTriangle, Sliders, LayoutGrid, GitBranch, Layers, Database } from 'lucide-react';
+import { Home, Settings, Package, Briefcase, PlayCircle, AlertTriangle, Sliders, LayoutGrid, GitBranch, Layers, Database, BarChart2 } from 'lucide-react';
 import { useLanguage } from '../../i18n';
 
 interface SideNavProps {
@@ -23,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'work', labelKey: 'workQueue', icon: Briefcase, badge: 3 },
   { id: 'runs', labelKey: 'runs', icon: PlayCircle },
   { id: 'scenarios', labelKey: 'scenarios', icon: GitBranch },
+  { id: 'analytics', labelKey: 'analytics', icon: BarChart2 },
   { id: 'exceptions', labelKey: 'exceptions', icon: AlertTriangle, badge: 12 },
   { id: 'dataManager', labelKey: 'dataManager', icon: Database },
 ];
