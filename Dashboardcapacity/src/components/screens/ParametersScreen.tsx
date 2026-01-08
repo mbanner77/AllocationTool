@@ -59,13 +59,7 @@ interface StoreBlockingRule {
   reason?: string;
 }
 
-const HIERARCHY_LEVELS = [
-  { value: 'company', label: 'Unternehmen' },
-  { value: 'division', label: 'Einkaufsbereich' },
-  { value: 'category', label: 'Warengruppe' },
-  { value: 'productGroup', label: 'Produktgruppe' },
-  { value: 'article', label: 'Artikel' }
-];
+// Hierarchy levels will be translated in the component using t()
 
 const SOURCE_COLORS = {
   'direct': 'var(--status-success)',
@@ -127,13 +121,7 @@ const MOCK_ARTICLE_HIERARCHY: ArticleHierarchyNode[] = [
   }
 ];
 
-const BLOCKING_TYPE_LABELS = {
-  'full': 'Vollständig blockiert',
-  'initialOnly': 'Nur Erstallokation blockiert',
-  'replenishmentOnly': 'Nur Nachschub blockiert',
-  'presentationOnly': 'Nur Präsentation blockiert',
-  'forecastIgnore': 'Prognose ignorieren'
-};
+// Blocking type labels will be translated in the component using t()
 
 // Mock Store Blocking Rules
 const MOCK_STORE_BLOCKING_RULES: StoreBlockingRule[] = [
@@ -496,6 +484,22 @@ export function ParametersScreen() {
     'default': t.parameters.defaultSystem
   };
   
+  const HIERARCHY_LEVELS = [
+    { value: 'company', label: t.parameters.company },
+    { value: 'division', label: t.parameters.division },
+    { value: 'category', label: t.parameters.categoryLevel },
+    { value: 'productGroup', label: t.parameters.productGroup },
+    { value: 'article', label: t.parameters.article }
+  ];
+  
+  const BLOCKING_TYPE_LABELS: Record<string, string> = {
+    'full': t.common.all + ' ' + t.common.inactive,
+    'initialOnly': t.parameters.initialAllocation + ' ' + t.common.inactive,
+    'replenishmentOnly': t.parameters.replenishment + ' ' + t.common.inactive,
+    'presentationOnly': t.common.inactive,
+    'forecastIgnore': t.common.inactive
+  };
+  
   const [activeTab, setActiveTab] = useState<TabKey>('capacity');
   const [parameters, setParameters] = useState<Parameter[]>(MOCK_PARAMETERS);
   const [loading, setLoading] = useState(true);
@@ -634,8 +638,8 @@ export function ParametersScreen() {
                 backgroundColor: 'var(--surface-page)'
               }}
             >
-              <option value="true">Ja</option>
-              <option value="false">Nein</option>
+              <option value="true">{t.common.yes}</option>
+              <option value="false">{t.common.no}</option>
             </select>
           );
         case 'enum':
