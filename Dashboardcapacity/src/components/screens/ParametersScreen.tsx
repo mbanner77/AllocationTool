@@ -849,7 +849,7 @@ export function ParametersScreen() {
             {/* Date Filters */}
             <input
               type="date"
-              placeholder="Gültig von"
+              placeholder={t.parameters.validFrom}
               value={validFromFilter}
               onChange={(e) => setValidFromFilter(e.target.value)}
               className="px-3 py-2 border rounded-lg"
@@ -863,7 +863,7 @@ export function ParametersScreen() {
             
             <input
               type="date"
-              placeholder="Gültig bis"
+              placeholder={t.parameters.validTo}
               value={validToFilter}
               onChange={(e) => setValidToFilter(e.target.value)}
               className="px-3 py-2 border rounded-lg"
@@ -946,31 +946,31 @@ export function ParametersScreen() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-default)' }}>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '200px' }}>
-                  Parametername
+                  {t.parameters.parameterName}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '120px' }}>
-                  Ebene
+                  {t.parameters.levels}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '180px' }}>
-                  Artikelhierarchie
+                  {t.parameters.articleHierarchy}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '150px' }}>
-                  Wert
+                  {t.parameters.value}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '180px' }}>
-                  Herkunft
+                  {t.parameters.source}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '110px' }}>
-                  Gültig von
+                  {t.parameters.validFrom}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '110px' }}>
-                  Gültig bis
+                  {t.parameters.validTo}
                 </th>
                 <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', width: '80px' }}>
-                  Override
+                  {t.parameters.override}
                 </th>
                 <th style={{ textAlign: 'center', padding: '12px 8px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', width: '100px' }}>
-                  Aktionen
+                  {t.parameters.actions}
                 </th>
               </tr>
             </thead>
@@ -1064,7 +1064,7 @@ export function ParametersScreen() {
                       </span>
                       {param.inheritedFrom && (
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '4px' }}>
-                          von {param.inheritedFrom}
+                          {t.parameters.inheritedFrom}: {param.inheritedFrom}
                         </div>
                       )}
                     </div>
@@ -1074,7 +1074,7 @@ export function ParametersScreen() {
                   </td>
                   <td style={{ padding: '12px 8px', fontSize: 'var(--font-size-sm)' }}>
                     {param.validTo ? new Date(param.validTo).toLocaleDateString('de-DE') : (
-                      <span style={{ color: 'var(--text-muted)' }}>Unbegrenzt</span>
+                      <span style={{ color: 'var(--text-muted)' }}>—</span>
                     )}
                   </td>
                   <td style={{ padding: '12px 8px', textAlign: 'center' }}>
@@ -1214,12 +1214,12 @@ export function ParametersScreen() {
               {/* Source Info */}
               <div>
                 <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-                  Herkunftsinformationen
+                  {t.parameters.source}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                      Quelle
+                      {t.parameters.source}
                     </div>
                     <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                       {SOURCE_LABELS[selectedParameter.source]}
@@ -1228,7 +1228,7 @@ export function ParametersScreen() {
                   {selectedParameter.inheritedFrom && (
                     <div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                        Geerbt von
+                        {t.parameters.inheritedFrom}
                       </div>
                       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                         {selectedParameter.inheritedFrom}
@@ -1241,12 +1241,12 @@ export function ParametersScreen() {
               {/* Validity Period */}
               <div>
                 <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-                  Gültigkeitszeitraum
+                  {t.parameters.validFrom} / {t.parameters.validTo}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                      Gültig von
+                      {t.parameters.validFrom}
                     </div>
                     <input
                       type="date"
@@ -1261,12 +1261,12 @@ export function ParametersScreen() {
                   </div>
                   <div>
                     <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                      Gültig bis
+                      {t.parameters.validTo}
                     </div>
                     <input
                       type="date"
                       value={selectedParameter.validTo || ''}
-                      placeholder="Unbegrenzt"
+                      placeholder="—"
                       className="px-3 py-2 border rounded-lg w-full"
                       style={{
                         borderColor: 'var(--border-input)',
@@ -1374,7 +1374,7 @@ export function ParametersScreen() {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Schließen
+                {t.common.close}
               </button>
               <button
                 className="px-4 py-2 rounded-lg"
@@ -1384,7 +1384,7 @@ export function ParametersScreen() {
                   height: 'var(--height-button-md)'
                 }}
               >
-                Änderungen speichern
+                {t.common.save}
               </button>
             </div>
           </div>
