@@ -145,6 +145,29 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
     });
   };
 
+  const CLUSTER_COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+  
+  const addNewCluster = () => {
+    const existingClusters = clusters.filter(c => c.id !== 'unassigned');
+    const nextLetter = String.fromCharCode(65 + existingClusters.length); // A, B, C, ...
+    const nextColor = CLUSTER_COLORS[existingClusters.length % CLUSTER_COLORS.length];
+    
+    const newCluster: Cluster = {
+      id: `cluster-${Date.now()}`,
+      name: `Cluster ${nextLetter} - Neu`,
+      stores: [],
+      color: nextColor,
+      isExpanded: true
+    };
+    
+    // Insert before unassigned
+    setClusters(prev => {
+      const unassignedIndex = prev.findIndex(c => c.id === 'unassigned');
+      if (unassignedIndex === -1) return [...prev, newCluster];
+      return [...prev.slice(0, unassignedIndex), newCluster, ...prev.slice(unassignedIndex)];
+    });
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Header with Add Cluster Button */}
@@ -153,7 +176,7 @@ export function ClusterTable({ onAddCluster }: ClusterTableProps) {
           {t.clusterScreen.clusterAssignment}
         </h3>
         <button
-          onClick={onAddCluster}
+          onClick={addNewCluster}
           className="px-3 py-1.5 rounded-lg border flex items-center gap-2 transition-colors"
           style={{
             backgroundColor: 'var(--brand-primary)',
