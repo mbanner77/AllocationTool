@@ -214,6 +214,38 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
   const [sizeCurveMode, setSizeCurveMode] = useState<'absolute' | 'percentage'>('absolute');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Translated data for categories
+  const translatedCategoryData = useMemo(() => [
+    { category: t.data.categories.shoes, deviation: 450, color: '#ef4444', key: 'shoes' },
+    { category: t.data.categories.outerwear, deviation: -280, color: '#3b82f6', key: 'outerwear' },
+    { category: t.data.categories.pants, deviation: 120, color: '#ef4444', key: 'pants' },
+    { category: t.data.categories.accessories, deviation: -150, color: '#3b82f6', key: 'accessories' },
+    { category: t.data.categories.sportEquipment, deviation: 200, color: '#ef4444', key: 'sportEquipment' },
+    { category: t.data.categories.underwear, deviation: -90, color: '#3b82f6', key: 'underwear' },
+  ], [t]);
+
+  // Category options for filter dropdown
+  const categoryOptions = useMemo(() => [
+    { value: 'shoes', label: t.data.categories.shoes },
+    { value: 'outerwear', label: t.data.categories.outerwear },
+    { value: 'pants', label: t.data.categories.pants },
+    { value: 'accessories', label: t.data.categories.accessories },
+    { value: 'sportEquipment', label: t.data.categories.sportEquipment },
+  ], [t]);
+
+  // Season options for filter dropdown
+  const seasonOptions = useMemo(() => [
+    { value: 'FS25', label: t.data.seasons.fs25 },
+    { value: 'HW25', label: t.data.seasons.hw25 },
+    { value: 'FS26', label: t.data.seasons.fs26 },
+  ], [t]);
+
+  // Process options for filter dropdown
+  const processOptions = useMemo(() => [
+    { value: 'initial', label: t.data.processes.initial },
+    { value: 'replenishment', label: t.data.processes.replenishment },
+  ], [t]);
+
   // Filtered data
   const filteredData = useMemo(() => {
     return ANALYTICS_TABLE_DATA.filter(item => {
@@ -493,10 +525,10 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">{t.common.all} {t.analytics.season}</option>
-                <option value="FS25">Frühjahr/Sommer 2025</option>
-                <option value="HW25">Herbst/Winter 2025</option>
-                <option value="FS26">Frühjahr/Sommer 2026</option>
+                <option value="all">{t.common.all}</option>
+                {seasonOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
 
@@ -523,8 +555,9 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                 }}
               >
                 <option value="all">{t.common.all}</option>
-                <option value="initial">Initiale Allokation</option>
-                <option value="replenishment">Nachschub</option>
+                {processOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
 
@@ -551,11 +584,9 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                 }}
               >
                 <option value="all">{t.common.all}</option>
-                <option value="Schuhe">Schuhe</option>
-                <option value="Oberbekleidung">Oberbekleidung</option>
-                <option value="Hosen">Hosen</option>
-                <option value="Accessoires">Accessoires</option>
-                <option value="Sport Equipment">Sport Equipment</option>
+                {categoryOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -723,7 +754,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
             {t.analytics.overUnderByCategory}
           </h3>
           <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0}>
-            <BarChart data={CAPACITY_BY_CATEGORY} layout="horizontal">
+            <BarChart data={translatedCategoryData} layout="horizontal">
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
               <XAxis type="number" style={{ fontSize: 'var(--font-size-xs)' }} />
               <YAxis type="category" dataKey="category" width={120} style={{ fontSize: 'var(--font-size-xs)' }} />

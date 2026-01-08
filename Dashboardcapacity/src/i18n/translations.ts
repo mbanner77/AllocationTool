@@ -951,6 +951,38 @@ export const translations = {
       allocated: 'Allokiert',
       sales: 'Abverkauf',
     },
+    // Data translations (for database/mock data)
+    data: {
+      // Categories
+      categories: {
+        shoes: 'Schuhe',
+        outerwear: 'Oberbekleidung',
+        pants: 'Hosen',
+        accessories: 'Accessoires',
+        sportEquipment: 'Sport Equipment',
+        underwear: 'Unterwäsche',
+      },
+      // Seasons
+      seasons: {
+        fs25: 'Frühjahr/Sommer 2025',
+        hw25: 'Herbst/Winter 2025',
+        fs26: 'Frühjahr/Sommer 2026',
+      },
+      // Processes
+      processes: {
+        initial: 'Initiale Allokation',
+        replenishment: 'Nachschub',
+      },
+      // Article names
+      articles: {
+        runningShoesPro: 'Running Schuhe Pro',
+        winterJacketPremium: 'Winter Jacke Premium',
+        sportTShirtBasic: 'Sport T-Shirt Basic',
+        jeansSlimFit: 'Jeans Slim Fit',
+        backpackUrban: 'Rucksack Urban',
+        football: 'Fußball',
+      },
+    },
     // Scenarios Screen
     scenariosScreen: {
       title: 'Szenario- & Variantenmanagement',
@@ -1904,6 +1936,38 @@ export const translations = {
       forecast: 'Forecast',
       allocated: 'Allocated',
       sales: 'Sales',
+    },
+    // Data translations (for database/mock data)
+    data: {
+      // Categories
+      categories: {
+        shoes: 'Shoes',
+        outerwear: 'Outerwear',
+        pants: 'Pants',
+        accessories: 'Accessories',
+        sportEquipment: 'Sport Equipment',
+        underwear: 'Underwear',
+      },
+      // Seasons
+      seasons: {
+        fs25: 'Spring/Summer 2025',
+        hw25: 'Fall/Winter 2025',
+        fs26: 'Spring/Summer 2026',
+      },
+      // Processes
+      processes: {
+        initial: 'Initial Allocation',
+        replenishment: 'Replenishment',
+      },
+      // Article names
+      articles: {
+        runningShoesPro: 'Running Shoes Pro',
+        winterJacketPremium: 'Winter Jacket Premium',
+        sportTShirtBasic: 'Sport T-Shirt Basic',
+        jeansSlimFit: 'Jeans Slim Fit',
+        backpackUrban: 'Backpack Urban',
+        football: 'Football',
+      },
     },
     // Scenarios Screen
     scenariosScreen: {
