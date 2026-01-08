@@ -158,6 +158,15 @@ export const translations = {
       baseVariant: 'Basisvariante',
       optimizedDistribution: 'Optimierte Verteilung',
       equalDistribution: 'Gleichverteilung',
+      extendedView: 'Erweiterte Ansicht',
+      releaseVariant: 'Variante freigeben',
+      transferToAllocation: 'In Allokationslauf überführen',
+      allocationCreated: 'Allokationslauf wurde erfolgreich erzeugt',
+      variantImmutable: 'Diese Variante ist unveränderlich und wurde einem Allokationslauf zugeordnet.',
+      noCriticalExceptions: 'Keine kritischen Ausnahmen',
+      systemChecksRunning: 'Systemprüfungen werden durchgeführt...',
+      transferredToRun: 'Zur Umsetzung übertragen',
+      draftStatus: 'Variante ist im Entwurfsstadium',
     },
     // Exceptions
     exceptions: {
@@ -738,6 +747,7 @@ export const translations = {
       count: 'Anzahl',
       occupiedArea: 'Belegte Fläche (m²)',
       capacitySt: 'Kapazität (St)',
+      assignedCategory: 'Zugeordnete Warengruppe',
       assignedCategories: 'Zugeordnete Warengruppen',
       noFixturesPlaced: 'Keine Warenträger platziert',
       dragFixtureHint: 'Ziehen Sie Warenträger aus der linken Palette auf die Fläche',

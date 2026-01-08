@@ -365,7 +365,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                           </span>
                         </div>
                         <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-xs)' }}>
-                          <span style={{ color: 'var(--text-muted)' }}>Kritische Ausnahmen:</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{t.scenarios.criticalExceptions}:</span>
                           <span
                             style={{
                               fontWeight: 'var(--font-weight-medium)',
@@ -425,7 +425,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                 whiteSpace: 'nowrap'
               }}
             >
-              Erweiterte Ansicht →
+              {t.scenarios.extendedView} →
             </button>
           </div>
 
@@ -501,7 +501,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                   }}
                 >
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                    Kritische Ausnahmen
+                    {t.scenarios.criticalExceptions}
                   </div>
                   <div
                     style={{
@@ -888,7 +888,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                       fontWeight: 'var(--font-weight-medium)'
                     }}
                   >
-                    Variante freigeben
+                    {t.scenarios.releaseVariant}
                   </button>
                 </div>
               )}
@@ -907,7 +907,7 @@ export function ScenariosScreen({ onNavigate }: ScenariosScreenProps) {
                     }}
                   >
                     <Play size={16} className="inline mr-2" />
-                    In Allokationslauf überführen
+                    {t.scenarios.transferToAllocation}
                   </button>
                 </div>
               )}

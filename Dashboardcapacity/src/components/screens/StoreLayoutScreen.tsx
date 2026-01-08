@@ -716,7 +716,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
               <div className="flex gap-4">
                 <div className="text-center">
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Gesamtfläche
+                    {t.storeLayout.totalArea}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
                     {kpi.totalArea} m²
@@ -724,7 +724,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                 </div>
                 <div className="text-center">
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Nutzbare Fläche
+                    {t.storeLayout.availableArea}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
                     {kpi.usableArea} m²
@@ -732,7 +732,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                 </div>
                 <div className="text-center">
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Belegte Fläche
+                    {t.storeLayout.occupiedAreaKpi}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>
                     {kpi.occupiedArea.toFixed(1)} m²
@@ -740,7 +740,7 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                 </div>
                 <div className="text-center">
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    Freie Fläche
+                    {t.storeLayout.freeArea}
                   </div>
                   <div 
                     style={{ 
@@ -1091,16 +1091,16 @@ export function StoreLayoutScreen({ onNavigate }: StoreLayoutScreenProps) {
                           {t.storeLayout.fixtureType}
                         </th>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                          Anzahl
+                          {t.storeLayout.count}
                         </th>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                          Belegte Fläche (m²)
+                          {t.storeLayout.occupiedArea}
                         </th>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                           Kapazitt (m²)
                         </th>
                         <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                          Zugeordnete Warengruppe
+                          {t.storeLayout.assignedCategory}
                         </th>
                       </tr>
                     </thead>
