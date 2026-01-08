@@ -364,6 +364,9 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [workView, setWorkView] = useState<WorkView>('initial');
   
+  // Plan & Preview Modal
+  const [showPlanPreview, setShowPlanPreview] = useState(false);
+  
   // Allocation Run Modal
   const [showRunModal, setShowRunModal] = useState(false);
   const [selectedRun, setSelectedRun] = useState<string | null>(null);
@@ -531,6 +534,17 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     }
     setModalArticles(bookmarkedArticles);
     setShowModal(true);
+  };
+  
+  const handlePlanPreview = () => {
+    const bookmarkedArticles = articles.filter(a => a.bookmarked);
+    if (bookmarkedArticles.length === 0) {
+      setToast({ message: t.work.noArticlesSelected, type: 'error' });
+      setTimeout(() => setToast(null), 3000);
+      return;
+    }
+    setModalArticles(bookmarkedArticles);
+    setShowPlanPreview(true);
   };
   
   const handleRemoveFromModal = (articleId: string) => {
@@ -1052,6 +1066,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
           )}
           
           <button
+            onClick={handlePlanPreview}
             className="px-4 py-2 rounded-lg border"
             style={{
               backgroundColor: 'var(--button-secondary-bg)',
@@ -2007,6 +2022,136 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   Allokationslauf öffnen
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Plan & Preview Modal */}
+      {showPlanPreview && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={() => setShowPlanPreview(false)}
+        >
+          <div
+            className="rounded-lg border shadow-xl"
+            style={{
+              backgroundColor: 'var(--surface-page)',
+              borderColor: 'var(--border-default)',
+              width: '800px',
+              maxHeight: '80vh',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="p-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
+              <div className="flex items-center justify-between">
+                <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)' }}>
+                  {t.work.planPreview}
+                </h2>
+                <button onClick={() => setShowPlanPreview(false)} className="p-1 rounded" style={{ color: 'var(--text-muted)' }}>
+                  <X size={20} />
+                </button>
+              </div>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '8px' }}>
+                Vorschau der geplanten Allokation für {modalArticles.length} Artikel
+              </p>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Summary Cards */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--surface-alt)' }}>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Artikel</div>
+                  <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)' }}>{modalArticles.length}</div>
+                </div>
+                <div className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--surface-alt)' }}>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Überkapazität</div>
+                  <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--status-danger)' }}>
+                    {modalArticles.filter(a => a.capacityImpact === 'Überkapazität').length}
+                  </div>
+                </div>
+                <div className="p-4 rounded-lg border" style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--surface-alt)' }}>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Ausgeglichen</div>
+                  <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--status-success)' }}>
+                    {modalArticles.filter(a => a.capacityImpact === 'Ausgeglichen').length}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Article List */}
+              <div className="rounded-lg border overflow-hidden" style={{ borderColor: 'var(--border-default)' }}>
+                <table className="w-full">
+                  <thead>
+                    <tr style={{ backgroundColor: 'var(--surface-alt)' }}>
+                      <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Artikel</th>
+                      <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Beschreibung</th>
+                      <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Lieferzeitraum</th>
+                      <th className="text-left p-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Kapazität</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {modalArticles.map(article => (
+                      <tr key={article.id} style={{ borderTop: '1px solid var(--border-default)' }}>
+                        <td className="p-3">
+                          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{article.articleNumber}</span>
+                        </td>
+                        <td className="p-3">
+                          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{article.description}</span>
+                        </td>
+                        <td className="p-3">
+                          <span style={{ fontSize: 'var(--font-size-sm)' }}>{article.deliveryFrom} - {article.deliveryTo}</span>
+                        </td>
+                        <td className="p-3">
+                          <span 
+                            className="px-2 py-1 rounded text-xs"
+                            style={{ 
+                              backgroundColor: article.capacityImpact === 'Überkapazität' ? 'var(--status-danger-subtle)' : 
+                                             article.capacityImpact === 'Ausgeglichen' ? 'var(--status-success-subtle)' : 'var(--status-warning-subtle)',
+                              color: article.capacityImpact === 'Überkapazität' ? 'var(--status-danger)' : 
+                                    article.capacityImpact === 'Ausgeglichen' ? 'var(--status-success)' : 'var(--status-warning)'
+                            }}
+                          >
+                            {article.capacityImpact}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            {/* Footer */}
+            <div className="p-6 border-t flex justify-end gap-3" style={{ borderColor: 'var(--border-default)' }}>
+              <button
+                onClick={() => setShowPlanPreview(false)}
+                className="px-4 py-2 rounded-lg border"
+                style={{
+                  backgroundColor: 'var(--button-secondary-bg)',
+                  borderColor: 'var(--button-secondary-border)',
+                  color: 'var(--button-secondary-text)'
+                }}
+              >
+                {t.common.close}
+              </button>
+              <button
+                onClick={() => {
+                  setShowPlanPreview(false);
+                  setShowModal(true);
+                }}
+                className="px-4 py-2 rounded-lg"
+                style={{
+                  backgroundColor: 'var(--brand-primary)',
+                  color: 'var(--text-inverse)'
+                }}
+              >
+                {t.work.performAllocation}
+              </button>
             </div>
           </div>
         </div>
