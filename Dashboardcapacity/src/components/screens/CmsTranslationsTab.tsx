@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, ChevronDown, ChevronRight, Save, RotateCcw, 
   Download, Upload, Trash2, RefreshCw, Languages, Check, X,
-  AlertCircle
+  AlertCircle, CheckCircle, Info
 } from 'lucide-react';
 import { translationsService } from '../../services/translationsService';
+import { useToast } from '../ui/Toast';
 import { translations, Language } from '../../i18n/translations';
 import { useLanguage } from '../../i18n';
 
@@ -49,8 +50,11 @@ export function CmsTranslationsTab({
   setCmsExpandedSections,
 }: CmsTranslationsTabProps) {
   const { reloadTranslations } = useLanguage();
+  const toast = useToast();
   const [customEntries, setCustomEntries] = useState<Map<string, string>>(new Map());
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [showResetConfirm, setShowResetConfirm] = useState<string | null>(null);
+  const [showClearAllConfirm, setShowClearAllConfirm] = useState(false);
 
   // Get all sections
   const sections = useMemo(() => translationsService.getSections(), []);
@@ -204,8 +208,6 @@ export function CmsTranslationsTab({
 
   // Reset to default
   const resetToDefault = async (item: FlatTranslation) => {
-    if (!confirm(`"${item.fullKey}" auf Standardwert zurücksetzen?`)) return;
-    
     try {
       const parts = item.fullKey.split('.');
       const section = parts[0];
@@ -220,8 +222,11 @@ export function CmsTranslationsTab({
       setCustomEntries(newCustom);
       
       await reloadTranslations();
+      toast.success('Übersetzung zurückgesetzt', `"${item.key}" wurde auf den Standardwert zurückgesetzt.`);
+      setShowResetConfirm(null);
     } catch (error) {
       console.error('Failed to reset translation:', error);
+      toast.error('Fehler', 'Zurücksetzung fehlgeschlagen');
     }
   };
 
@@ -246,25 +251,25 @@ export function CmsTranslationsTab({
       const content = await file.text();
       const result = await translationsService.importTranslations(content);
       if (result.success) {
-        alert(`${result.count} Übersetzungen importiert`);
+        toast.success('Import erfolgreich', `${result.count} Übersetzungen wurden importiert.`);
         await loadCustomEntries();
         await reloadTranslations();
       } else {
-        alert('Import fehlgeschlagen: ' + result.error);
+        toast.error('Import fehlgeschlagen', result.error || 'Unbekannter Fehler');
       }
     } catch (error) {
-      alert('Import fehlgeschlagen');
+      toast.error('Import fehlgeschlagen', 'Die Datei konnte nicht verarbeitet werden.');
     }
     event.target.value = '';
   };
 
   // Clear all custom translations
   const handleClearAll = async () => {
-    if (!confirm('Alle benutzerdefinierten Übersetzungen löschen und auf Standard zurücksetzen?')) return;
-    
     await translationsService.clearAllCustom();
     setCustomEntries(new Map());
     await reloadTranslations();
+    toast.success('Zurückgesetzt', 'Alle benutzerdefinierten Übersetzungen wurden gelöscht.');
+    setShowClearAllConfirm(false);
   };
 
   return (
@@ -297,14 +302,34 @@ export function CmsTranslationsTab({
             Importieren
             <input type="file" accept=".json" onChange={handleImport} className="hidden" />
           </label>
-          <button
-            onClick={handleClearAll}
-            className="px-3 py-1 rounded flex items-center gap-1 text-sm"
-            style={{ border: '1px solid var(--border-default)', color: 'var(--status-error)' }}
-          >
-            <Trash2 size={14} />
-            Alle zurücksetzen
-          </button>
+          {showClearAllConfirm ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm" style={{ color: 'var(--status-danger)' }}>Wirklich alle löschen?</span>
+              <button
+                onClick={handleClearAll}
+                className="px-2 py-1 rounded text-xs"
+                style={{ background: 'var(--status-danger)', color: 'white' }}
+              >
+                Ja
+              </button>
+              <button
+                onClick={() => setShowClearAllConfirm(false)}
+                className="px-2 py-1 rounded text-xs"
+                style={{ border: '1px solid var(--border-default)' }}
+              >
+                Nein
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowClearAllConfirm(true)}
+              className="px-3 py-1 rounded flex items-center gap-1 text-sm"
+              style={{ border: '1px solid var(--border-default)', color: 'var(--status-danger)' }}
+            >
+              <Trash2 size={14} />
+              Alle zurücksetzen
+            </button>
+          )}
         </div>
       </div>
 
