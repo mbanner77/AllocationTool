@@ -76,7 +76,7 @@ const STATUS_CONFIG = {
     icon: CheckCircle
   },
   approved: {
-    label: t?.scenarios?.released || 'Freigegeben',
+    label: 'Freigegeben',
     color: '#10b981',
     bgColor: '#d1fae5',
     icon: CheckCircle
