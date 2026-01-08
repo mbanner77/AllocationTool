@@ -333,6 +333,15 @@ export const translations = {
       referenceId: 'Referenzkennzeichen',
       actions: 'Aktionen',
       globalAllocationSettings: 'Globale Allokationseinstellungen',
+      // Additional Labels
+      name: 'Name',
+      clickToSelect: 'Klicken zum Auswählen...',
+      clickToSet: 'Klicken zum Festlegen...',
+      allocationParameters: 'Allokationsparameter',
+      continueToCapacity: 'Weiter zu Kapazität',
+      yes: 'Ja',
+      no: 'Nein',
+      referenceTooltip: 'Diese Filiale dient als Referenz für Preise und andere abgeleitete Werte.',
     },
     // Simulation
     simulation: {
@@ -1200,6 +1209,15 @@ export const translations = {
       referenceId: 'Reference ID',
       actions: 'Actions',
       globalAllocationSettings: 'Global Allocation Settings',
+      // Additional Labels
+      name: 'Name',
+      clickToSelect: 'Click to select...',
+      clickToSet: 'Click to set...',
+      allocationParameters: 'Allocation Parameters',
+      continueToCapacity: 'Continue to Capacity',
+      yes: 'Yes',
+      no: 'No',
+      referenceTooltip: 'This store serves as reference for prices and other derived values.',
     },
     // Simulation
     simulation: {

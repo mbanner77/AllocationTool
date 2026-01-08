@@ -436,10 +436,10 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         </div>
       )
     },
-    { key: 'name', label: 'Name', sortable: true },
+    { key: 'name', label: t.settings.name, sortable: true },
     { 
       key: 'address', 
-      label: 'Adresse',
+      label: t.settings.address,
       render: (value) => (
         <div style={{ 
           maxWidth: '300px',
@@ -466,7 +466,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         >
           {value.length === 0 ? (
             <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              Klicken zum Auswählen...
+              {t.settings.clickToSelect}
             </span>
           ) : (
             <>
@@ -503,7 +503,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     {
       key: 'actions',
-      label: 'Aktionen',
+      label: t.settings.actions,
       align: 'right',
       render: (value, row) => (
         <div className="flex items-center justify-end gap-2">
@@ -543,8 +543,8 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         </code>
       )
     },
-    { key: 'name', label: 'Name', sortable: true },
-    { key: 'address', label: 'Adresse' },
+    { key: 'name', label: t.settings.name, sortable: true },
+    { key: 'address', label: t.settings.address },
     { 
       key: 'cluster', 
       label: t.settings.clusterAssignment,
@@ -576,7 +576,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     { 
       key: 'isReference', 
-      label: 'Referenzkennzeichen',
+      label: t.settings.referenceId,
       render: (value, row) => (
         <div className="flex items-center gap-2">
           <select
@@ -598,8 +598,8 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <option value="nein">Nein</option>
-            <option value="ja">Ja</option>
+            <option value="nein">{t.settings.no}</option>
+            <option value="ja">{t.settings.yes}</option>
           </select>
           <button className="p-1 group relative">
             <Info size={14} style={{ color: 'var(--text-muted)' }} />
@@ -613,7 +613,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                 zIndex: 10
               }}
             >
-              Diese Filiale dient als Referenz für Preise und andere abgeleitete Werte.
+              {t.settings.referenceTooltip}
             </div>
           </button>
         </div>
@@ -647,7 +647,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     { key: 'name', label: 'Name', sortable: true },
     { 
       key: 'role', 
-      label: 'Rolle',
+      label: t.settings.role,
       render: (value) => (
         <span 
           className="px-3 py-1 rounded-full"
@@ -664,7 +664,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     { 
       key: 'responsibilityArea', 
-      label: 'Verantwortungsbereich',
+      label: t.settings.responsibilityArea,
       render: (value: string, row) => (
         <button
           onClick={(e) => {
@@ -676,7 +676,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         >
           {!value || value === '' ? (
             <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              Klicken zum Festlegen...
+              {t.settings.clickToSet}
             </span>
           ) : (
             <>
@@ -713,7 +713,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     },
     {
       key: 'actions',
-      label: 'Aktionen',
+      label: t.settings.actions,
       align: 'right',
       render: (value, row) => (
         <div className="flex items-center justify-end gap-2">
@@ -742,9 +742,9 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
   ];
   
   const scenarios = [
-    { id: 'initial' as Scenario, name: 'Initiale Allokation' },
-    { id: 'replenishment' as Scenario, name: 'Nachschub' },
-    { id: 'manual' as Scenario, name: 'Manuelle Allokation' },
+    { id: 'initial' as Scenario, name: t.settings.initialAllocation },
+    { id: 'replenishment' as Scenario, name: t.settings.replenishment },
+    { id: 'manual' as Scenario, name: t.settings.manualAllocation },
   ];
   
   const currentScenario = scenarioSettings[selectedScenario];
@@ -778,7 +778,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               height: 'var(--height-button-md)'
             }}
           >
-            Allokationsparameter
+            {t.settings.allocationParameters}
             <ChevronRight size={18} />
           </button>
           
@@ -793,7 +793,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
               height: 'var(--height-button-md)'
             }}
           >
-            Weiter zu Kapazität
+            {t.settings.continueToCapacity}
             <ChevronRight size={18} />
           </button>
         </div>
