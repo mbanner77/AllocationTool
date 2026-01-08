@@ -1,10 +1,13 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { translations, Language, TranslationKeys } from './translations';
+import { translationsService } from '../services/translationsService';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: TranslationKeys;
+  reloadTranslations: () => Promise<void>;
+  isLoadingTranslations: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -22,20 +25,47 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return browserLang.startsWith('de') ? 'de' : 'en';
   });
 
+  // Start with static translations as fallback, then load from DB
+  const [currentTranslations, setCurrentTranslations] = useState<TranslationKeys>(translations[language as keyof typeof translations]);
+  const [isLoadingTranslations, setIsLoadingTranslations] = useState(false);
+
+  // Load translations from database with fallback
+  const loadTranslations = useCallback(async (lang: Language) => {
+    setIsLoadingTranslations(true);
+    try {
+      const merged = await translationsService.getMergedTranslations(lang);
+      setCurrentTranslations(merged);
+    } catch (error) {
+      console.warn('Failed to load translations from DB, using fallback:', error);
+      setCurrentTranslations(translations[lang]);
+    } finally {
+      setIsLoadingTranslations(false);
+    }
+  }, []);
+
+  // Reload translations (for use after CMS updates)
+  const reloadTranslations = useCallback(async () => {
+    await loadTranslations(language);
+  }, [language, loadTranslations]);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem(STORAGE_KEY, lang);
     document.documentElement.lang = lang;
   };
 
+  // Load translations when language changes
   useEffect(() => {
     document.documentElement.lang = language;
-  }, [language]);
+    loadTranslations(language);
+  }, [language, loadTranslations]);
 
   const value: LanguageContextType = {
     language,
     setLanguage,
-    t: translations[language],
+    t: currentTranslations,
+    reloadTranslations,
+    isLoadingTranslations,
   };
 
   return (

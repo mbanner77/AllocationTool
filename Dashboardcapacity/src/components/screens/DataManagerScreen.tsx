@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   Database, RefreshCw, Settings, Upload, Download, 
   CheckCircle, XCircle, Clock, AlertTriangle, Key,
   Globe, Webhook, Save, RotateCcw, FileJson, History,
   Plus, Trash2, Edit2, Eye, Table, HardDrive, RotateCw,
-  Activity, Zap, Shield, Copy, FileUp, AlertCircle, Info
+  Activity, Zap, Shield, Copy, FileUp, AlertCircle, Info,
+  Languages, Search, ChevronDown, ChevronRight, RotateCw as Reload
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { dataService } from '../../services/dataService';
 import { useLanguage } from '../../i18n';
+import { translationsService, TranslationEntry } from '../../services/translationsService';
+import { translations, Language } from '../../i18n/translations';
+import { CmsTranslationsTab } from './CmsTranslationsTab';
 
 interface DataManagerScreenProps {
   onNavigate: (screen: string) => void;
@@ -80,7 +84,16 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editConfig, setEditConfig] = useState<Partial<DataConfig>>({});
-  const [activeTab, setActiveTab] = useState<'data' | 'config' | 'logs' | 'import' | 'export' | 'db'>('data');
+  const [activeTab, setActiveTab] = useState<'data' | 'config' | 'logs' | 'import' | 'export' | 'db' | 'cms'>('data');
+  
+  // CMS State
+  const [cmsSelectedSection, setCmsSelectedSection] = useState<string>('');
+  const [cmsSearchQuery, setCmsSearchQuery] = useState('');
+  const [cmsEditingKey, setCmsEditingKey] = useState<string | null>(null);
+  const [cmsEditValues, setCmsEditValues] = useState<{ de: string; en: string }>({ de: '', en: '' });
+  const [cmsCustomEntries, setCmsCustomEntries] = useState<TranslationEntry[]>([]);
+  const [cmsLoading, setCmsLoading] = useState(false);
+  const [cmsExpandedSections, setCmsExpandedSections] = useState<Set<string>>(new Set());
   const [importData, setImportData] = useState('');
   const [importResult, setImportResult] = useState<{ processed: number; failed: number; errors: string[] } | null>(null);
   const [entityData, setEntityData] = useState<any[]>([]);
@@ -612,7 +625,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
               {/* Tabs */}
               <div style={{ borderBottom: '1px solid var(--border-default)', padding: 'var(--space-2) var(--space-4)' }}>
                 <div className="flex gap-2">
-                  {(['data', 'config', 'logs', 'import', 'export', 'db'] as const).map(tab => (
+                  {(['data', 'config', 'logs', 'import', 'export', 'db', 'cms'] as const).map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -628,6 +641,7 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                       {tab === 'import' && <><Download size={16} className="inline mr-2" />{t.dataManager.tabImport}</>}
                       {tab === 'export' && <><Upload size={16} className="inline mr-2" />{t.dataManager.tabExport}</>}
                       {tab === 'db' && <><HardDrive size={16} className="inline mr-2" />{t.dataManager.tabDb}</>}
+                      {tab === 'cms' && <><Languages size={16} className="inline mr-2" />CMS</>}
                     </button>
                   ))}
                 </div>
@@ -1385,6 +1399,25 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
                       )}
                     </div>
                   </div>
+                )}
+
+                {/* CMS Tab - Translation Management */}
+                {activeTab === 'cms' && (
+                  <CmsTranslationsTab
+                    t={t}
+                    cmsSelectedSection={cmsSelectedSection}
+                    setCmsSelectedSection={setCmsSelectedSection}
+                    cmsSearchQuery={cmsSearchQuery}
+                    setCmsSearchQuery={setCmsSearchQuery}
+                    cmsEditingKey={cmsEditingKey}
+                    setCmsEditingKey={setCmsEditingKey}
+                    cmsEditValues={cmsEditValues}
+                    setCmsEditValues={setCmsEditValues}
+                    cmsLoading={cmsLoading}
+                    setCmsLoading={setCmsLoading}
+                    cmsExpandedSections={cmsExpandedSections}
+                    setCmsExpandedSections={setCmsExpandedSections}
+                  />
                 )}
               </div>
 
