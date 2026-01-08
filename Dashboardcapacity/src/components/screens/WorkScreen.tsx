@@ -730,7 +730,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
   const columns: Column<Article>[] = [
     {
       key: 'bookmarked',
-      label: 'Vormerken',
+      label: t.workScreen.bookmark,
       align: 'center',
       width: '80px',
       render: (value, row) => (
@@ -770,7 +770,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     },
     {
       key: 'color',
-      label: 'Farbe',
+      label: t.workScreen.color,
       width: '120px',
       render: (value, row) => (
         <div className="flex items-center gap-2">
@@ -787,7 +787,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t.common.status,
       width: '140px',
       render: (value, row) => (
         <div className="group relative">
@@ -841,17 +841,17 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     { key: 'season', label: 'Saison' },
     { 
       key: 'deliveryFrom', 
-      label: 'Liefertermin von (Plan)',
+      label: t.workScreen.deliveryFromPlan,
       render: (value) => new Date(value as string).toLocaleDateString('de-DE')
     },
     {
       key: 'deliveryTo',
-      label: 'Liefertermin bis (Plan)',
+      label: t.workScreen.deliveryToPlan,
       render: (value) => new Date(value as string).toLocaleDateString('de-DE')
     },
     { 
       key: 'deliveryFromSimulation', 
-      label: 'Liefertermin von (Simulation)',
+      label: t.workScreen.deliveryFromSimulation,
       render: (value, row) => value ? (
         <div className="group relative flex items-center gap-1">
           <Beaker size={14} style={{ color: '#8b5cf6' }} />
@@ -875,7 +875,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
     },
     {
       key: 'deliveryToSimulation',
-      label: 'Liefertermin bis (Simulation)',
+      label: t.workScreen.deliveryToSimulation,
       render: (value, row) => value ? (
         <div className="flex items-center gap-1">
           <Beaker size={14} style={{ color: '#8b5cf6' }} />
@@ -885,11 +885,11 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
         <span style={{ color: 'var(--text-muted)' }}>-</span>
       )
     },
-    { key: 'stockDC', label: 'Bestand im VZ', align: 'right' },
-    { key: 'sizeCount', label: 'Anzahl Größen', align: 'right' },
+    { key: 'stockDC', label: t.workScreen.stockDC, align: 'right' },
+    { key: 'sizeCount', label: t.workScreen.sizeCount, align: 'right' },
     {
       key: 'capacityNeed',
-      label: 'Kapazitätsbedarf',
+      label: t.workScreen.capacityNeed,
       render: (value) => (
         <span style={{ fontSize: 'var(--font-size-sm)' }}>
           {value}
@@ -900,7 +900,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
       key: 'capacityImpact',
       label: (
         <div className="flex items-center gap-1 group relative">
-          <span>Kapazitätswirkung</span>
+          <span>{t.workScreen.capacityImpact}</span>
           {hasSimulationData && (
             <>
               <Beaker size={14} style={{ color: '#8b5cf6' }} />
@@ -913,8 +913,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   boxShadow: 'var(--shadow-lg)'
                 }}
               >
-                Kapazitätswirkung basiert auf Simulationsvorschlägen,<br />
-                sofern vorhanden
+                {t.workScreen.capacityImpactTooltip}
               </div>
             </>
           )}
@@ -952,9 +951,9 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
               }}
             >
               <div style={{ fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-2)' }}>
-                {value === 'Überkapazität' ? 'Überkapazitätsrisiko' :
-                 value === 'Untererfüllung' ? 'Untererfüllungsrisiko' :
-                 'Ausgeglichene Kapazität'}
+                {value === 'Überkapazität' ? t.workScreen.overCapacityRisk :
+                 value === 'Untererfüllung' ? t.workScreen.underCapacityRisk :
+                 t.workScreen.balancedCapacity}
               </div>
               <ul style={{ listStyle: 'disc', paddingLeft: '16px', lineHeight: '1.5' }}>
                 {row.capacityImpactReason.map((reason, idx) => (
@@ -1185,7 +1184,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
             }}
             size={1}
           >
-            <option value="" disabled>Kapazitätswirkung</option>
+            <option value="" disabled>{t.workScreen.capacityImpact}</option>
             {capacityImpacts.map(impact => (
               <option key={impact} value={impact}>{impact}</option>
             ))}
@@ -1277,7 +1276,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
           }}
         >
           <Beaker size={16} />
-          <span>Ansicht: Simulation – Diagramme und Kapazitätswirkung basieren auf übernommenen Simulationswerten</span>
+          <span>{t.workScreen.simulationView}</span>
         </div>
       )}
       
@@ -1327,7 +1326,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                 fontWeight: 'var(--font-weight-medium)'
               }}
             >
-              Kapazität
+              {t.workScreen.capacity}
             </button>
           </div>
           
@@ -1408,7 +1407,7 @@ export function WorkScreen({ onNavigate }: WorkScreenProps) {
                   fontWeight: 'var(--font-weight-medium)'
                 }}
               >
-                Kapazität
+                {t.workScreen.capacity}
               </button>
             </div>
           </div>
