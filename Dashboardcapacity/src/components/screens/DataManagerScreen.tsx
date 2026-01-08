@@ -9,6 +9,7 @@ import {
   Filter, ArrowUpDown, CheckSquare, Square, BarChart3, TrendingUp, Layers
 } from 'lucide-react';
 import { useToast } from '../ui/Toast';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { api } from '../../services/api';
 import { dataService } from '../../services/dataService';
 import { useLanguage } from '../../i18n';
@@ -127,6 +128,35 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
     recent_records?: any[];
   } | null>(null);
   const [backupData, setBackupData] = useState<string | null>(null);
+  
+  // Admin Activity Log
+  const [activityLog, setActivityLog] = useState<Array<{
+    id: string;
+    action: string;
+    details: string;
+    status: 'success' | 'error' | 'warning';
+    timestamp: Date;
+  }>([]);
+  
+  // Confirm Dialog State
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'confirm' | 'danger' | 'warning';
+    onConfirm: () => void;
+  }>({ isOpen: false, title: '', message: '', type: 'confirm', onConfirm: () => {} });
+  
+  // Add activity log entry
+  const logActivity = (action: string, details: string, status: 'success' | 'error' | 'warning') => {
+    setActivityLog(prev => [{
+      id: `log-${Date.now()}`,
+      action,
+      details,
+      status,
+      timestamp: new Date()
+    }, ...prev].slice(0, 50)); // Keep last 50 entries
+  };
   
   // Search, filter, sort state
   const [dataSearchQuery, setDataSearchQuery] = useState('');
@@ -311,66 +341,99 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
   };
 
   // Run database migration
-  const handleMigrateDb = async () => {
-    if (!confirm('Datenbank-Tabellen erstellen? Dies erstellt alle fehlenden Tabellen.')) return;
-    setDbActionLoading('migrate');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/migrate`, { method: 'POST' });
-      const result = await response.json();
-      if (result.success) {
-        alert('Migration erfolgreich! Tabellen wurden erstellt.');
-        loadDbStatus();
-      } else {
-        alert('Fehler: ' + result.error);
+  const handleMigrateDb = () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Datenbank-Migration',
+      message: 'Datenbank-Tabellen erstellen? Dies erstellt alle fehlenden Tabellen.',
+      type: 'confirm',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        setDbActionLoading('migrate');
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+          const response = await fetch(`${apiUrl}/db/migrate`, { method: 'POST' });
+          const result = await response.json();
+          if (result.success) {
+            toast.success('Migration erfolgreich', 'Tabellen wurden erstellt.');
+            logActivity('Migration', 'Datenbank-Tabellen erstellt', 'success');
+            loadDbStatus();
+          } else {
+            toast.error('Migration fehlgeschlagen', result.error);
+            logActivity('Migration', result.error, 'error');
+          }
+        } catch (error: any) {
+          toast.error('Fehler', error.message);
+          logActivity('Migration', error.message, 'error');
+        } finally {
+          setDbActionLoading(null);
+        }
       }
-    } catch (error: any) {
-      alert('Fehler: ' + error.message);
-    } finally {
-      setDbActionLoading(null);
-    }
+    });
   };
 
   // Re-seed database
-  const handleReseedDb = async () => {
-    if (!confirm('Testdaten einfügen? Bestehende Daten bleiben erhalten.')) return;
-    setDbActionLoading('seed');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/seed`, { method: 'POST' });
-      const result = await response.json();
-      if (result.success) {
-        alert('Testdaten erfolgreich eingefügt!');
-        loadDbStatus();
-      } else {
-        alert('Fehler: ' + result.error);
+  const handleReseedDb = () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Testdaten laden',
+      message: 'Testdaten einfügen? Bestehende Daten bleiben erhalten.',
+      type: 'confirm',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        setDbActionLoading('seed');
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+          const response = await fetch(`${apiUrl}/db/seed`, { method: 'POST' });
+          const result = await response.json();
+          if (result.success) {
+            toast.success('Seed erfolgreich', 'Testdaten wurden eingefügt.');
+            logActivity('Seed', 'Testdaten eingefügt', 'success');
+            loadDbStatus();
+          } else {
+            toast.error('Seed fehlgeschlagen', result.error);
+            logActivity('Seed', result.error, 'error');
+          }
+        } catch (error: any) {
+          toast.error('Fehler', error.message);
+          logActivity('Seed', error.message, 'error');
+        } finally {
+          setDbActionLoading(null);
+        }
       }
-    } catch (error: any) {
-      alert('Fehler: ' + error.message);
-    } finally {
-      setDbActionLoading(null);
-    }
+    });
   };
 
   // Clear a specific table
-  const handleClearTable = async (table: string) => {
-    if (!confirm(`Tabelle "${table}" wirklich leeren? Diese Aktion kann nicht rückgängig gemacht werden.`)) return;
-    setDbActionLoading(`clear-${table}`);
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/truncate/${table}`, { method: 'POST' });
-      const result = await response.json();
-      if (result.success) {
-        alert(`Tabelle "${table}" wurde geleert.`);
-        loadDbStatus();
-      } else {
-        alert('Fehler: ' + result.error);
+  const handleClearTable = (table: string) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Tabelle leeren',
+      message: `Tabelle "${table}" wirklich leeren? Diese Aktion kann nicht rückgängig gemacht werden.`,
+      type: 'danger',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        setDbActionLoading(`clear-${table}`);
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+          const response = await fetch(`${apiUrl}/db/truncate/${table}`, { method: 'POST' });
+          const result = await response.json();
+          if (result.success) {
+            toast.success('Tabelle geleert', `Tabelle "${table}" wurde geleert.`);
+            logActivity('Tabelle leeren', `${table} geleert`, 'success');
+            loadDbStatus();
+          } else {
+            toast.error('Fehler', result.error);
+            logActivity('Tabelle leeren', result.error, 'error');
+          }
+        } catch (error: any) {
+          toast.error('Fehler', error.message);
+          logActivity('Tabelle leeren', error.message, 'error');
+        } finally {
+          setDbActionLoading(null);
+        }
       }
-    } catch (error: any) {
-      alert('Fehler: ' + error.message);
-    } finally {
-      setDbActionLoading(null);
-    }
+    });
   };
 
   // Load detailed database health metrics
@@ -405,26 +468,39 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
         a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        alert('Backup erfolgreich heruntergeladen!');
+        toast.success('Backup erstellt', 'Backup wurde heruntergeladen.');
+        logActivity('Backup', 'Datenbank-Backup erstellt', 'success');
       } else {
-        alert('Fehler: ' + result.error);
+        toast.error('Backup fehlgeschlagen', result.error);
+        logActivity('Backup', result.error, 'error');
       }
     } catch (error: any) {
-      alert('Fehler: ' + error.message);
+      toast.error('Fehler', error.message);
+      logActivity('Backup', error.message, 'error');
     } finally {
       setDbActionLoading(null);
     }
   };
 
   // Restore database from backup file
-  const handleRestore = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRestore = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     
-    if (!confirm('Datenbank aus Backup wiederherstellen? Bestehende Daten werden überschrieben.')) {
-      event.target.value = '';
-      return;
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Backup wiederherstellen',
+      message: 'Datenbank aus Backup wiederherstellen? Bestehende Daten werden überschrieben.',
+      type: 'warning',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        await performRestore(file);
+        event.target.value = '';
+      }
+    });
+  };
+  
+  const performRestore = async (file: File) => {
     
     setDbActionLoading('restore');
     try {
@@ -439,68 +515,87 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
       });
       const result = await response.json();
       if (result.success) {
-        alert('Backup erfolgreich wiederhergestellt!');
+        toast.success('Wiederherstellung erfolgreich', 'Backup wurde wiederhergestellt.');
+        logActivity('Restore', 'Datenbank aus Backup wiederhergestellt', 'success');
         loadDbStatus();
       } else {
-        alert('Fehler: ' + result.error);
+        toast.error('Wiederherstellung fehlgeschlagen', result.error);
+        logActivity('Restore', result.error, 'error');
       }
     } catch (error: any) {
-      alert('Fehler beim Wiederherstellen: ' + error.message);
+      toast.error('Fehler', error.message);
+      logActivity('Restore', error.message, 'error');
     } finally {
       setDbActionLoading(null);
-      event.target.value = '';
     }
   };
 
   // Optimize database (vacuum/analyze)
-  const handleOptimize = async () => {
-    if (!confirm('Datenbank optimieren? Dies kann einige Sekunden dauern.')) return;
-    setDbActionLoading('optimize');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/vacuum`, { method: 'POST' });
-      const result = await response.json();
-      if (result.success) {
-        alert('Datenbank-Optimierung abgeschlossen!');
-        loadDbHealth();
-      } else {
-        alert('Fehler: ' + result.error);
+  const handleOptimize = () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Datenbank optimieren',
+      message: 'Datenbank optimieren? Dies kann einige Sekunden dauern.',
+      type: 'confirm',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        setDbActionLoading('optimize');
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+          const response = await fetch(`${apiUrl}/db/vacuum`, { method: 'POST' });
+          const result = await response.json();
+          if (result.success) {
+            toast.success('Optimierung abgeschlossen', 'Datenbank wurde optimiert.');
+            logActivity('Optimize', 'Datenbank optimiert', 'success');
+            loadDbHealth();
+          } else {
+            toast.error('Optimierung fehlgeschlagen', result.error);
+            logActivity('Optimize', result.error, 'error');
+          }
+        } catch (error: any) {
+          toast.error('Fehler', error.message);
+          logActivity('Optimize', error.message, 'error');
+        } finally {
+          setDbActionLoading(null);
+        }
       }
-    } catch (error: any) {
-      alert('Fehler: ' + error.message);
-    } finally {
-      setDbActionLoading(null);
-    }
+    });
   };
 
   // Complete database reset
-  const handleDbReset = async () => {
-    const confirmation = prompt('ACHTUNG: Alle Daten werden gelöscht!\n\nGeben Sie "RESET" ein um fortzufahren:');
-    if (confirmation !== 'RESET') {
-      alert('Reset abgebrochen.');
-      return;
-    }
-    
-    setDbActionLoading('reset');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
-      const response = await fetch(`${apiUrl}/db/reset`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ confirm: 'RESET_ALL_DATA' })
-      });
-      const result = await response.json();
-      if (result.success) {
-        alert('Datenbank zurückgesetzt. Bitte führen Sie die Migration erneut aus.');
-        loadDbStatus();
-      } else {
-        alert('Fehler: ' + result.error);
+  const handleDbReset = () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: '⚠️ Datenbank komplett zurücksetzen',
+      message: 'ACHTUNG: Alle Daten werden unwiderruflich gelöscht! Diese Aktion kann nicht rückgängig gemacht werden.',
+      type: 'danger',
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        setDbActionLoading('reset');
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+          const response = await fetch(`${apiUrl}/db/reset`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ confirm: 'RESET_ALL_DATA' })
+          });
+          const result = await response.json();
+          if (result.success) {
+            toast.warning('Datenbank zurückgesetzt', 'Bitte führen Sie die Migration erneut aus.');
+            logActivity('Reset', 'Datenbank komplett zurückgesetzt', 'warning');
+            loadDbStatus();
+          } else {
+            toast.error('Reset fehlgeschlagen', result.error);
+            logActivity('Reset', result.error, 'error');
+          }
+        } catch (error: any) {
+          toast.error('Fehler', error.message);
+          logActivity('Reset', error.message, 'error');
+        } finally {
+          setDbActionLoading(null);
+        }
       }
-    } catch (error: any) {
-      alert('Fehler: ' + error.message);
-    } finally {
-      setDbActionLoading(null);
-    }
+    });
   };
 
   // Load table details
@@ -1656,6 +1751,62 @@ export function DataManagerScreen({ onNavigate }: DataManagerScreenProps) {
           )}
         </div>
       </div>
+      
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        type={confirmDialog.type}
+      />
+      
+      {/* Activity Log Sidebar */}
+      {activityLog.length > 0 && (
+        <div 
+          className="fixed bottom-4 right-4 w-80 max-h-64 overflow-y-auto rounded-lg shadow-lg border"
+          style={{ 
+            backgroundColor: 'var(--surface-page)', 
+            borderColor: 'var(--border-default)',
+            zIndex: 40
+          }}
+        >
+          <div className="p-3 border-b flex items-center justify-between" style={{ borderColor: 'var(--border-default)' }}>
+            <span className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+              <History size={14} />
+              Admin-Aktivitäten
+            </span>
+            <button 
+              onClick={() => setActivityLog([])}
+              className="text-xs px-2 py-1 rounded"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Leeren
+            </button>
+          </div>
+          <div className="p-2 space-y-1">
+            {activityLog.slice(0, 10).map(log => (
+              <div 
+                key={log.id}
+                className="p-2 rounded text-xs flex items-start gap-2"
+                style={{ backgroundColor: 'var(--surface-subtle)' }}
+              >
+                {log.status === 'success' && <CheckCircle size={12} style={{ color: 'var(--status-success)', flexShrink: 0, marginTop: 2 }} />}
+                {log.status === 'error' && <XCircle size={12} style={{ color: 'var(--status-danger)', flexShrink: 0, marginTop: 2 }} />}
+                {log.status === 'warning' && <AlertTriangle size={12} style={{ color: 'var(--status-warning)', flexShrink: 0, marginTop: 2 }} />}
+                <div className="flex-1 min-w-0">
+                  <div style={{ fontWeight: 'var(--font-weight-medium)' }}>{log.action}</div>
+                  <div style={{ color: 'var(--text-muted)' }} className="truncate">{log.details}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+                    {log.timestamp.toLocaleTimeString('de-CH')}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
