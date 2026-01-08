@@ -845,6 +845,16 @@ export const translations = {
       exportReport: 'Bericht exportieren',
       timeRange: 'Zeitraum',
       comparison: 'Vergleich',
+      article: 'Artikel',
+      category: 'Kategorie',
+      season: 'Saison',
+      forecastQuantity: 'Prognosemenge',
+      allocatedQuantity: 'Allokierte Menge',
+      storeStock: 'Filialbestand',
+      warehouseStock: 'VZ-Bestand',
+      demand: 'Bedarf',
+      sizeDeviation: 'Größenabweichung (%)',
+      exceptionCount: 'Exception-Anzahl',
     },
     // Scenarios Screen
     scenariosScreen: {
@@ -1716,6 +1726,16 @@ export const translations = {
       exportReport: 'Export Report',
       timeRange: 'Time Range',
       comparison: 'Comparison',
+      article: 'Article',
+      category: 'Category',
+      season: 'Season',
+      forecastQuantity: 'Forecast Quantity',
+      allocatedQuantity: 'Allocated Quantity',
+      storeStock: 'Store Stock',
+      warehouseStock: 'Warehouse Stock',
+      demand: 'Demand',
+      sizeDeviation: 'Size Deviation (%)',
+      exceptionCount: 'Exception Count',
     },
     // Scenarios Screen
     scenariosScreen: {

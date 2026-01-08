@@ -273,14 +273,14 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
   const tableColumns: Column<AnalyticsData>[] = [
     { 
       key: 'article', 
-      label: t.analytics.article || 'Artikel',
+      label: t.analytics.article,
       sortable: true,
       render: (value) => (
         <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{value}</span>
       )
     },
-    { key: 'category', label: t.analytics.category || 'Kategorie', sortable: true },
-    { key: 'season', label: t.analytics.season || 'Saison', sortable: true },
+    { key: 'category', label: t.analytics.category, sortable: true },
+    { key: 'season', label: t.analytics.season, sortable: true },
     { 
       key: 'targetCapacity', 
       label: 'SOLL-Kapazität (m²)',
@@ -325,13 +325,13 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     },
     { 
       key: 'forecast', 
-      label: 'Prognosemenge',
+      label: t.analytics.forecastQuantity,
       align: 'right',
       sortable: true
     },
     { 
       key: 'allocated', 
-      label: 'Allokierte Menge',
+      label: t.analytics.allocatedQuantity,
       align: 'right',
       sortable: true,
       render: (value) => (
@@ -340,32 +340,32 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     },
     { 
       key: 'storeStock', 
-      label: 'Filialbestand',
+      label: t.analytics.storeStock,
       align: 'right',
       sortable: true
     },
     { 
       key: 'warehouseStock', 
-      label: 'VZ-Bestand',
+      label: t.analytics.warehouseStock,
       align: 'right',
       sortable: true
     },
     { 
       key: 'demand', 
-      label: 'Bedarf',
+      label: t.analytics.demand,
       align: 'right',
       sortable: true
     },
     { 
       key: 'sizeDeviation', 
-      label: 'Größenabweichung (%)',
+      label: t.analytics.sizeDeviation,
       align: 'right',
       sortable: true,
       render: (value) => value > 0 ? `${value}%` : '-'
     },
     { 
       key: 'exceptionCount', 
-      label: 'Exception-Anzahl',
+      label: t.analytics.exceptionCount,
       align: 'right',
       sortable: true,
       render: (value) => value > 0 ? (
