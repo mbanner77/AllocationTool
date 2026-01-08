@@ -405,7 +405,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
               <input
                 type="text"
-                placeholder="Artikel oder Kategorie suchen..."
+                placeholder={t.exceptions.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-3 py-2 border rounded-lg w-full"
@@ -461,7 +461,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
             >
               <option value="">Severity: Alle</option>
               <option value="info">Hinweis</option>
-              <option value="critical">Kritisch</option>
+              <option value="critical">{t.exceptions.critical}</option>
               <option value="blocking">Blockierend</option>
             </select>
             
@@ -578,7 +578,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-            Kritisch / Blockierend
+            {t.exceptions.criticalBlocking}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--status-danger)' }}>
             {kpis.criticalBlocking}
@@ -593,7 +593,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
-            Akzeptierte Abweichungen
+            {t.exceptions.acceptedDeviations}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)' }}>
             {kpis.accepted}
@@ -636,25 +636,25 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                   Exception-Typ
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '200px' }}>
-                  Artikel / Kategorie
+                  {t.exceptions.articleCategory}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '120px' }}>
-                  Prozess
+                  {t.exceptions.process}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '250px' }}>
-                  Ursache
+                  {t.exceptions.cause}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '150px' }}>
-                  Auswirkung
+                  {t.exceptions.impact}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '100px' }}>
-                  Quelle
+                  {t.exceptions.source}
                 </th>
                 <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', minWidth: '120px' }}>
                   Status
                 </th>
                 <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--text-muted)', width: '100px' }}>
-                  Aktionen
+                  {t.exceptions.actions}
                 </th>
               </tr>
             </thead>
@@ -785,7 +785,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                     {getExceptionTypeLabel(group.type as ExceptionType, t)}
                   </h3>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    {group.categories.size} Kategorien betroffen
+                    {group.categories.size} {t.exceptions.categoriesAffected}
                   </div>
                 </div>
                 <div 
@@ -827,7 +827,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                           fontSize: 'var(--font-size-xs)'
                         }}
                       >
-                        {group.critical} Kritisch
+                        {group.critical} {t.exceptions.critical}
                       </span>
                     )}
                     {group.info > 0 && (
@@ -973,7 +973,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                     <Package size={16} style={{ color: 'var(--text-muted)', marginTop: '2px' }} />
                     <div className="flex-1">
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                        Artikel / Kategorie
+                        {t.exceptions.articleCategory}
                       </div>
                       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                         {selectedException.article}
@@ -988,7 +988,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                     <TrendingUp size={16} style={{ color: 'var(--text-muted)', marginTop: '2px' }} />
                     <div className="flex-1">
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                        Prozess
+                        {t.exceptions.process}
                       </div>
                       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                         {selectedException.process === 'initial' ? t.exceptionsScreen.initialAllocation : t.exceptionsScreen.replenishment}
@@ -1036,7 +1036,7 @@ export function ExceptionsScreen({ onNavigate }: ExceptionsScreenProps) {
                     marginBottom: 'var(--space-3)'
                   }}
                 >
-                  Ursache & Details
+                  {t.exceptions.causeDetails}
                 </h3>
                 
                 <div
