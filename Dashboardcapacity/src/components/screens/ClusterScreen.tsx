@@ -93,7 +93,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
           <div className="grid grid-cols-3 gap-3">
             <input
               type="text"
-              placeholder="Filial-ID"
+              placeholder={t.clusterScreen.storeId}
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
               className="px-3 py-2 rounded-lg border"
@@ -117,7 +117,7 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
             />
             <input
               type="text"
-              placeholder="Land"
+              placeholder={t.clusterScreen.country}
               value={searchCountry}
               onChange={(e) => setSearchCountry(e.target.value)}
               className="px-3 py-2 rounded-lg border"
@@ -148,10 +148,10 @@ function StoreSelectModal({ onClose, onConfirm }: { onClose: () => void; onConfi
                     }}
                   />
                 </th>
-                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Filial-ID</th>
-                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Name</th>
-                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Adresse</th>
-                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Land</th>
+                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.storeId}</th>
+                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.name}</th>
+                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.address}</th>
+                <th className="text-left pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.country}</th>
                 <th className="text-right pb-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.clusterScreen.size}</th>
               </tr>
             </thead>

@@ -707,6 +707,17 @@ export const translations = {
       clusters: 'Cluster',
       stores: 'Filialen',
       calculate: 'Berechnen',
+      storeId: 'Filial-ID',
+      name: 'Name',
+      address: 'Adresse',
+      unassigned: 'Nicht zugeordnet',
+      region: 'Region',
+      annualRevenue: 'Umsatz (jährlich)',
+      rollingRevenue: 'Umsatz (rollierend)',
+      salesArea: 'Verkaufsfläche (m²)',
+      customerFrequency: 'Kundenfrequenz',
+      urbanRural: 'Urbanität/Ländlichkeit',
+      competitorDensity: 'Wettbewerberdichte',
     },
     // Store Layout Screen
     storeLayout: {
