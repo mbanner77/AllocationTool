@@ -303,7 +303,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     },
     { 
       key: 'overCapacity', 
-      label: 'Überdeckung (m²)',
+      label: t.analytics.overCapacityTotal + ' (m²)',
       align: 'right',
       sortable: true,
       render: (value) => value > 0 ? (
@@ -314,7 +314,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
     },
     { 
       key: 'underCapacity', 
-      label: 'Unterdeckung (m²)',
+      label: t.analytics.underCapacityTotal + ' (m²)',
       align: 'right',
       sortable: true,
       render: (value) => value > 0 ? (
@@ -481,7 +481,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Saison
+                {t.analytics.season}
               </label>
               <select
                 value={filterSeason}
@@ -493,7 +493,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">Alle Saisons</option>
+                <option value="all">{t.common.all} {t.analytics.season}</option>
                 <option value="FS25">Frühjahr/Sommer 2025</option>
                 <option value="HW25">Herbst/Winter 2025</option>
                 <option value="FS26">Frühjahr/Sommer 2026</option>
@@ -510,7 +510,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Prozess
+                {t.exceptionsScreen.process}
               </label>
               <select
                 value={filterProcess}
@@ -522,7 +522,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">Alle Prozesse</option>
+                <option value="all">{t.common.all}</option>
                 <option value="initial">Initiale Allokation</option>
                 <option value="replenishment">Nachschub</option>
               </select>
@@ -538,7 +538,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   color: 'var(--text-muted)'
                 }}
               >
-                Kategorie
+                {t.analytics.category}
               </label>
               <select
                 value={filterCategory}
@@ -550,7 +550,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
                   fontSize: 'var(--font-size-sm)'
                 }}
               >
-                <option value="all">Alle Kategorien</option>
+                <option value="all">{t.common.all}</option>
                 <option value="Schuhe">Schuhe</option>
                 <option value="Oberbekleidung">Oberbekleidung</option>
                 <option value="Hosen">Hosen</option>
@@ -640,7 +640,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            Überdeckung gesamt
+            {t.analytics.overCapacityTotal}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: '#ef4444' }}>
             +{kpis.overCapacity} m²
@@ -656,7 +656,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            Unterdeckung gesamt
+            {t.analytics.underCapacityTotal}
           </div>
           <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: '#3b82f6' }}>
             -{kpis.underCapacity} m²
@@ -720,7 +720,7 @@ export function AnalyticsScreen({ onNavigate }: AnalyticsScreenProps) {
           }}
         >
           <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '16px' }}>
-            Über-/Unterdeckung nach Kategorie
+            {t.analytics.overUnderByCategory}
           </h3>
           <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0}>
             <BarChart data={CAPACITY_BY_CATEGORY} layout="horizontal">
